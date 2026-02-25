@@ -1,0 +1,124 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 170px;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.trigger:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.trigger:focus,
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-radius: var(--radius-md);
+}
+
+.trigger[data-state='open'] {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+}
+
+.triggerIcon {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+}
+
+.chevron {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Dropdown content */
+.content {
+  min-width: 170px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) 0;
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  animation: slideDown 0.15s ease;
+}
+
+.content:focus,
+.content:focus-visible {
+  outline: none;
+  border-radius: var(--radius-md);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  outline: none;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.item:focus,
+.item:focus-visible {
+  outline: none;
+  border-radius: 0;
+}
+
+.item:hover,
+.item[data-highlighted] {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+.itemActive {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.checkmark {
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  width: 14px;
+}
+
+.item:not(.itemActive) .checkmark {
+  visibility: hidden;
+}
