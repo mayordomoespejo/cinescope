@@ -1,9 +1,6 @@
 import { useOutletContext } from '@/components/ui/LayoutContext'
-import { useQueryClient } from '@tanstack/react-query'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { fetchMovieDetail } from '@/features/movies/api/tmdbApi'
-import { fetchMovieVideosForQuery } from '@/features/movies/hooks/useMovieVideos'
-import { queryKeys } from '@/lib/queryKeys'
+import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
 import MovieGrid from '@/features/movies/components/MovieGrid'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import styles from './Favorites.module.css'
@@ -11,18 +8,7 @@ import styles from './Favorites.module.css'
 export default function Favorites() {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
   const { favorites, watchlist, toggleFavorite } = useFavorites()
-  const queryClient = useQueryClient()
-
-  const handlePrefetch = (id: number) => {
-    void queryClient.prefetchQuery({
-      queryKey: queryKeys.movieDetail(id),
-      queryFn: () => fetchMovieDetail(id),
-    })
-    void queryClient.prefetchQuery({
-      queryKey: queryKeys.movieVideos(id),
-      queryFn: () => fetchMovieVideosForQuery(id),
-    })
-  }
+  const { prefetchMovieData } = useMoviePrefetch()
 
   const favoriteIds = favorites.map(f => f.id)
 
@@ -41,7 +27,7 @@ export default function Favorites() {
             movies={favorites}
             isLoading={false}
             onOpenMovie={onOpenMovie}
-            onPrefetch={handlePrefetch}
+            onPrefetch={prefetchMovieData}
             favorites={favoriteIds}
             onToggleFavorite={toggleFavorite}
             emptyMessage="No favorites yet — save movies you love!"
@@ -61,7 +47,7 @@ export default function Favorites() {
               movies={watchlist}
               isLoading={false}
               onOpenMovie={onOpenMovie}
-              onPrefetch={handlePrefetch}
+              onPrefetch={prefetchMovieData}
               favorites={favoriteIds}
               onToggleFavorite={toggleFavorite}
               emptyMessage="Your watchlist is empty."

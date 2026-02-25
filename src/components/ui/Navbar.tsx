@@ -20,12 +20,24 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const searchParamQuery = searchParams.get('q') ?? ''
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  useEffect(() => {
+    setQuery(searchParamQuery)
+  }, [searchParamQuery])
+
+  useEffect(
+    () => () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    },
+    []
+  )
 
   // "/" shortcut to focus search
   useEffect(() => {
@@ -54,6 +66,7 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     if (query.trim()) {
       addSearchQuery(query.trim())
       navigate(`/?q=${encodeURIComponent(query.trim())}`)

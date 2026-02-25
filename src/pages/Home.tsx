@@ -1,15 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useOutletContext } from '@/components/ui/LayoutContext'
-import { useQueryClient } from '@tanstack/react-query'
 import { useTrending } from '@/features/movies/hooks/useTrending'
 import { useTopRated } from '@/features/movies/hooks/useTopRated'
 import { useDiscover } from '@/features/movies/hooks/useDiscover'
 import { useSearchMovies } from '@/features/movies/hooks/useSearch'
+import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { fetchMovieDetail } from '@/features/movies/api/tmdbApi'
-import { fetchMovieVideosForQuery } from '@/features/movies/hooks/useMovieVideos'
-import { queryKeys } from '@/lib/queryKeys'
 import { addSearchQuery } from '@/features/favorites/store'
 import HeroSection from '@/features/movies/components/HeroSection'
 import MovieCarousel from '@/features/movies/components/MovieCarousel'
@@ -29,7 +26,7 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<SortOption>('popularity.desc')
   const [discoverPage, setDiscoverPage] = useState(1)
 
-  const queryClient = useQueryClient()
+  const { prefetchMovieData } = useMoviePrefetch()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
 
   // Data fetching
@@ -49,25 +46,13 @@ export default function Home() {
     error: searchError,
   } = useSearchMovies(searchQuery)
 
-  // Prefetch movie detail on card hover
-  const handlePrefetch = (id: number) => {
-    void queryClient.prefetchQuery({
-      queryKey: queryKeys.movieDetail(id),
-      queryFn: () => fetchMovieDetail(id),
-    })
-    void queryClient.prefetchQuery({
-      queryKey: queryKeys.movieVideos(id),
-      queryFn: () => fetchMovieVideosForQuery(id),
-    })
-  }
-
   const handleOpenMovie = (id: number) => {
     onOpenMovie(id)
   }
 
-  const handleSearch = (q: string) => {
-    if (q) addSearchQuery(q)
-  }
+  useEffect(() => {
+    if (searchQuery) addSearchQuery(searchQuery)
+  }, [searchQuery])
 
   // Compute data for displays
   const trendingMovies = trendingData?.results ?? []
@@ -91,7 +76,6 @@ export default function Home() {
 
   // Search mode
   if (searchQuery) {
-    void handleSearch(searchQuery)
     return (
       <div className={styles.page}>
         <div className={styles.section}>
@@ -112,7 +96,7 @@ export default function Home() {
             isLoading={searchLoading}
             error={searchError}
             onOpenMovie={handleOpenMovie}
-            onPrefetch={handlePrefetch}
+            onPrefetch={prefetchMovieData}
             favorites={favoriteIds}
             onToggleFavorite={toggleFavorite}
             emptyMessage={searchQuery ? `No results for "${searchQuery}"` : undefined}
@@ -140,7 +124,7 @@ export default function Home() {
           movies={trendingMovies}
           isLoading={trendingLoading}
           onOpenMovie={handleOpenMovie}
-          onPrefetch={handlePrefetch}
+          onPrefetch={prefetchMovieData}
           favorites={favoriteIds}
           onToggleFavorite={toggleFavorite}
         />
@@ -151,7 +135,7 @@ export default function Home() {
           movies={topRatedMovies}
           isLoading={topRatedLoading}
           onOpenMovie={handleOpenMovie}
-          onPrefetch={handlePrefetch}
+          onPrefetch={prefetchMovieData}
           favorites={favoriteIds}
           onToggleFavorite={toggleFavorite}
         />
@@ -171,7 +155,7 @@ export default function Home() {
             error={discoverError}
             hasNextPage={hasNextDiscover}
             onOpenMovie={handleOpenMovie}
-            onPrefetch={handlePrefetch}
+            onPrefetch={prefetchMovieData}
             onLoadMore={() => setDiscoverPage(p => p + 1)}
             favorites={favoriteIds}
             onToggleFavorite={toggleFavorite}

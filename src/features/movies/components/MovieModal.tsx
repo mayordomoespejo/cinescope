@@ -219,26 +219,28 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
                       </p>
 
                       {/* Extra info */}
-                      <div className={styles.extraInfo}>
-                        {movie.budget > 0 && (
-                          <div className={styles.extraItem}>
-                            <span className={styles.extraLabel}>Budget</span>
-                            <span>{formatMoney(movie.budget)}</span>
-                          </div>
-                        )}
-                        {movie.revenue > 0 && (
-                          <div className={styles.extraItem}>
-                            <span className={styles.extraLabel}>Revenue</span>
-                            <span>{formatMoney(movie.revenue)}</span>
-                          </div>
-                        )}
-                        {movie.status && (
-                          <div className={styles.extraItem}>
-                            <span className={styles.extraLabel}>Status</span>
-                            <span>{movie.status}</span>
-                          </div>
-                        )}
-                      </div>
+                      {(movie.budget > 0 || movie.revenue > 0 || !!movie.status) && (
+                        <div className={styles.extraInfo}>
+                          {movie.budget > 0 && (
+                            <div className={styles.extraItem}>
+                              <span className={styles.extraLabel}>Budget</span>
+                              <span>{formatMoney(movie.budget)}</span>
+                            </div>
+                          )}
+                          {movie.revenue > 0 && (
+                            <div className={styles.extraItem}>
+                              <span className={styles.extraLabel}>Revenue</span>
+                              <span>{formatMoney(movie.revenue)}</span>
+                            </div>
+                          )}
+                          {movie.status && (
+                            <div className={styles.extraItem}>
+                              <span className={styles.extraLabel}>Status</span>
+                              <span>{movie.status}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
 
                       {/* Actions */}
                       <div className={styles.actions}>
@@ -326,22 +328,32 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
 
 function ModalSkeleton() {
   return (
-    <div className={styles.body} style={{ marginTop: '1rem' }}>
-      <div className={styles.posterCol}>
-        <div className={styles.skeletonPoster} aria-hidden="true" />
+    <>
+      <div className={styles.backdrop} aria-hidden="true">
+        <div className={styles.backdropGradient} />
       </div>
-      <div className={styles.details}>
-        <Skeleton height="2rem" width="70%" />
-        <Skeleton height="0.9rem" width="45%" />
-        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-          {[80, 70, 60].map(w => (
-            <Skeleton key={w} height="1.5rem" width={`${w}px`} borderRadius="var(--radius-full)" />
-          ))}
+      <div className={styles.body}>
+        <div className={styles.posterCol}>
+          <div className={styles.skeletonPoster} aria-hidden="true" />
         </div>
-        <Skeleton height="0.875rem" width="100%" />
-        <Skeleton height="0.875rem" width="90%" />
-        <Skeleton height="0.875rem" width="80%" />
+        <div className={styles.details}>
+          <Skeleton height="2rem" width="70%" />
+          <Skeleton height="0.9rem" width="45%" />
+          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+            {[80, 70, 60].map(w => (
+              <Skeleton
+                key={w}
+                height="1.5rem"
+                width={`${w}px`}
+                borderRadius="var(--radius-full)"
+              />
+            ))}
+          </div>
+          <Skeleton height="0.875rem" width="100%" />
+          <Skeleton height="0.875rem" width="90%" />
+          <Skeleton height="0.875rem" width="80%" />
+        </div>
       </div>
-    </div>
+    </>
   )
 }

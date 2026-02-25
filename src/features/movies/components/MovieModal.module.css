@@ -70,6 +70,7 @@
   height: 200px;
   overflow: hidden;
   flex-shrink: 0;
+  background: var(--color-surface-raised);
 }
 
 .backdropImg {
@@ -77,6 +78,16 @@
   height: 100%;
   object-fit: cover;
   object-position: center 20%;
+  animation: backdropFadeIn 0.35s ease-out both;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .backdropGradient {
