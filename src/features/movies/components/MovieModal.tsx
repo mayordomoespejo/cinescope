@@ -82,9 +82,9 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
 
             <motion.div
               className={styles.inner}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Close button */}
@@ -280,6 +280,23 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
                         >
                           {inWatchlist ? '✓ Watchlist' : '+ Watchlist'}
                         </Button>
+
+                        {/* Trailer button — only visible on mobile (poster hidden) */}
+                        {(trailer || loadingVideos) && !trailerPlaying && (
+                          <div className={styles.trailerMobileBtn}>
+                            <Button
+                              variant="ghost"
+                              size="md"
+                              onClick={() =>
+                                trailer ? setTrailerPlaying(true) : setPlayWhenReady(true)
+                              }
+                              disabled={loadingVideos && !trailer}
+                              aria-label={trailer ? 'Watch trailer' : 'Loading trailer'}
+                            >
+                              {loadingVideos && !trailer ? '⋯ Trailer' : '▶ Trailer'}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
