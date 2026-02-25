@@ -52,6 +52,11 @@ export function isFavorite(id: number): boolean {
   return getFavorites().some(m => m.id === id)
 }
 
+export function reorderFavorites(newOrder: Movie[]): void {
+  writeStorage(FAVORITES_KEY, newOrder)
+  notifyChange()
+}
+
 // ── Watchlist ──────────────────────────────────────────────────────
 
 export function getWatchlist(): Movie[] {
@@ -76,6 +81,11 @@ export function removeFromWatchlist(id: number): void {
 
 export function isInWatchlist(id: number): boolean {
   return getWatchlist().some(m => m.id === id)
+}
+
+export function reorderWatchlist(newOrder: Movie[]): void {
+  writeStorage(WATCHLIST_KEY, newOrder)
+  notifyChange()
 }
 
 // ── Search history ─────────────────────────────────────────────────

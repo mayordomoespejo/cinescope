@@ -9,6 +9,7 @@ interface MovieCardProps {
   onPrefetch?: (id: number) => void
   isFavorite?: boolean
   onToggleFavorite?: (movie: Movie) => void
+  dragHandle?: React.ReactNode
 }
 
 export default function MovieCard({
@@ -17,6 +18,7 @@ export default function MovieCard({
   onPrefetch,
   isFavorite = false,
   onToggleFavorite,
+  dragHandle,
 }: MovieCardProps) {
   const [imgLoaded, setImgLoaded] = useState(false)
 
@@ -81,6 +83,7 @@ export default function MovieCard({
         />
         {/* Hover overlay */}
         <div className={styles.overlay} aria-hidden="true" />
+        {dragHandle}
       </div>
 
       {/* Info */}

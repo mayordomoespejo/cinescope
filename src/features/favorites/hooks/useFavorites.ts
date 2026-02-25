@@ -5,10 +5,12 @@ import {
   addFavorite,
   removeFavorite,
   isFavorite,
+  reorderFavorites,
   getWatchlist,
   addToWatchlist,
   removeFromWatchlist,
   isInWatchlist,
+  reorderWatchlist,
 } from '../store'
 
 export function useFavorites() {
@@ -45,6 +47,16 @@ export function useFavorites() {
   const checkFavorite = useCallback((id: number) => isFavorite(id), [])
   const checkWatchlist = useCallback((id: number) => isInWatchlist(id), [])
 
+  const reorderFavs = useCallback((newOrder: Movie[]) => {
+    reorderFavorites(newOrder)
+    setFavorites(newOrder)
+  }, [])
+
+  const reorderWatch = useCallback((newOrder: Movie[]) => {
+    reorderWatchlist(newOrder)
+    setWatchlist(newOrder)
+  }, [])
+
   return {
     favorites,
     watchlist,
@@ -52,5 +64,7 @@ export function useFavorites() {
     toggleWatchlist,
     isFavorite: checkFavorite,
     isInWatchlist: checkWatchlist,
+    reorderFavorites: reorderFavs,
+    reorderWatchlist: reorderWatch,
   }
 }
