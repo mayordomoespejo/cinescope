@@ -18,7 +18,8 @@
       "Bash(npx prettier --write index.html src/App.tsx tsconfig.json)",
       "Bash(git add index.html src/App.tsx tsconfig.json)",
       "Bash(git commit:*)",
-      "Bash(ls -la .env*)"
+      "Bash(ls -la .env*)",
+      "Bash(npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities)"
     ],
     "additionalDirectories": [
       "/Users/Miguel/.claude/projects/-Users-Miguel-Documents-developer-cinescope/memory",

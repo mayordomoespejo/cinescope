@@ -1,13 +1,14 @@
 import { useOutletContext } from '@/components/ui/LayoutContext'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
-import MovieGrid from '@/features/movies/components/MovieGrid'
+import SortableMovieGrid from '@/features/movies/components/SortableMovieGrid'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import styles from './Favorites.module.css'
 
 export default function Favorites() {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
-  const { favorites, watchlist, toggleFavorite } = useFavorites()
+  const { favorites, watchlist, toggleFavorite, reorderFavorites, reorderWatchlist } =
+    useFavorites()
   const { prefetchMovieData } = useMoviePrefetch()
 
   const favoriteIds = favorites.map(f => f.id)
@@ -23,9 +24,9 @@ export default function Favorites() {
               <span className={styles.count}>{favorites.length}</span>
             </h1>
           </div>
-          <MovieGrid
+          <SortableMovieGrid
             movies={favorites}
-            isLoading={false}
+            onReorder={reorderFavorites}
             onOpenMovie={onOpenMovie}
             onPrefetch={prefetchMovieData}
             favorites={favoriteIds}
@@ -43,9 +44,9 @@ export default function Favorites() {
                 <span className={styles.count}>{watchlist.length}</span>
               </h2>
             </div>
-            <MovieGrid
+            <SortableMovieGrid
               movies={watchlist}
-              isLoading={false}
+              onReorder={reorderWatchlist}
               onOpenMovie={onOpenMovie}
               onPrefetch={prefetchMovieData}
               favorites={favoriteIds}
