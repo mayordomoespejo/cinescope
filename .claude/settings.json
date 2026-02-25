@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install @radix-ui/react-dropdown-menu @radix-ui/react-tooltip @radix-ui/react-visually-hidden)",
+      "Bash(npm install -D prettier vitest @vitest/coverage-v8 @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom husky lint-staged)",
+      "Bash(npm install -D @playwright/test)",
+      "Bash(npm install @tanstack/react-query-devtools)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npm run build)",
+      "Bash(npm test)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(npm install i18next react-i18next)",
+      "Bash(npm test -- --run)",
+      "Bash(npm uninstall i18next react-i18next)",
+      "Bash(npm run lint)",
+      "Bash(cat .github/workflows/*.yml)",
+      "Bash(npm run format:check)",
+      "Bash(npx prettier --write index.html src/App.tsx tsconfig.json)",
+      "Bash(git add index.html src/App.tsx tsconfig.json)",
+      "Bash(git commit:*)",
+      "Bash(ls -la .env*)"
+    ],
+    "additionalDirectories": [
+      "/Users/Miguel/.claude/projects/-Users-Miguel-Documents-developer-cinescope/memory",
+      "/Users/Miguel/Documents/developer/cinescope/src"
+    ]
+  }
+}

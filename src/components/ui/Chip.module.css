@@ -1,0 +1,64 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+  user-select: none;
+}
+
+.chip:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+.active {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+.active:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* Sizes */
+.sm {
+  font-size: var(--font-size-xs);
+  padding: 3px var(--space-3);
+  height: 26px;
+}
+
+.md {
+  font-size: var(--font-size-sm);
+  padding: var(--space-2) var(--space-4);
+  height: 34px;
+}
+
+.remove {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  margin-left: var(--space-1);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+.remove:hover {
+  opacity: 1;
+}
