@@ -11,16 +11,22 @@ import {
   removeFromWatchlist,
   isInWatchlist,
   reorderWatchlist,
+  getWatched,
+  markWatched,
+  unmarkWatched,
+  isWatched,
 } from '../store'
 
 export function useFavorites() {
   const [favorites, setFavorites] = useState<Movie[]>(getFavorites)
   const [watchlist, setWatchlist] = useState<Movie[]>(getWatchlist)
+  const [watched, setWatched] = useState<number[]>(getWatched)
 
   useEffect(() => {
     const sync = () => {
       setFavorites(getFavorites())
       setWatchlist(getWatchlist())
+      setWatched(getWatched())
     }
     window.addEventListener('cinescope:favorites-change', sync)
     return () => window.removeEventListener('cinescope:favorites-change', sync)
@@ -57,13 +63,27 @@ export function useFavorites() {
     setWatchlist(newOrder)
   }, [])
 
+  const toggleWatched = useCallback((id: number) => {
+    if (isWatched(id)) {
+      unmarkWatched(id)
+    } else {
+      markWatched(id)
+    }
+    setWatched(getWatched())
+  }, [])
+
+  const checkWatched = useCallback((id: number) => isWatched(id), [])
+
   return {
     favorites,
     watchlist,
+    watched,
     toggleFavorite,
     toggleWatchlist,
+    toggleWatched,
     isFavorite: checkFavorite,
     isInWatchlist: checkWatchlist,
+    isWatched: checkWatched,
     reorderFavorites: reorderFavs,
     reorderWatchlist: reorderWatch,
   }

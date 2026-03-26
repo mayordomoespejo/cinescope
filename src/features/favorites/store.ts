@@ -194,6 +194,50 @@ export function reorderWatchlist(newOrder: Movie[], userId?: string): void {
   if (userId) void syncWatchlistToSupabase(userId, newOrder)
 }
 
+// ── Watched ────────────────────────────────────────────────────────
+
+const WATCHED_KEY = 'cinescope:watched'
+
+/**
+ * Returns the set of watched movie IDs from localStorage.
+ */
+export function getWatched(): number[] {
+  return readStorage<number[]>(WATCHED_KEY, [])
+}
+
+/**
+ * Marks a movie as watched by its TMDB ID.
+ * No-op if already marked.
+ * @param id - TMDB movie ID.
+ */
+export function markWatched(id: number): void {
+  const list = getWatched()
+  if (!list.includes(id)) {
+    writeStorage(WATCHED_KEY, [id, ...list])
+    notifyChange()
+  }
+}
+
+/**
+ * Unmarks a movie as watched by its TMDB ID.
+ * @param id - TMDB movie ID.
+ */
+export function unmarkWatched(id: number): void {
+  writeStorage(
+    WATCHED_KEY,
+    getWatched().filter(w => w !== id)
+  )
+  notifyChange()
+}
+
+/**
+ * Returns true if the movie has been marked as watched.
+ * @param id - TMDB movie ID.
+ */
+export function isWatched(id: number): boolean {
+  return getWatched().includes(id)
+}
+
 // ── Search history ─────────────────────────────────────────────────
 
 /**

@@ -13,6 +13,7 @@ import MovieCarousel from '@/features/movies/components/MovieCarousel'
 import MovieGrid from '@/features/movies/components/MovieGrid'
 import GenreFilter from '@/features/filters/components/GenreFilter'
 import SortDropdown from '@/features/filters/components/SortDropdown'
+import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import type { SortOption } from '@/lib/config'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import styles from './Home.module.css'
@@ -25,6 +26,9 @@ export default function Home() {
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('popularity.desc')
   const [discoverPage, setDiscoverPage] = useState(1)
+  const [minRating, setMinRating] = useState(0)
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined)
+  const [selectedLanguage, setSelectedLanguage] = useState('')
 
   const { prefetchMovieData } = useMoviePrefetch()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
@@ -37,7 +41,14 @@ export default function Home() {
     isLoading: discoverLoading,
     error: discoverError,
   } = useDiscover(
-    { with_genres: selectedGenre?.toString(), sort_by: sortBy, page: discoverPage },
+    {
+      with_genres: selectedGenre?.toString(),
+      sort_by: sortBy,
+      page: discoverPage,
+      'vote_average.gte': minRating > 0 ? minRating : undefined,
+      primary_release_year: selectedYear,
+      with_original_language: selectedLanguage || undefined,
+    },
     !searchQuery
   )
   const {
@@ -71,6 +82,21 @@ export default function Home() {
 
   const handleSortChange = (value: SortOption) => {
     setSortBy(value)
+    setDiscoverPage(1)
+  }
+
+  const handleMinRatingChange = (value: number) => {
+    setMinRating(value)
+    setDiscoverPage(1)
+  }
+
+  const handleYearChange = (value: number | undefined) => {
+    setSelectedYear(value)
+    setDiscoverPage(1)
+  }
+
+  const handleLanguageChange = (value: string) => {
+    setSelectedLanguage(value)
     setDiscoverPage(1)
   }
 
@@ -149,6 +175,14 @@ export default function Home() {
             <SortDropdown value={sortBy} onChange={handleSortChange} />
           </div>
           <GenreFilter selectedGenreId={selectedGenre} onSelect={handleGenreSelect} />
+          <AdvancedFilters
+            minRating={minRating}
+            onMinRatingChange={handleMinRatingChange}
+            year={selectedYear}
+            onYearChange={handleYearChange}
+            language={selectedLanguage}
+            onLanguageChange={handleLanguageChange}
+          />
           <MovieGrid
             movies={discoverMovies}
             isLoading={discoverLoading}

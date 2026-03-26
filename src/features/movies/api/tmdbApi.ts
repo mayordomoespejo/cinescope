@@ -6,6 +6,7 @@ import type {
   GenreListResponse,
   VideoListResponse,
   DiscoverParams,
+  MovieCreditsResponse,
 } from '../types/movie'
 
 export async function fetchTrending(
@@ -27,6 +28,8 @@ export async function fetchDiscover(params: DiscoverParams): Promise<PaginatedRe
       sort_by: params.sort_by ?? 'popularity.desc',
       'vote_average.gte': params['vote_average.gte'],
       'vote_count.gte': params['vote_count.gte'] ?? 50,
+      primary_release_year: params.primary_release_year,
+      with_original_language: params.with_original_language,
       language: 'en-US',
     },
   })
@@ -51,4 +54,26 @@ export async function fetchMovieDetail(id: number): Promise<MovieDetail> {
 
 export async function fetchMovieVideos(id: number): Promise<VideoListResponse> {
   return tmdbFetch(`/movie/${id}/videos`, { params: { language: 'en-US' } })
+}
+
+/**
+ * Fetches movie recommendations based on the given movie ID.
+ * @param movieId - TMDB movie ID.
+ * @param page - Page number (defaults to 1).
+ */
+export async function fetchMovieRecommendations(
+  movieId: number,
+  page: number = 1
+): Promise<PaginatedResponse<Movie>> {
+  return tmdbFetch(`/movie/${movieId}/recommendations`, {
+    params: { language: 'en-US', page },
+  })
+}
+
+/**
+ * Fetches the full cast and crew for a given movie.
+ * @param movieId - TMDB movie ID.
+ */
+export async function fetchMovieCredits(movieId: number): Promise<MovieCreditsResponse> {
+  return tmdbFetch(`/movie/${movieId}/credits`, { params: { language: 'en-US' } })
 }
