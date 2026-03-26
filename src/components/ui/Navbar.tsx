@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
+import { NavLink, Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 import { DEBOUNCE_DELAY } from '@/lib/config'
-import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/favorites/store'
+import {
+  addSearchQuery,
+  getSearchHistory,
+  clearSearchHistory,
+  hydrateFromSupabase,
+} from '@/features/favorites/store'
+import { useAuth } from '@/features/auth/useAuth'
 
 interface NavbarProps {
   theme: 'dark' | 'light'
@@ -21,6 +28,19 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const searchParamQuery = searchParams.get('q') ?? ''
+
+  const { user, loading: authLoading, signOut } = useAuth()
+
+  // Hydrate favorites/watchlist from Supabase when user logs in
+  const prevUserIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    if (user && user.uid !== prevUserIdRef.current) {
+      prevUserIdRef.current = user.uid
+      void hydrateFromSupabase(user.uid)
+    } else if (!user) {
+      prevUserIdRef.current = null
+    }
+  }, [user])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -95,6 +115,14 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
     inputRef.current?.focus()
   }
 
+  const handleSignOut = async () => {
+    await signOut()
+  }
+
+  // Derive user initials for avatar — Firebase user has displayName and email
+  const userInitial =
+    user?.displayName?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? '?'
+
   return (
     <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`} role="banner">
       <div className={styles.inner}>
@@ -114,6 +142,14 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
             }
           >
             Home
+          </NavLink>
+          <NavLink
+            to="/tv"
+            className={({ isActive }) =>
+              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+            }
+          >
+            TV Shows
           </NavLink>
           <NavLink
             to="/favorites"
@@ -236,6 +272,46 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
         >
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
+
+        {/* Auth */}
+        {!authLoading &&
+          (user ? (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  className={styles.avatarBtn}
+                  aria-label={`User menu for ${user.email ?? 'account'}`}
+                  title={user.email ?? 'Account'}
+                >
+                  {userInitial}
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className={styles.dropdownContent} align="end" sideOffset={6}>
+                  <div className={styles.dropdownUserInfo}>
+                    <span className={styles.dropdownAvatar}>{userInitial}</span>
+                    <div className={styles.dropdownUserDetails}>
+                      {user.displayName && (
+                        <span className={styles.dropdownName}>{user.displayName}</span>
+                      )}
+                      <span className={styles.dropdownEmail}>{user.email}</span>
+                    </div>
+                  </div>
+                  <DropdownMenu.Separator className={styles.dropdownSeparator} />
+                  <DropdownMenu.Item className={styles.dropdownItem} asChild>
+                    <Link to="/profile">Profile</Link>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className={styles.dropdownItem} onSelect={handleSignOut}>
+                    Sign out
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          ) : (
+            <Link to="/login" className={styles.signInBtn}>
+              Sign in
+            </Link>
+          ))}
       </div>
     </header>
   )
