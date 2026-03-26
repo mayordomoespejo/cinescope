@@ -94,4 +94,95 @@ export interface DiscoverParams {
   'vote_count.gte'?: number
   year?: number
   language?: string
+  primary_release_year?: number
+  with_original_language?: string
+}
+
+/** A single cast member as returned by the TMDB credits endpoint */
+export interface CastMember {
+  id: number
+  name: string
+  character: string
+  profile_path: string | null
+  order: number
+  known_for_department: string
+}
+
+/** A single crew member as returned by the TMDB credits endpoint */
+export interface CrewMember {
+  id: number
+  name: string
+  job: string
+  department: string
+  profile_path: string | null
+  known_for_department: string
+}
+
+/** Response shape for the /movie/:id/credits endpoint */
+export interface MovieCreditsResponse {
+  id: number
+  cast: CastMember[]
+  crew: CrewMember[]
+}
+
+/** Full person detail as returned by the TMDB /person/:id endpoint */
+export interface PersonDetail {
+  id: number
+  name: string
+  biography: string
+  birthday: string | null
+  deathday: string | null
+  place_of_birth: string | null
+  profile_path: string | null
+  known_for_department: string
+  popularity: number
+  imdb_id: string | null
+  homepage: string | null
+  also_known_as: string[]
+  gender: number
+}
+
+/** A movie in a person's filmography (cast credits) */
+export interface PersonCastCredit {
+  id: number
+  title: string
+  character: string
+  poster_path: string | null
+  release_date: string
+  vote_average: number
+  vote_count: number
+  popularity: number
+  adult: boolean
+  original_language: string
+  original_title: string
+  overview: string
+  backdrop_path: string | null
+  genre_ids: number[]
+  order?: number
+}
+
+/** A movie in a person's filmography (crew credits) */
+export interface PersonCrewCredit {
+  id: number
+  title: string
+  job: string
+  department: string
+  poster_path: string | null
+  release_date: string
+  vote_average: number
+  vote_count: number
+  popularity: number
+  adult: boolean
+  original_language: string
+  original_title: string
+  overview: string
+  backdrop_path: string | null
+  genre_ids: number[]
+}
+
+/** Response shape for the /person/:id/movie_credits endpoint */
+export interface PersonMovieCreditsResponse {
+  id: number
+  cast: PersonCastCredit[]
+  crew: PersonCrewCredit[]
 }
