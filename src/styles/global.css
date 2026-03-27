@@ -13,7 +13,6 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   scrollbar-gutter: stable;
-  overflow-y: scroll; /* prevents layout shift when modals/dropdowns set overflow:hidden on body */
 }
 
 body {
@@ -24,6 +23,9 @@ body {
   background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Reserve scrollbar width permanently so content never shifts when it appears/disappears.
+     100vw includes scrollbar, 100% does not — the difference is the scrollbar width. */
+  padding-right: calc(100vw - 100%);
   transition:
     background-color var(--transition-slow),
     color var(--transition-slow);
