@@ -3,11 +3,16 @@ import { useGenres } from '../hooks/useGenres'
 import Chip from '@/components/ui/Chip'
 import styles from './GenreFilter.module.css'
 
+/** Props for the GenreFilter component. */
 interface GenreFilterProps {
   selectedGenreId: number | null
   onSelect: (id: number | null) => void
 }
 
+/**
+ * @description Horizontally scrollable chip list for filtering content by genre. Shows skeleton chips while loading.
+ * @param props - Component props
+ */
 export default function GenreFilter({ selectedGenreId, onSelect }: GenreFilterProps) {
   const { data: genres = [], isLoading } = useGenres()
   const trackRef = useRef<HTMLDivElement>(null)

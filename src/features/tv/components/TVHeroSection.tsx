@@ -6,12 +6,17 @@ import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import styles from './TVHeroSection.module.css'
 
+/** Props for the TVHeroSection component. */
 interface TVHeroSectionProps {
   show: TVShow | undefined
   isLoading: boolean
   onOpenShow: (id: number) => void
 }
 
+/**
+ * @description Full-width hero banner for TV shows displaying backdrop image, title, rating, year, overview, and a "View Details" button.
+ * @param props - Component props
+ */
 export default function TVHeroSection({ show, isLoading, onOpenShow }: TVHeroSectionProps) {
   const [imgLoaded, setImgLoaded] = useState(false)
 

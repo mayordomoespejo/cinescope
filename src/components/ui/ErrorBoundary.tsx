@@ -1,6 +1,7 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import styles from './ErrorBoundary.module.css'
 
+/** Props for the ErrorBoundary component. */
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -11,6 +12,9 @@ interface State {
   error: Error | null
 }
 
+/**
+ * @description React class component that catches uncaught errors in its subtree and renders a fallback UI.
+ */
 export default class ErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error }

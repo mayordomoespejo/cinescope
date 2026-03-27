@@ -5,6 +5,7 @@ import TVCard from './TVCard'
 import { SkeletonGrid } from '@/features/movies/components/SkeletonCard'
 import styles from './TVCarousel.module.css'
 
+/** Props for the TVCarousel component. */
 interface TVCarouselProps {
   title: string
   shows: TVShow[]
@@ -14,6 +15,10 @@ interface TVCarouselProps {
   onPrefetch?: (id: number) => void
 }
 
+/**
+ * @description Horizontally scrollable carousel of TVCard items with arrow navigation controls and skeleton loaders.
+ * @param props - Component props
+ */
 export default function TVCarousel({
   title,
   shows,

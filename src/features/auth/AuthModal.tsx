@@ -4,11 +4,16 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import styles from './AuthModal.module.css'
 import { signInWithGoogle, smartAuth } from './authService'
 
+/** Props for the AuthModal component. */
 interface AuthModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
+/**
+ * @description Modal dialog for user authentication. Supports email+password (sign in or sign up) and Google OAuth via Firebase.
+ * @param props - Component props
+ */
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

@@ -4,6 +4,10 @@ import { queryKeys } from '@/lib/queryKeys'
 import { STALE_TIME_LONG } from '@/lib/config'
 import type { Video } from '../types/movie'
 
+/**
+ * @description Picks the best available trailer from a list of videos. Prefers official YouTube trailers, then any YouTube trailer, then a teaser.
+ * @returns The selected Video or null if none found.
+ */
 export function pickTrailer(videos: Video[]): Video | null {
   // Priority: official YouTube trailer
   const official = videos.find(v => v.site === 'YouTube' && v.type === 'Trailer' && v.official)
@@ -18,6 +22,10 @@ export function pickTrailer(videos: Video[]): Video | null {
   return teaser ?? null
 }
 
+/**
+ * @description Fetches videos for a movie and appends a resolved `trailer` field. Query is disabled when id is null or 0.
+ * @returns TanStack Query result with video list and the best trailer.
+ */
 export function useMovieVideos(id: number | null) {
   return useQuery({
     queryKey: queryKeys.movieVideos(id ?? 0),

@@ -21,6 +21,9 @@ function getBackdropOgUrl(path: string | null): string {
   return `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.lg}${path}`
 }
 
+/**
+ * @description Updates `document.title` and Open Graph meta tags whenever the provided movie changes. Resets to defaults when movie is undefined.
+ */
 export function useMetaTags(movie?: MovieDetail) {
   useEffect(() => {
     if (movie) {

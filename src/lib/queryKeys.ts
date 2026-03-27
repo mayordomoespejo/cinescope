@@ -1,6 +1,10 @@
 import type { DiscoverParams } from '@/features/movies/types/movie'
 import type { TVDiscoverParams } from '@/features/tv/types/tv'
 
+/**
+ * @description Centralised TanStack Query key factory for all TMDB and TV-related queries.
+ * Using this object ensures consistent cache keys across queries and prefetch calls.
+ */
 export const queryKeys = {
   trending: (timeWindow: 'day' | 'week' = 'day') => ['trending', timeWindow] as const,
 

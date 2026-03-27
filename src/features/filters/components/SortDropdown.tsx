@@ -2,6 +2,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { SORT_OPTIONS, type SortOption } from '@/lib/config'
 import styles from './SortDropdown.module.css'
 
+/** Props for the SortDropdown component. */
 interface SortDropdownProps {
   value: SortOption
   onChange: (value: SortOption) => void
@@ -15,6 +16,10 @@ const SORT_LABELS: Record<SortOption, string> = {
   'revenue.desc': 'Highest Revenue',
 }
 
+/**
+ * @description Radix UI dropdown for selecting a sort order (popularity, rating, release date, revenue).
+ * @param props - Component props
+ */
 export default function SortDropdown({ value, onChange }: SortDropdownProps) {
   return (
     <DropdownMenu.Root>

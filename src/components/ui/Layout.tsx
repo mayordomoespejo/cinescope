@@ -6,6 +6,9 @@ import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail'
 import { useMetaTags } from '@/features/movies/hooks/useMetaTags'
 import styles from './Layout.module.css'
 
+/**
+ * @description Root layout component. Manages theme (dark/light), renders the Navbar, the outlet for child routes, and the global MovieModal driven by the `?movieId` URL param.
+ */
 export default function Layout() {
   const [searchParams, setSearchParams] = useSearchParams()
   const movieId = searchParams.get('movieId')

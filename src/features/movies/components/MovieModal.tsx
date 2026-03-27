@@ -18,11 +18,16 @@ import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import styles from './MovieModal.module.css'
 
+/** Props for the MovieModal component. */
 interface MovieModalProps {
   movieId: number
   onClose: () => void
 }
 
+/**
+ * @description Accessible modal dialog showing full movie details: backdrop, poster, trailer, genres, overview, cast actions, and favorites/watchlist toggles.
+ * @param props - Component props
+ */
 export default function MovieModal({ movieId, onClose }: MovieModalProps) {
   const { data: movie, isLoading: loadingDetail, error } = useMovieDetail(movieId)
   const { data: videos, isLoading: loadingVideos } = useMovieVideos(movieId)

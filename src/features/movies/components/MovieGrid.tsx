@@ -6,6 +6,7 @@ import { SkeletonGrid } from './SkeletonCard'
 import styles from './MovieGrid.module.css'
 import Button from '@/components/ui/Button'
 
+/** Props for the MovieGrid component. */
 interface MovieGridProps {
   movies: Movie[]
   isLoading: boolean
@@ -34,6 +35,10 @@ const item = {
   exit: { opacity: 0, transition: { duration: 0.15 } },
 }
 
+/**
+ * @description Animated responsive grid of MovieCard items with loading skeletons, error state, empty state, and a "load more" button.
+ * @param props - Component props
+ */
 export default function MovieGrid({
   movies,
   isLoading,

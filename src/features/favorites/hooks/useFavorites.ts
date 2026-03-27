@@ -17,6 +17,10 @@ import {
   isWatched,
 } from '../store'
 
+/**
+ * @description React hook for managing favorites, watchlist, and watched state from localStorage. Reacts to cross-component changes via a custom window event.
+ * @returns Reactive state arrays and toggle/reorder action callbacks.
+ */
 export function useFavorites() {
   const [favorites, setFavorites] = useState<Movie[]>(getFavorites)
   const [watchlist, setWatchlist] = useState<Movie[]>(getWatchlist)
