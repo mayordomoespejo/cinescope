@@ -17,8 +17,13 @@ import {
 import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import MovieCard from '@/features/movies/components/MovieCard'
-import type { Movie } from '@/features/movies/types/movie'
+import type { Movie, MovieDetail } from '@/features/movies/types/movie'
 import styles from './MovieDetailPage.module.css'
+
+/** Map a MovieDetail to the shape expected by useFavorites (which uses Movie type). */
+function movieDetailAsBase(movie: MovieDetail): Movie {
+  return { ...movie, genre_ids: movie.genres.map(g => g.id) } as Movie
+}
 
 /**
  * Full-page movie detail view, accessible at /movie/:id.
@@ -51,7 +56,7 @@ export default function MovieDetailPage() {
   const inWatchlist = movie ? isInWatchlist(movie.id) : false
   const watched = movie ? isWatched(movie.id) : false
 
-  const movieAsBase = movie ? ({ ...movie, genre_ids: movie.genres.map(g => g.id) } as Movie) : null
+  const movieAsBase = movie ? movieDetailAsBase(movie) : null
 
   if (error) {
     return (
