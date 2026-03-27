@@ -17,7 +17,7 @@
 /* Rating badge */
 .rating {
   position: absolute;
-  top: calc(var(--space-2) + 6px);
+  top: calc(var(--space-2) + 3px);
   left: var(--space-2);
   z-index: var(--z-raised);
   background: rgba(0, 0, 0, 0.75);
@@ -43,12 +43,12 @@
   top: var(--space-2);
   right: var(--space-2);
   z-index: var(--z-raised);
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
