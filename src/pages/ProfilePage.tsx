@@ -36,7 +36,8 @@ function getInitial(displayName: string | null, email: string | null): string {
  * Extracts the title from a watched item's media_data, handling
  * Movie (has `title`) vs TVShow (has `name`).
  */
-function getMediaTitle(mediaData: Movie | TVShow): string {
+function getMediaTitle(mediaData: Movie | TVShow | undefined): string {
+  if (!mediaData) return 'Unknown'
   if ('title' in mediaData) return mediaData.title
   return mediaData.name
 }
@@ -44,8 +45,8 @@ function getMediaTitle(mediaData: Movie | TVShow): string {
 /**
  * Extracts the poster_path from a watched item's media_data.
  */
-function getMediaPosterPath(mediaData: Movie | TVShow): string | null {
-  return mediaData.poster_path
+function getMediaPosterPath(mediaData: Movie | TVShow | undefined): string | null {
+  return mediaData?.poster_path ?? null
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
