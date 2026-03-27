@@ -49,6 +49,7 @@
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
   font-size: 0.75rem;
+  line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
