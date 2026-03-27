@@ -4,6 +4,7 @@ import styles from './Button.module.css'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'icon'
 type Size = 'sm' | 'md' | 'lg'
 
+/** Props for the Button component, extending native button attributes. */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
@@ -11,6 +12,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean
 }
 
+/**
+ * @description Reusable button component supporting multiple variants, sizes, and a loading state with spinner.
+ * @param props - Component props
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

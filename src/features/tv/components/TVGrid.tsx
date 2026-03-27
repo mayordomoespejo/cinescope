@@ -6,6 +6,7 @@ import { SkeletonGrid } from '@/features/movies/components/SkeletonCard'
 import styles from './TVGrid.module.css'
 import Button from '@/components/ui/Button'
 
+/** Props for the TVGrid component. */
 interface TVGridProps {
   shows: TVShow[]
   isLoading: boolean
@@ -32,6 +33,10 @@ const item = {
   exit: { opacity: 0, transition: { duration: 0.15 } },
 }
 
+/**
+ * @description Animated responsive grid of TVCard items with loading skeletons, error state, empty state, and a "load more" button.
+ * @param props - Component props
+ */
 export default function TVGrid({
   shows,
   isLoading,

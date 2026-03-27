@@ -3,6 +3,7 @@ import type { Movie } from '../types/movie'
 import { getPosterUrl, formatRating, getReleaseYear } from '@/lib/helpers'
 import styles from './MovieCard.module.css'
 
+/** Props for the MovieCard component. */
 interface MovieCardProps {
   movie: Movie
   onOpen: (id: number) => void
@@ -12,6 +13,10 @@ interface MovieCardProps {
   dragHandle?: React.ReactNode
 }
 
+/**
+ * @description Displays a movie poster card with rating badge, favorite toggle, and hover overlay. Triggers prefetch on hover/focus.
+ * @param props - Component props
+ */
 export default function MovieCard({
   movie,
   onOpen,

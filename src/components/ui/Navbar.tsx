@@ -12,11 +12,16 @@ import {
 } from '@/features/favorites/store'
 import { useAuth } from '@/features/auth/useAuth'
 
+/** Props for the Navbar component. */
 interface NavbarProps {
   theme: 'dark' | 'light'
   onThemeToggle: () => void
 }
 
+/**
+ * @description Top navigation bar with logo, nav links, debounced search with history dropdown, theme toggle, and user auth menu.
+ * @param props - Component props
+ */
 export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
   const navigate = useNavigate()
   const { pathname } = useLocation()

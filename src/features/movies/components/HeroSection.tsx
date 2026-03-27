@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import styles from './HeroSection.module.css'
 
+/** Props for the HeroSection component. */
 interface HeroSectionProps {
   movie: Movie | undefined
   isLoading: boolean
@@ -14,6 +15,10 @@ interface HeroSectionProps {
   onToggleFavorite?: (movie: Movie) => void
 }
 
+/**
+ * @description Full-width hero banner displaying a featured movie with backdrop image, metadata, and action buttons.
+ * @param props - Component props
+ */
 export default function HeroSection({
   movie,
   isLoading,

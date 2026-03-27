@@ -14,6 +14,7 @@ const LANGUAGES = [
   { value: 'it', label: 'Italian' },
 ]
 
+/** Props for the AdvancedFilters component. */
 interface AdvancedFiltersProps {
   minRating: number
   onMinRatingChange: (value: number) => void
@@ -23,6 +24,10 @@ interface AdvancedFiltersProps {
   onLanguageChange: (value: string) => void
 }
 
+/**
+ * @description Panel with advanced filtering controls: minimum rating slider, release year selector, and language selector.
+ * @param props - Component props
+ */
 export default function AdvancedFilters({
   minRating,
   onMinRatingChange,

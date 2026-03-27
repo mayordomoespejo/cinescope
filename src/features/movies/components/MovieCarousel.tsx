@@ -5,6 +5,7 @@ import MovieCard from './MovieCard'
 import { SkeletonGrid } from './SkeletonCard'
 import styles from './MovieCarousel.module.css'
 
+/** Props for the MovieCarousel component. */
 interface MovieCarouselProps {
   title: string
   movies: Movie[]
@@ -16,6 +17,10 @@ interface MovieCarouselProps {
   viewAllHref?: string
 }
 
+/**
+ * @description Horizontally scrollable carousel of MovieCard items with animated arrow navigation and skeleton loaders.
+ * @param props - Component props
+ */
 export default function MovieCarousel({
   title,
   movies,
