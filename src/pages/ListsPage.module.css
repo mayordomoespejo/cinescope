@@ -1,88 +1,98 @@
 /* ── Page shell ──────────────────────────────────────────────────── */
 .page {
   min-height: calc(100vh - var(--navbar-height));
-  padding: var(--space-10) var(--content-padding);
+  padding: var(--space-8) var(--content-padding);
   max-width: var(--max-width);
   margin: 0 auto;
 }
 
-/* ── Header ─────────────────────────────────────────────────────── */
-.header {
+/* ── Two-panel layout ────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-6);
+  min-height: 600px;
+  align-items: start;
+}
+
+/* ── Left panel ──────────────────────────────────────────────────── */
+.leftPanel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--space-8));
+}
+
+.leftPanelHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  margin-bottom: var(--space-8);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.heading {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+.panelTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.panelTitleCount {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
 }
 
 .newListBtn {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-5);
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
   background: var(--color-accent);
   color: #fff;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: background var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .newListBtn:hover {
   background: var(--color-accent-hover);
 }
 
-/* ── Create form ─────────────────────────────────────────────────── */
+/* ── Inline create form ──────────────────────────────────────────── */
 .createForm {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  margin-bottom: var(--space-8);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-.createFormTitle {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
+  gap: var(--space-3);
+  background: var(--color-surface-raised);
 }
 
 .input {
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-surface-raised);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-family: var(--font-family);
   transition: border-color var(--transition-fast);
   outline: none;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -95,17 +105,17 @@
 
 .createFormActions {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-2);
   justify-content: flex-end;
 }
 
 .cancelBtn {
-  padding: var(--space-2) var(--space-5);
+  padding: var(--space-1) var(--space-3);
   background: transparent;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   cursor: pointer;
   transition:
     background var(--transition-fast),
@@ -113,17 +123,17 @@
 }
 
 .cancelBtn:hover {
-  background: var(--color-surface-raised);
+  background: var(--color-surface-overlay);
   color: var(--color-text-primary);
 }
 
 .submitBtn {
-  padding: var(--space-2) var(--space-5);
+  padding: var(--space-1) var(--space-3);
   background: var(--color-accent);
   border: none;
   border-radius: var(--radius-md);
   color: #fff;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: background var(--transition-fast);
@@ -138,90 +148,95 @@
   cursor: not-allowed;
 }
 
-/* ── Grid ────────────────────────────────────────────────────────── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-6);
+/* ── List of lists ───────────────────────────────────────────────── */
+.listItems {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2) 0;
+  overflow-y: auto;
+  max-height: 70vh;
 }
 
-/* ── List card ───────────────────────────────────────────────────── */
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
+.listItem {
+  position: relative;
+}
+
+.listItemBtn {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-5);
+  background: transparent;
+  border: none;
   cursor: pointer;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
   display: flex;
   flex-direction: column;
+  gap: var(--space-1);
+  transition: background var(--transition-fast);
 }
 
-.card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-/* Poster thumbnails strip */
-.thumbnails {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  height: 100px;
+.listItemBtn:hover {
   background: var(--color-surface-raised);
 }
 
-.thumb {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.listItemBtn.selected {
+  background: var(--color-accent-dim);
 }
 
-.thumbPlaceholder {
-  width: 100%;
-  height: 100%;
-  background: var(--color-surface-overlay);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xl);
+.listItemBtn.selected .listItemName {
+  color: var(--color-accent);
 }
 
-/* Card body */
-.cardBody {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  flex: 1;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.cardName {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
+.listItemName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
-  line-height: var(--line-height-tight);
-  flex: 1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  max-width: 160px;
 }
 
-.deleteBtn {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+.listItemCount {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ── Rename inline input ─────────────────────────────────────────── */
+.renameInput {
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  outline: none;
+  box-sizing: border-box;
+  max-width: 160px;
+}
+
+/* ── List item actions ───────────────────────────────────────────── */
+.listItemActions {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.listItem:hover .listItemActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  width: 24px;
+  height: 24px;
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
@@ -230,62 +245,218 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   transition:
     color var(--transition-fast),
     background var(--transition-fast);
 }
 
-.deleteBtn:hover {
+.actionBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-overlay);
+}
+
+.actionBtn.danger:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
 }
 
-.cardDescription {
+/* ── Inline delete confirm ───────────────────────────────────────── */
+.deleteConfirm {
+  padding: var(--space-2) var(--space-5);
+  background: rgba(239, 68, 68, 0.05);
+  border-top: 1px solid rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.deleteConfirmText {
+  font-size: var(--font-size-xs);
+  color: #ef4444;
+  font-weight: var(--font-weight-medium);
+}
+
+.deleteConfirmActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.confirmYes {
+  padding: 2px var(--space-3);
+  background: #ef4444;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.confirmYes:hover {
+  background: #dc2626;
+}
+
+.confirmNo {
+  padding: 2px var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.confirmNo:hover {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+/* ── Left panel empty ────────────────────────────────────────────── */
+.leftEmpty {
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+/* ── Right panel ─────────────────────────────────────────────────── */
+.rightPanel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.rightPanelHeader {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rightPanelTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.rightPanelTitleCount {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+}
+
+.rightPanelDescription {
+  margin-top: var(--space-2);
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  line-height: var(--line-height-snug);
+  line-height: var(--line-height-normal);
+}
+
+/* ── Items grid ──────────────────────────────────────────────────── */
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+/* ── Item card ───────────────────────────────────────────────────── */
+.itemCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.posterWrap {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 2/3;
+  background: var(--color-surface-raised);
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-base);
+}
+
+.itemCard:hover .poster {
+  transform: scale(1.04);
+}
+
+.removeBtn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.75);
+  border: none;
+  border-radius: var(--radius-full);
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.itemCard:hover .removeBtn {
+  opacity: 1;
+}
+
+.removeBtn:hover {
+  background: #ef4444;
+}
+
+.itemTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-.cardMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-1);
-}
-
-.cardBadge {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  background: var(--color-accent-dim);
-  color: var(--color-accent);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-}
-
-.cardDate {
+.itemYear {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
 }
 
-/* ── Empty state ─────────────────────────────────────────────────── */
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-20) var(--space-8);
+/* ── Right panel empty / placeholder ────────────────────────────── */
+.rightEmpty {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
+  padding: var(--space-20) var(--space-8);
+  text-align: center;
 }
 
 .emptyIcon {
   font-size: 3rem;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 .emptyTitle {
@@ -295,84 +466,37 @@
 }
 
 .emptySubtitle {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  max-width: 280px;
 }
 
-/* ── Loading ─────────────────────────────────────────────────────── */
-.loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-16);
-  color: var(--color-text-muted);
-}
-
-/* ── Confirm overlay ─────────────────────────────────────────────── */
-.confirmOverlay {
-  position: fixed;
-  inset: 0;
-  background: var(--color-overlay-strong);
-  z-index: var(--z-modal);
+/* ── Loading spinner ─────────────────────────────────────────────── */
+.spinnerWrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-4);
-}
-
-.confirmDialog {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  box-shadow: var(--shadow-xl);
-}
-
-.confirmTitle {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-.confirmText {
+  padding: var(--space-12);
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-normal);
 }
 
-.confirmActions {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: flex-end;
-}
-
-.confirmDeleteBtn {
-  padding: var(--space-2) var(--space-5);
-  background: #ef4444;
-  border: none;
-  border-radius: var(--radius-md);
-  color: #fff;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.confirmDeleteBtn:hover {
-  background: #dc2626;
-}
-
-/* ── Responsive ──────────────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .heading {
-    font-size: var(--font-size-2xl);
+/* ── Responsive — stack on mobile ───────────────────────────────── */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
+  .leftPanel {
+    position: static;
+  }
+
+  .listItems {
+    max-height: 40vh;
+  }
+
+  .itemsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-3);
   }
 }
