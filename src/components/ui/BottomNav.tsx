@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router-dom'
 import styles from './BottomNav.module.css'
 
 const tabs = [
@@ -44,35 +44,45 @@ const tabs = [
   },
 ]
 
-function useActiveTab(to: string): boolean {
+function useActiveIndex(): number {
   const location = useLocation()
-  if (to === '/') {
-    return location.pathname === '/' || location.pathname.startsWith('/movie')
-  }
-  return location.pathname.startsWith(to)
-}
+  const pathname = location.pathname
 
-function TabItem({ label, to, icon }: { label: string; to: string; icon: React.ReactNode }) {
-  const active = useActiveTab(to)
-
-  return (
-    <NavLink
-      to={to}
-      className={`${styles.item} ${active ? styles.itemActive : ''}`}
-      aria-label={label}
-      end={to === '/'}
-    >
-      {icon}
-    </NavLink>
-  )
+  if (pathname === '/' || pathname.startsWith('/movie')) return 0
+  if (pathname.startsWith('/tv')) return 1
+  if (pathname.startsWith('/favorites')) return 2
+  if (pathname.startsWith('/profile')) return 3
+  return 0
 }
 
 export default function BottomNav() {
+  const activeIndex = useActiveIndex()
+
   return (
     <nav className={styles.bar} aria-label="Mobile navigation">
-      {tabs.map(tab => (
-        <TabItem key={tab.to} label={tab.label} to={tab.to} icon={tab.icon} />
-      ))}
+      {/* Sliding circle indicator — stays inside the bar */}
+      <div
+        className={styles.indicator}
+        style={{ left: `calc(${activeIndex} * 25% + 12.5%)` }}
+        aria-hidden="true"
+      />
+
+      {tabs.map((tab, index) => {
+        const isActive = index === activeIndex
+        return (
+          <NavLink
+            key={tab.to}
+            to={tab.to}
+            className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+            aria-label={tab.label}
+            end={tab.to === '/'}
+          >
+            <span className={isActive ? styles.iconActive : styles.iconInactive}>
+              {tab.icon}
+            </span>
+          </NavLink>
+        )
+      })}
     </nav>
   )
 }

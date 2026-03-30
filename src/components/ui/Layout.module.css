@@ -12,6 +12,6 @@
 
 @media (max-width: 640px) {
   .main {
-    padding-bottom: 96px;
+    padding-bottom: var(--navbar-height);
   }
 }

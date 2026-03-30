@@ -99,7 +99,8 @@ export async function deleteAccount(token: string): Promise<void> {
     headers: { Authorization: `Bearer ${token}` },
   })
 
-  // 2. Delete Firebase account
+  // 2. Re-authenticate to satisfy Firebase's recent-login requirement, then delete
+  await reauthenticateWithPopup(currentUser, googleProvider)
   await deleteUser(currentUser)
 
   // 3. Clear localStorage

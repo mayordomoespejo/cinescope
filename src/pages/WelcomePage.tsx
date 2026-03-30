@@ -2,10 +2,10 @@ import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import styles from './WelcomePage.module.css'
 
-/** Number of film-strip frames rendered above and below the logo. */
+/** Number of film-strip frames rendered in each horizontal strip. */
 const FRAME_COUNT = 14
 
-/** Array of frame indices used to render the film strip decoration. */
+/** Array of frame indices used to render each film strip. */
 const FRAMES = Array.from({ length: FRAME_COUNT }, (_, i) => i)
 
 /**
@@ -24,10 +24,10 @@ export default function WelcomePage() {
   return (
     <main className={styles.page} aria-label="Bienvenida a Cinescope">
       <div className={styles.content}>
-        {/* Film strip — top */}
+        {/* Top film strip */}
         <div className={styles.filmStrip} aria-hidden="true">
           {FRAMES.map(i => (
-            <div key={i} className={styles.frame} />
+            <div key={i} className={styles.frame} style={{ animationDelay: `${i * 0.12}s` }} />
           ))}
         </div>
 
@@ -48,10 +48,10 @@ export default function WelcomePage() {
           </button>
         </div>
 
-        {/* Film strip — bottom */}
+        {/* Bottom film strip */}
         <div className={`${styles.filmStrip} ${styles.bottom}`} aria-hidden="true">
           {FRAMES.map(i => (
-            <div key={i} className={styles.frame} />
+            <div key={i} className={styles.frame} style={{ animationDelay: `${i * 0.12}s` }} />
           ))}
         </div>
       </div>
