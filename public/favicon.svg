@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- 3 wide perforations top -->
+  <rect x="2"  y="1.5" width="8" height="4" rx="1" fill="#111111"/>
+  <rect x="12" y="1.5" width="8" height="4" rx="1" fill="#111111"/>
+  <rect x="22" y="1.5" width="8" height="4" rx="1" fill="#111111"/>
+
+  <!-- CS fills the body — large, tight -->
+  <text x="16" y="24" text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Helvetica Neue', sans-serif"
+        font-weight="900" font-size="20" letter-spacing="-1">
+    <tspan fill="#111111">C</tspan><tspan fill="#e8a838">S</tspan>
+  </text>
+
+  <!-- 3 wide perforations bottom -->
+  <rect x="2"  y="26.5" width="8" height="4" rx="1" fill="#111111"/>
+  <rect x="12" y="26.5" width="8" height="4" rx="1" fill="#111111"/>
+  <rect x="22" y="26.5" width="8" height="4" rx="1" fill="#111111"/>
+</svg>
