@@ -15,6 +15,8 @@ interface TVGridProps {
   onPrefetch?: (id: number) => void
   onLoadMore?: () => void
   emptyMessage?: string
+  favorites?: number[]
+  onToggleFavorite?: (show: TVShow) => void
 }
 
 /**
@@ -32,6 +34,8 @@ export default function TVGrid({
   onPrefetch,
   onLoadMore,
   emptyMessage,
+  favorites,
+  onToggleFavorite,
 }: TVGridProps) {
   return (
     <MediaGrid
@@ -49,7 +53,13 @@ export default function TVGrid({
     >
       {shows.map(show => (
         <motion.div key={show.id} variants={mediaGridItem} exit="exit" role="listitem">
-          <TVCard show={show} onOpen={onOpenShow} onPrefetch={onPrefetch} />
+          <TVCard
+            show={show}
+            onOpen={onOpenShow}
+            onPrefetch={onPrefetch}
+            isFavorite={favorites?.includes(show.id) ?? false}
+            onToggleFavorite={onToggleFavorite}
+          />
         </motion.div>
       ))}
     </MediaGrid>

@@ -13,6 +13,8 @@ interface TVCarouselProps {
   /** @deprecated Navigation is handled internally by TVCard. This prop is kept for API compatibility. */
   onOpenShow?: (id: number) => void
   onPrefetch?: (id: number) => void
+  favorites?: number[]
+  onToggleFavorite?: (show: TVShow) => void
 }
 
 /**
@@ -25,6 +27,8 @@ export default function TVCarousel({
   isLoading,
   onOpenShow = () => {},
   onPrefetch,
+  favorites,
+  onToggleFavorite,
 }: TVCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [atStart, setAtStart] = useState(true)
@@ -99,7 +103,13 @@ export default function TVCarousel({
                 transition={{ delay: i * 0.04, duration: 0.3 }}
                 onAnimationComplete={i === 0 ? updateBounds : undefined}
               >
-                <TVCard show={show} onOpen={onOpenShow} onPrefetch={onPrefetch} />
+                <TVCard
+                  show={show}
+                  onOpen={onOpenShow}
+                  onPrefetch={onPrefetch}
+                  isFavorite={favorites?.includes(show.id) ?? false}
+                  onToggleFavorite={onToggleFavorite}
+                />
               </motion.div>
             ))
           )}

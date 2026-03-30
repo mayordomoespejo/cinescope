@@ -8,7 +8,7 @@
 .filterItem {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
   min-width: 160px;
 }
 
@@ -72,10 +72,14 @@
   box-shadow: 0 0 0 1px var(--color-accent);
 }
 
-/* Select — matches SortDropdown trigger visually */
-.select {
+/* Radix Select trigger — matches SortDropdown trigger exactly */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
   height: 36px;
-  padding: 0 var(--space-8) 0 var(--space-4);
+  padding: 0 var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
@@ -84,31 +88,113 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--space-3) center;
+  white-space: nowrap;
+  width: 100%;
   transition:
-    background-color var(--transition-fast),
+    background var(--transition-fast),
     color var(--transition-fast),
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);
-  width: 100%;
 }
 
-.select:hover {
-  background-color: var(--color-surface-raised);
+.trigger:hover {
+  background: var(--color-surface-raised);
   color: var(--color-text-primary);
   border-color: var(--color-border-strong);
 }
 
-.select:focus,
-.select:focus-visible {
-  border-color: var(--color-accent);
-  color: var(--color-text-primary);
+.trigger:focus,
+.trigger:focus-visible {
   outline: none;
+  box-shadow: none;
+  border-radius: var(--radius-md);
+}
+
+.trigger[data-state='open'] {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* Radix Select dropdown content — matches SortDropdown content */
+.selectContent {
+  min-width: var(--radix-select-trigger-width);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) 0;
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  max-height: 300px;
+  overflow: hidden;
+  animation: slideDown 0.15s ease;
+}
+
+.selectContent:focus,
+.selectContent:focus-visible {
+  outline: none;
+  border-radius: var(--radius-md);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Radix Select item — matches SortDropdown item */
+.selectItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  outline: none;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.selectItem:focus,
+.selectItem:focus-visible {
+  outline: none;
+  border-radius: 0;
+}
+
+.selectItem:hover,
+.selectItem[data-highlighted] {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+.selectItem[data-state='checked'] {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.checkmark {
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.selectItem:not([data-state='checked']) .checkmark {
+  visibility: hidden;
 }
 
 @media (max-width: 640px) {

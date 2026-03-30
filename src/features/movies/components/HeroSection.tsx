@@ -11,8 +11,6 @@ interface HeroSectionProps {
   movie: Movie | undefined
   isLoading: boolean
   onOpenMovie: (id: number) => void
-  isFavorite?: boolean
-  onToggleFavorite?: (movie: Movie) => void
 }
 
 /**
@@ -23,8 +21,6 @@ export default function HeroSection({
   movie,
   isLoading,
   onOpenMovie,
-  isFavorite = false,
-  onToggleFavorite,
 }: HeroSectionProps) {
   const [imgLoaded, setImgLoaded] = useState(false)
 
@@ -98,24 +94,6 @@ export default function HeroSection({
             >
               <span aria-hidden="true">▶</span> View Details
             </Button>
-            {onToggleFavorite && (
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => onToggleFavorite(movie)}
-                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                aria-pressed={isFavorite}
-              >
-                <span style={{ display: 'inline-grid' }}>
-                  <span style={{ gridArea: '1/1', visibility: isFavorite ? 'visible' : 'hidden' }}>
-                    ❤️ Favorited
-                  </span>
-                  <span style={{ gridArea: '1/1', visibility: isFavorite ? 'hidden' : 'visible' }}>
-                    🤍 Favorite
-                  </span>
-                </span>
-              </Button>
-            )}
           </div>
         </motion.div>
       </div>

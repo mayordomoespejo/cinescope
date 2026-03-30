@@ -1,20 +1,15 @@
-import { Outlet, useSearchParams } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import Navbar from './Navbar'
-import MovieModal from '@/features/movies/components/MovieModal'
-import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail'
-import { useMetaTags } from '@/features/movies/hooks/useMetaTags'
+import BottomNav from './BottomNav'
+import ScrollToTop from './ScrollToTop'
 import styles from './Layout.module.css'
 
 /**
- * @description Root layout component. Manages theme (dark/light), renders the Navbar, the outlet for child routes, and the global MovieModal driven by the `?movieId` URL param.
+ * @description Root layout component. Manages theme (dark/light), renders the Navbar, and the outlet for child routes.
  */
 export default function Layout() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const movieId = searchParams.get('movieId')
-
-  const { data: movieDetail } = useMovieDetail(movieId ? Number(movieId) : null)
-  useMetaTags(movieDetail)
+  const navigate = useNavigate()
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const stored = localStorage.getItem('cinescope:theme')
@@ -51,26 +46,18 @@ export default function Layout() {
     })
   }
 
-  const handleModalClose = () => {
-    const next = new URLSearchParams(searchParams)
-    next.delete('movieId')
-    setSearchParams(next, { replace: true })
-  }
-
   const handleOpenMovie = (id: number) => {
-    const next = new URLSearchParams(searchParams)
-    next.set('movieId', String(id))
-    setSearchParams(next, { replace: true })
+    navigate(`/movie/${id}`)
   }
 
   return (
     <div className={styles.root}>
+      <ScrollToTop />
       <Navbar theme={theme} onThemeToggle={handleThemeToggle} />
       <main className={styles.main} id="main-content">
         <Outlet context={{ onOpenMovie: handleOpenMovie }} />
       </main>
-
-      {movieId && <MovieModal key={movieId} movieId={Number(movieId)} onClose={handleModalClose} />}
+      <BottomNav />
     </div>
   )
 }

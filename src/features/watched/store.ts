@@ -1,6 +1,7 @@
-import { supabase } from '@/lib/supabaseClient'
 import type { Movie } from '@/features/movies/types/movie'
 import type { TVShow } from '@/features/tv/types/tv'
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
 
 /** Media type discriminator */
 export type MediaType = 'movie' | 'tv'
@@ -13,141 +14,78 @@ export interface WatchedItem {
   watched_at: string
 }
 
-const WATCHED_KEY = 'cinescope:watched'
-
-// ── Storage helpers ──────────────────────────────────────────────────
-
-function readStorage<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? (JSON.parse(raw) as T) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function writeStorage<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    /* storage full – ignore */
-  }
-}
-
-function notifyChange(): void {
-  window.dispatchEvent(new Event('cinescope:watched-change'))
-}
-
-// ── Supabase sync ────────────────────────────────────────────────────
+// ── Edge Function sync ────────────────────────────────────────────────
 
 /**
- * Upserts a single watched item to Supabase.
- * @param userId - Firebase UID of the authenticated user.
+ * Upserts a single watched item via the sync-watched Edge Function.
+ * @param token - Firebase ID token of the authenticated user.
  * @param item - The watched item to persist.
  */
-async function upsertToSupabase(userId: string, item: WatchedItem): Promise<void> {
-  await supabase.from('cinescope_watched').upsert(
-    {
-      user_id: userId,
+export async function upsertToSupabase(token: string, item: WatchedItem): Promise<void> {
+  await fetch(`${SUPABASE_URL}/functions/v1/sync-watched`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
       media_id: item.media_id,
       media_type: item.media_type,
       media_data: item.media_data,
       watched_at: item.watched_at,
-    },
-    { onConflict: 'user_id,media_id,media_type' }
-  )
+    }),
+  })
 }
 
 /**
- * Removes a watched item from Supabase.
- * @param userId - Firebase UID of the authenticated user.
+ * Removes a watched item via the sync-watched Edge Function.
+ * @param token - Firebase ID token of the authenticated user.
  * @param mediaId - TMDB media ID.
  * @param mediaType - Media type ('movie' or 'tv').
  */
-async function deleteFromSupabase(
-  userId: string,
+export async function deleteFromSupabase(
+  token: string,
   mediaId: number,
   mediaType: MediaType
 ): Promise<void> {
-  await supabase
-    .from('cinescope_watched')
-    .delete()
-    .eq('user_id', userId)
-    .eq('media_id', mediaId)
-    .eq('media_type', mediaType)
-}
-
-// ── Public API ───────────────────────────────────────────────────────
-
-/**
- * Returns the current watched list from localStorage.
- */
-export function getWatchedList(): WatchedItem[] {
-  return readStorage<WatchedItem[]>(WATCHED_KEY, [])
-}
-
-/**
- * Adds or updates an item in the watched list (upsert by media_id + media_type).
- * Persists to Supabase if a userId is provided.
- * @param userId - Firebase UID of the authenticated user.
- * @param item - The media item to mark as watched (without watched_at; it is set here).
- */
-export function addWatched(userId: string, item: Omit<WatchedItem, 'watched_at'>): void {
-  const list = getWatchedList()
-  const idx = list.findIndex(w => w.media_id === item.media_id && w.media_type === item.media_type)
-  const entry: WatchedItem = { ...item, watched_at: new Date().toISOString() }
-  const updated = idx >= 0 ? list.map((w, i) => (i === idx ? entry : w)) : [entry, ...list]
-  writeStorage(WATCHED_KEY, updated)
-  notifyChange()
-  void upsertToSupabase(userId, entry)
-}
-
-/**
- * Removes an item from the watched list.
- * Persists the removal to Supabase if a userId is provided.
- * @param userId - Firebase UID of the authenticated user.
- * @param mediaId - TMDB media ID to remove.
- * @param mediaType - Media type ('movie' or 'tv').
- */
-export function removeWatched(userId: string, mediaId: number, mediaType: MediaType): void {
-  const updated = getWatchedList().filter(
-    w => !(w.media_id === mediaId && w.media_type === mediaType)
+  await fetch(
+    `${SUPABASE_URL}/functions/v1/sync-watched?media_id=${mediaId}&media_type=${mediaType}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   )
-  writeStorage(WATCHED_KEY, updated)
-  notifyChange()
-  void deleteFromSupabase(userId, mediaId, mediaType)
 }
 
 /**
- * Returns true if the given media item is in the watched list.
- * Reads from localStorage (no network call).
- * @param mediaId - TMDB media ID.
- * @param mediaType - Media type ('movie' or 'tv').
- */
-export function isWatched(mediaId: number, mediaType: MediaType): boolean {
-  return getWatchedList().some(w => w.media_id === mediaId && w.media_type === mediaType)
-}
-
-/**
- * Loads watched items from Supabase and writes them to localStorage.
+ * Loads watched items from Supabase via Edge Function and returns them as an array.
  * Should be called once after the user authenticates.
- * @param userId - Firebase UID of the authenticated user.
+ * @param token - Firebase ID token of the authenticated user.
  */
-export async function hydrateWatched(userId: string): Promise<void> {
-  const { data } = await supabase
-    .from('cinescope_watched')
-    .select('media_id, media_type, media_data, watched_at')
-    .eq('user_id', userId)
-    .order('watched_at', { ascending: false })
+export async function hydrateWatched(token: string): Promise<WatchedItem[]> {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-watched`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
 
-  if (data) {
-    const items: WatchedItem[] = data.map(row => ({
-      media_id: row.media_id as number,
-      media_type: row.media_type as MediaType,
-      media_data: row.media_data as Movie | TVShow,
-      watched_at: row.watched_at as string,
-    }))
-    writeStorage(WATCHED_KEY, items)
-    notifyChange()
+  if (!res.ok) return []
+
+  const data = (await res.json()) as {
+    items?: Array<{
+      media_id: number
+      media_type: MediaType
+      media_data: Movie | TVShow
+      watched_at: string
+    }>
   }
+
+  if (!data.items?.length) return []
+
+  return data.items.map(row => ({
+    media_id: row.media_id,
+    media_type: row.media_type,
+    media_data: row.media_data,
+    watched_at: row.watched_at,
+  }))
 }

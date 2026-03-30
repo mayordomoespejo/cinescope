@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
+import { NavLink, Link, useNavigate, useSearchParams } from 'react-router-dom'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
+import iconBtnStyles from './IconButton.module.css'
+import IconButton from './IconButton'
 import { DEBOUNCE_DELAY } from '@/lib/config'
 import {
   addSearchQuery,
   getSearchHistory,
   clearSearchHistory,
-  hydrateFromSupabase,
 } from '@/features/favorites/store'
 import { useAuth } from '@/features/auth/useAuth'
 
@@ -24,7 +25,7 @@ interface NavbarProps {
  */
 export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState(searchParams.get('q') ?? '')
   const [focused, setFocused] = useState(false)
@@ -36,16 +37,16 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
 
   const { user, loading: authLoading, signOut } = useAuth()
 
-  // Hydrate favorites/watchlist from Supabase when user logs in
-  const prevUserIdRef = useRef<string | null>(null)
+  // Detect mobile to show shorter search placeholder
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 640px)').matches : false
+  )
   useEffect(() => {
-    if (user && user.uid !== prevUserIdRef.current) {
-      prevUserIdRef.current = user.uid
-      void hydrateFromSupabase(user.uid)
-    } else if (!user) {
-      prevUserIdRef.current = null
-    }
-  }, [user])
+    const mq = window.matchMedia('(max-width: 640px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -156,14 +157,6 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
           >
             TV Shows
           </NavLink>
-          <NavLink
-            to="/favorites"
-            className={({ isActive }) =>
-              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-            }
-          >
-            Favorites
-          </NavLink>
         </nav>
 
         {/* Search */}
@@ -191,7 +184,7 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
               onChange={handleChange}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              placeholder={'Search movies… ("/" to focus)'}
+              placeholder={isMobile ? 'Search movies…' : 'Search movies… ("/" to focus)'}
               className={styles.searchInput}
               aria-label="Search movies"
               autoComplete="off"
@@ -250,47 +243,63 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Mobile nav shortcut: home↔favorites toggle */}
-        {pathname === '/favorites' ? (
-          <NavLink to="/" className={styles.mobileFavBtn} aria-label="Home">
-            🏠
-          </NavLink>
-        ) : (
+
+        {/* Right controls — tighter gap between icon buttons */}
+        <div className={styles.rightControls}>
+          {/* Favorites */}
           <NavLink
             to="/favorites"
-            className={({ isActive }) =>
-              `${styles.mobileFavBtn} ${isActive ? styles.mobileFavActive : ''}`
-            }
             aria-label="Favorites"
+            className={({ isActive }) =>
+              [
+                iconBtnStyles.iconBtn,
+                iconBtnStyles.iconBtnSm,
+                isActive ? iconBtnStyles.iconBtnActive : '',
+                styles.favLink,
+              ]
+                .filter(Boolean)
+                .join(' ')
+            }
           >
-            ❤️
+            {({ isActive }) => (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="M10 17.5S2 12.5 2 7a4 4 0 0 1 8 0 4 4 0 0 1 8 0c0 5.5-8 10.5-8 10.5z"
+                  fill={isActive ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </NavLink>
-        )}
 
-        {/* Theme toggle */}
-        <button
-          type="button"
-          className={styles.themeBtn}
-          onClick={onThemeToggle}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
+          {/* Theme toggle */}
+          <IconButton
+            size="sm"
+            onClick={onThemeToggle}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{ fontSize: '1rem', lineHeight: 1 }}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </IconButton>
 
-        {/* Auth */}
-        {!authLoading &&
-          (user ? (
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button
-                  className={styles.avatarBtn}
-                  aria-label={`User menu for ${user.email ?? 'account'}`}
-                  title={user.email ?? 'Account'}
-                >
-                  {userInitial}
-                </button>
-              </DropdownMenu.Trigger>
+          {/* Auth */}
+          {!authLoading &&
+            (user ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <IconButton
+                    size="sm"
+                    className={styles.avatarBtn}
+                    aria-label={`User menu for ${user.email ?? 'account'}`}
+                    title={user.email ?? 'Account'}
+                  >
+                    {userInitial}
+                  </IconButton>
+                </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className={styles.dropdownContent} align="end" sideOffset={6}>
                   <div className={styles.dropdownUserInfo}>
@@ -311,12 +320,13 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          ) : (
-            <Link to="/login" className={styles.signInBtn}>
-              Sign in
-            </Link>
-          ))}
+              </DropdownMenu.Root>
+            ) : (
+              <Link to="/login" className={styles.signInBtn}>
+                Sign in
+              </Link>
+            ))}
+        </div>
       </div>
     </header>
   )

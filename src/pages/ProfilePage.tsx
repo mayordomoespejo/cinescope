@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import { useWatched } from '@/features/watched/useWatched'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import { getAllRatings } from '@/features/ratings/store'
-import { deleteRating } from '@/features/ratings/store'
-import type { RatingEntry } from '@/features/ratings/store'
+import { deleteAccount } from '@/features/auth/authService'
 import type { WatchedItem } from '@/features/watched/store'
 import type { Movie } from '@/features/movies/types/movie'
 import type { TVShow } from '@/features/tv/types/tv'
 import { getPosterUrl, formatDate } from '@/lib/helpers'
 import Button from '@/components/ui/Button'
+import PageContent from '@/components/ui/PageContent'
+import { SkeletonCardGrid } from '@/components/ui/SkeletonCard'
 import styles from './ProfilePage.module.css'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -54,17 +55,31 @@ function getMediaPosterPath(mediaData: Movie | TVShow | undefined): string | nul
 interface WatchedCardProps {
   item: WatchedItem
   onRemove: (item: WatchedItem) => void
+  onNavigate: (mediaType: string, mediaId: number) => void
 }
 
 /**
  * Renders a single card in the Watch History grid.
  */
-function WatchedCard({ item, onRemove }: WatchedCardProps) {
+function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
   const title = getMediaTitle(item.media_data)
   const posterPath = getMediaPosterPath(item.media_data)
 
+  function handleCardClick() {
+    onNavigate(item.media_type, item.media_id)
+  }
+
+  function handleRemoveClick(e: React.MouseEvent) {
+    e.stopPropagation()
+    onRemove(item)
+  }
+
   return (
-    <article className={styles.card}>
+    <article
+      className={styles.card}
+      onClick={handleCardClick}
+      style={{ cursor: 'pointer' }}
+    >
       <div className={styles.posterWrap}>
         <img
           src={getPosterUrl(posterPath, 'sm')}
@@ -72,70 +87,29 @@ function WatchedCard({ item, onRemove }: WatchedCardProps) {
           className={styles.poster}
           loading="lazy"
         />
+        <button
+          className={styles.trashBtn}
+          onClick={handleRemoveClick}
+          aria-label={`Remove ${title} from watch history`}
+          type="button"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+        </button>
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardTitle}>{title}</p>
-        <p className={styles.cardMeta}>{formatDate(item.watched_at)}</p>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={styles.removeBtn}
-          onClick={() => onRemove(item)}
-          aria-label={`Remove ${title} from watch history`}
-        >
-          Remove
-        </Button>
-      </div>
-    </article>
-  )
-}
-
-interface RatingCardProps {
-  entry: RatingEntry
-  onDelete: (entry: RatingEntry) => void
-}
-
-/**
- * Renders a single card in the My Ratings grid.
- * Since RatingEntry has no media_data, only the rating badge and metadata
- * can be displayed from the entry itself; title/poster are not available.
- */
-function RatingCard({ entry, onDelete }: RatingCardProps) {
-  const label = `${entry.media_type === 'movie' ? 'Movie' : 'TV'} #${entry.media_id}`
-
-  return (
-    <article className={styles.card}>
-      <div className={styles.posterWrap}>
-        <div className={styles.posterPlaceholder} aria-hidden="true">
-          <span className={styles.ratingBadgeLarge}>{entry.rating}</span>
-        </div>
-      </div>
-      <div className={styles.cardBody}>
-        <p className={styles.cardTitle}>{label}</p>
-        <p className={styles.cardMeta}>{formatDate(entry.created_at)}</p>
-        {entry.note && <p className={styles.note}>{entry.note}</p>}
-        <div className={styles.ratingBadgeRow}>
-          <span className={styles.ratingBadge} aria-label={`Rating: ${entry.rating} out of 10`}>
-            ★ {entry.rating}/10
-          </span>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={styles.removeBtn}
-          onClick={() => onDelete(entry)}
-          aria-label={`Delete rating for ${label}`}
-        >
-          Delete rating
-        </Button>
+        <p className={styles.cardMeta} style={{ marginTop: 'auto' }}>{formatDate(item.watched_at)}</p>
       </div>
     </article>
   )
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-
-type Tab = 'history' | 'ratings'
 
 /**
  * ProfilePage — displays the authenticated user's profile, stats,
@@ -144,18 +118,13 @@ type Tab = 'history' | 'ratings'
  * Route: /profile (behind AuthGuard — user is always authenticated here).
  */
 export default function ProfilePage() {
+  const navigate = useNavigate()
   const { user, signOut } = useAuth()
-  const { watchedList, toggleWatched } = useWatched()
+  const { watchedList, toggleWatched, loading: watchedLoading } = useWatched()
   const { favorites, watchlist } = useFavorites()
-  const [ratings, setRatings] = useState<RatingEntry[]>(() => getAllRatings())
-  const [activeTab, setActiveTab] = useState<Tab>('history')
-
-  // Keep ratings in sync when the storage event fires
-  useEffect(() => {
-    const sync = () => setRatings(getAllRatings())
-    window.addEventListener('cinescope:ratings-change', sync)
-    return () => window.removeEventListener('cinescope:ratings-change', sync)
-  }, [])
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const displayName = getDisplayName(user?.displayName ?? null, user?.email ?? null)
   const initial = getInitial(user?.displayName ?? null, user?.email ?? null)
@@ -163,11 +132,6 @@ export default function ProfilePage() {
   // Sort watched list most-recently-watched first
   const sortedWatched = [...watchedList].sort(
     (a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime()
-  )
-
-  // Sort ratings most-recently-rated first
-  const sortedRatings = [...ratings].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   )
 
   function handleRemoveWatched(item: WatchedItem) {
@@ -178,19 +142,32 @@ export default function ProfilePage() {
     })
   }
 
-  function handleDeleteRating(entry: RatingEntry) {
-    if (!user) return
-    deleteRating(user.uid, entry.media_id, entry.media_type)
-    setRatings(getAllRatings())
+  function handleNavigateToMedia(mediaType: string, mediaId: number) {
+    navigate(`/${mediaType}/${mediaId}`)
   }
 
   async function handleSignOut() {
     await signOut()
   }
 
+  async function handleDeleteAccount() {
+    if (!user) return
+    setIsDeleting(true)
+    setDeleteError(null)
+    try {
+      const token = await user.getIdToken()
+      await deleteAccount(token)
+      navigate('/')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong'
+      setDeleteError(message)
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <div className={styles.page}>
-      <div className={styles.content}>
+      <PageContent className={styles.content}>
         {/* ── User Header ──────────────────────────────────────────────── */}
         <header className={styles.userHeader}>
           <div className={styles.avatar} aria-hidden="true">
@@ -224,48 +201,16 @@ export default function ProfilePage() {
             <span className={styles.statValue}>{watchedList.length}</span>
             <span className={styles.statLabel}>Watched</span>
           </div>
-          <div className={styles.statTile}>
-            <span className={styles.statValue}>{ratings.length}</span>
-            <span className={styles.statLabel}>Ratings</span>
-          </div>
         </section>
 
-        {/* ── Tabs ─────────────────────────────────────────────────────── */}
-        <div
-          className={styles.tabs}
-          role="tablist"
-          aria-label="Profile sections"
-        >
-          <button
-            role="tab"
-            aria-selected={activeTab === 'history'}
-            aria-controls="panel-history"
-            id="tab-history"
-            className={`${styles.tab} ${activeTab === 'history' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('history')}
-          >
+        {/* ── Watch History ─────────────────────────────────────────────── */}
+        <section aria-labelledby="watch-history-heading">
+          <h2 className={styles.sectionHeading} id="watch-history-heading">
             Watch History
-          </button>
-          <button
-            role="tab"
-            aria-selected={activeTab === 'ratings'}
-            aria-controls="panel-ratings"
-            id="tab-ratings"
-            className={`${styles.tab} ${activeTab === 'ratings' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('ratings')}
-          >
-            My Ratings
-          </button>
-        </div>
-
-        {/* ── Watch History Panel ───────────────────────────────────────── */}
-        <div
-          role="tabpanel"
-          id="panel-history"
-          aria-labelledby="tab-history"
-          hidden={activeTab !== 'history'}
-        >
-          {sortedWatched.length === 0 ? (
+          </h2>
+          {watchedLoading ? (
+            <SkeletonCardGrid count={6} />
+          ) : sortedWatched.length === 0 ? (
             <p className={styles.emptyState}>
               Nothing watched yet. Start exploring!
             </p>
@@ -276,50 +221,64 @@ export default function ProfilePage() {
                   key={`${item.media_type}-${item.media_id}`}
                   item={item}
                   onRemove={handleRemoveWatched}
+                  onNavigate={handleNavigateToMedia}
                 />
               ))}
             </div>
           )}
-        </div>
-
-        {/* ── Ratings Panel ────────────────────────────────────────────── */}
-        <div
-          role="tabpanel"
-          id="panel-ratings"
-          aria-labelledby="tab-ratings"
-          hidden={activeTab !== 'ratings'}
-        >
-          {sortedRatings.length === 0 ? (
-            <p className={styles.emptyState}>No ratings yet.</p>
-          ) : (
-            <div className={styles.grid}>
-              {sortedRatings.map(entry => (
-                <RatingCard
-                  key={`${entry.media_type}-${entry.media_id}`}
-                  entry={entry}
-                  onDelete={handleDeleteRating}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ── Account Section ──────────────────────────────────────────── */}
-        <section aria-labelledby="account-heading" className={styles.accountSection}>
-          <h2 className={styles.accountHeading} id="account-heading">
-            Account
-          </h2>
-          {user?.email && (
-            <p className={styles.accountEmail}>
-              <span className={styles.accountLabel}>Email</span>
-              <span>{user.email}</span>
-            </p>
-          )}
-          <Button variant="secondary" onClick={handleSignOut}>
-            Sign out
-          </Button>
         </section>
-      </div>
+
+        {/* ── Danger Zone ──────────────────────────────────────────────── */}
+        <div className={styles.dangerZone}>
+          <button
+            type="button"
+            className={styles.deleteAccountBtn}
+            onClick={() => { setDeleteError(null); setShowDeleteModal(true) }}
+          >
+            Delete account
+          </button>
+        </div>
+      </PageContent>
+
+      {/* ── Delete Account Modal ──────────────────────────────────────────── */}
+      {showDeleteModal && (
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-modal-title"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
+        >
+          <div className={styles.modalCard}>
+            <h2 className={styles.modalTitle} id="delete-modal-title">
+              Delete account
+            </h2>
+            <p className={styles.modalBody}>
+              This will permanently delete your account and all your data. This action cannot be undone.
+            </p>
+            {deleteError && (
+              <p className={styles.modalError}>{deleteError}</p>
+            )}
+            <div className={styles.modalActions}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="ghost"
+                className={styles.deleteDangerBtn}
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting…' : 'Delete account'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

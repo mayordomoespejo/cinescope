@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { usePersonDetail } from '@/features/movies/hooks/usePersonDetail'
 import { usePersonMovieCredits } from '@/features/movies/hooks/usePersonMovieCredits'
 import { getProfileUrl, getPosterUrl, formatDate, getReleaseYear } from '@/lib/helpers'
 import type { PersonCastCredit, PersonCrewCredit } from '@/features/movies/types/movie'
+import PageContent from '@/components/ui/PageContent'
 import styles from './PersonPage.module.css'
 
 type FilmographyTab = 'acting' | 'directing' | 'writing'
@@ -61,17 +62,6 @@ export function MiniPosterCard({
 export function PersonPageSkeleton() {
   return (
     <div className={styles.page}>
-      <div className={styles.hero}>
-        <div className={styles.heroBackdropSkeleton} aria-hidden="true" />
-        <div className={styles.heroContent}>
-          <div className={styles.profileSkeleton} aria-hidden="true" />
-          <div className={styles.heroInfo}>
-            <div className={`${styles.skeletonLine} ${styles.skeletonTitle}`} />
-            <div className={`${styles.skeletonLine} ${styles.skeletonMeta}`} />
-            <div className={`${styles.skeletonLine} ${styles.skeletonMeta}`} />
-          </div>
-        </div>
-      </div>
       <div className={styles.body}>
         <div className={styles.skeletonSection}>
           <div className={`${styles.skeletonLine} ${styles.skeletonSectionTitle}`} />
@@ -94,7 +84,7 @@ export function PersonPageSkeleton() {
 
 /**
  * PersonPage — full detail page for a TMDB person.
- * Displays hero with profile photo, biography, "Known For" carousel,
+ * Displays profile photo + info, biography, "Known For" carousel,
  * and tabbed filmography (Acting / Directing / Writing).
  */
 export default function PersonPage() {
@@ -105,8 +95,18 @@ export default function PersonPage() {
   const { data: person, isLoading: personLoading, error: personError } = usePersonDetail(personId)
   const { data: credits, isLoading: creditsLoading } = usePersonMovieCredits(personId)
 
-  const [bioExpanded, setBioExpanded] = useState(false)
   const [activeTab, setActiveTab] = useState<FilmographyTab>('acting')
+
+  // Auto-select first available tab when credits load
+  useEffect(() => {
+    if (!credits) return
+    const available = (['acting', 'directing', 'writing'] as FilmographyTab[]).filter(tab =>
+      tab === 'acting' ? credits.cast.length > 0
+      : tab === 'directing' ? credits.crew.filter(c => c.job === 'Director').length > 0
+      : credits.crew.filter(c => c.job === 'Writer' || c.job === 'Screenplay' || c.department === 'Writing').length > 0
+    )
+    setActiveTab(prev => available.includes(prev) ? prev : (available[0] ?? prev))
+  }, [credits])
 
   const isLoading = personLoading || creditsLoading
 
@@ -165,12 +165,6 @@ export default function PersonPage() {
         })
     : []
 
-  // Biography display
-  const bioLines = person.biography
-    ? person.biography.split('\n').filter(l => l.trim().length > 0)
-    : []
-  const shortBio = bioLines.slice(0, 3).join('\n')
-  const hasLongBio = bioLines.length > 3 || (person.biography && person.biography.length > 400)
 
   // Birthday / deathday display
   const birthdayFormatted = person.birthday
@@ -178,26 +172,13 @@ export default function PersonPage() {
     : null
   const deathdayFormatted = person.deathday ? formatDate(person.deathday) : null
 
-  // Backdrop from first known-for movie (for the hero blur effect)
-  const backdropPoster = knownFor[0]?.poster_path
-    ? getPosterUrl(knownFor[0].poster_path, 'lg')
-    : null
-
   const profileSrc = getProfileUrl(person.profile_path, 'lg')
 
   return (
     <div className={styles.page}>
-      {/* Hero */}
-      <section className={styles.hero} aria-label={`${person.name} hero`}>
-        {backdropPoster && (
-          <div
-            className={styles.heroBackdrop}
-            style={{ backgroundImage: `url(${backdropPoster})` }}
-            aria-hidden="true"
-          />
-        )}
-        <div className={styles.heroOverlay} aria-hidden="true" />
-        <div className={styles.heroContent}>
+      <PageContent className={styles.content}>
+        {/* Profile Header */}
+        <div className={styles.profileHeader}>
           <div className={styles.profileWrapper}>
             <img
               src={profileSrc}
@@ -224,36 +205,18 @@ export default function PersonPage() {
             )}
           </div>
         </div>
-      </section>
 
-      <div className={styles.body}>
-        {/* Biography */}
-        <section className={styles.section} aria-labelledby="bio-heading">
-          <h2 className={styles.sectionTitle} id="bio-heading">
-            Biography
-          </h2>
-          {person.biography ? (
+        {/* Biography — only render if biography exists */}
+        {person.biography && (
+          <section className={styles.section} aria-labelledby="bio-heading">
+            <h2 className={styles.sectionTitle} id="bio-heading">
+              Biography
+            </h2>
             <div className={styles.bioContainer}>
-              <p
-                className={`${styles.bioText} ${!bioExpanded && hasLongBio ? styles.bioCollapsed : ''}`}
-              >
-                {bioExpanded ? person.biography : shortBio}
-              </p>
-              {hasLongBio && (
-                <button
-                  type="button"
-                  className={styles.readMoreBtn}
-                  onClick={() => setBioExpanded(v => !v)}
-                  aria-expanded={bioExpanded}
-                >
-                  {bioExpanded ? 'Show less' : 'Read more'}
-                </button>
-              )}
+              <p className={styles.bioText}>{person.biography}</p>
             </div>
-          ) : (
-            <p className={styles.emptyState}>No biography available.</p>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* Known For */}
         {knownFor.length > 0 && (
@@ -284,29 +247,35 @@ export default function PersonPage() {
             Filmography
           </h2>
 
-          {/* Tabs */}
+          {/* Tabs — only show tabs with credits > 0 */}
           <div className={styles.tabs} role="tablist" aria-label="Filmography categories">
-            {(['acting', 'directing', 'writing'] as FilmographyTab[]).map(tab => (
-              <button
-                key={tab}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tab}
-                aria-controls={`tabpanel-${tab}`}
-                id={`tab-${tab}`}
-                className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                <span className={styles.tabCount}>
-                  {tab === 'acting'
-                    ? actingCredits.length
-                    : tab === 'directing'
-                      ? directingCredits.length
-                      : writingCredits.length}
-                </span>
-              </button>
-            ))}
+            {(['acting', 'directing', 'writing'] as FilmographyTab[])
+              .filter(tab =>
+                tab === 'acting' ? actingCredits.length > 0
+                : tab === 'directing' ? directingCredits.length > 0
+                : writingCredits.length > 0
+              )
+              .map(tab => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  aria-controls={`tabpanel-${tab}`}
+                  id={`tab-${tab}`}
+                  className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  <span className={styles.tabCount}>
+                    {tab === 'acting'
+                      ? actingCredits.length
+                      : tab === 'directing'
+                        ? directingCredits.length
+                        : writingCredits.length}
+                  </span>
+                </button>
+              ))}
           </div>
 
           {/* Tab panels */}
@@ -355,10 +324,11 @@ export default function PersonPage() {
             )}
           </div>
         </section>
-      </div>
+      </PageContent>
     </div>
   )
 }
+
 
 /** Grid of poster cards for a filmography tab */
 export function FilmographyGrid<T extends { id: number; title: string; poster_path: string | null; release_date: string },>({
