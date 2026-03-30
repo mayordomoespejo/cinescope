@@ -12,7 +12,18 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  scrollbar-gutter: stable;
+  /* overflow-y: scroll keeps the scrollbar always visible so window.innerWidth
+     always equals document.documentElement.clientWidth. react-remove-scroll-bar
+     computes gap = window.innerWidth - clientWidth, which is 0, so it injects
+     margin-right: 0px !important — no layout shift when modals/selects open. */
+  overflow-y: scroll;
+}
+
+/* Belt-and-suspenders: also zero out the margin-right compensation in case
+   the gap measurement ever rounds to non-zero (e.g. fractional pixel scrollbar). */
+body[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0px !important;
+  margin-right: 0 !important;
 }
 
 body {
@@ -23,9 +34,6 @@ body {
   background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Reserve scrollbar width permanently so content never shifts when it appears/disappears.
-     100vw includes scrollbar, 100% does not — the difference is the scrollbar width. */
-  padding-right: calc(100vw - 100%);
   transition:
     background-color var(--transition-slow),
     color var(--transition-slow);

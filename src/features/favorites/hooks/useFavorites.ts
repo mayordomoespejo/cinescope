@@ -1,93 +1,114 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Movie } from '@/features/movies/types/movie'
 import {
-  getFavorites,
-  addFavorite,
-  removeFavorite,
-  isFavorite,
-  reorderFavorites,
-  getWatchlist,
-  addToWatchlist,
-  removeFromWatchlist,
-  isInWatchlist,
-  reorderWatchlist,
-  getWatched,
-  markWatched,
-  unmarkWatched,
-  isWatched,
+  hydrateFromSupabase,
+  syncFavoritesToSupabase,
+  syncWatchlistToSupabase,
 } from '../store'
+import { useAuth } from '@/features/auth/useAuth'
 
 /**
- * @description React hook for managing favorites, watchlist, and watched state from localStorage. Reacts to cross-component changes via a custom window event.
+ * @description React hook for managing favorites and watchlist as in-memory React state.
+ * Hydrates from Supabase on login and syncs mutations back to Supabase (fire-and-forget).
  * @returns Reactive state arrays and toggle/reorder action callbacks.
  */
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<Movie[]>(getFavorites)
-  const [watchlist, setWatchlist] = useState<Movie[]>(getWatchlist)
-  const [watched, setWatched] = useState<number[]>(getWatched)
+  const [favorites, setFavorites] = useState<Movie[]>([])
+  const [watchlist, setWatchlist] = useState<Movie[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const { user } = useAuth()
+  const prevUserIdRef = useRef<string | null>(null)
 
+  const getToken = useCallback(async (): Promise<string | undefined> => {
+    if (!user) return undefined
+    try {
+      return await user.getIdToken()
+    } catch {
+      return undefined
+    }
+  }, [user])
+
+  // Hydrate from Supabase when a new user logs in; clear state on logout
   useEffect(() => {
-    const sync = () => {
-      setFavorites(getFavorites())
-      setWatchlist(getWatchlist())
-      setWatched(getWatched())
+    if (user && user.uid !== prevUserIdRef.current) {
+      prevUserIdRef.current = user.uid
+      setIsLoading(true)
+      void user.getIdToken().then(async token => {
+        const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(token)
+        setFavorites(favs)
+        setWatchlist(watch)
+        setIsLoading(false)
+      })
+    } else if (!user) {
+      prevUserIdRef.current = null
+      setFavorites([])
+      setWatchlist([])
+      setIsLoading(false)
     }
-    window.addEventListener('cinescope:favorites-change', sync)
-    return () => window.removeEventListener('cinescope:favorites-change', sync)
-  }, [])
+  }, [user])
 
-  const toggleFavorite = useCallback((movie: Movie) => {
-    if (isFavorite(movie.id)) {
-      removeFavorite(movie.id)
-    } else {
-      addFavorite(movie)
-    }
-    setFavorites(getFavorites())
-  }, [])
+  const toggleFavorite = useCallback(
+    async (movie: Movie) => {
+      const token = await getToken()
+      setFavorites(prev => {
+        const exists = prev.some(m => m.id === movie.id)
+        const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
+        if (token) void syncFavoritesToSupabase(token, updated)
+        return updated
+      })
+    },
+    [getToken]
+  )
 
-  const toggleWatchlist = useCallback((movie: Movie) => {
-    if (isInWatchlist(movie.id)) {
-      removeFromWatchlist(movie.id)
-    } else {
-      addToWatchlist(movie)
-    }
-    setWatchlist(getWatchlist())
-  }, [])
+  const toggleWatchlist = useCallback(
+    async (movie: Movie) => {
+      const token = await getToken()
+      setWatchlist(prev => {
+        const exists = prev.some(m => m.id === movie.id)
+        const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
+        if (token) void syncWatchlistToSupabase(token, updated)
+        return updated
+      })
+    },
+    [getToken]
+  )
 
-  const checkFavorite = useCallback((id: number) => isFavorite(id), [])
-  const checkWatchlist = useCallback((id: number) => isInWatchlist(id), [])
+  const isFavorite = useCallback(
+    (id: number) => favorites.some(m => m.id === id),
+    [favorites]
+  )
 
-  const reorderFavs = useCallback((newOrder: Movie[]) => {
-    reorderFavorites(newOrder)
-    setFavorites(newOrder)
-  }, [])
+  const isInWatchlist = useCallback(
+    (id: number) => watchlist.some(m => m.id === id),
+    [watchlist]
+  )
 
-  const reorderWatch = useCallback((newOrder: Movie[]) => {
-    reorderWatchlist(newOrder)
-    setWatchlist(newOrder)
-  }, [])
+  const reorderFavs = useCallback(
+    async (newOrder: Movie[]) => {
+      setFavorites(newOrder)
+      const token = await getToken()
+      if (token) void syncFavoritesToSupabase(token, newOrder)
+    },
+    [getToken]
+  )
 
-  const toggleWatched = useCallback((id: number) => {
-    if (isWatched(id)) {
-      unmarkWatched(id)
-    } else {
-      markWatched(id)
-    }
-    setWatched(getWatched())
-  }, [])
-
-  const checkWatched = useCallback((id: number) => isWatched(id), [])
+  const reorderWatch = useCallback(
+    async (newOrder: Movie[]) => {
+      setWatchlist(newOrder)
+      const token = await getToken()
+      if (token) void syncWatchlistToSupabase(token, newOrder)
+    },
+    [getToken]
+  )
 
   return {
     favorites,
     watchlist,
-    watched,
+    isLoading,
     toggleFavorite,
     toggleWatchlist,
-    toggleWatched,
-    isFavorite: checkFavorite,
-    isInWatchlist: checkWatchlist,
-    isWatched: checkWatched,
+    isFavorite,
+    isInWatchlist,
     reorderFavorites: reorderFavs,
     reorderWatchlist: reorderWatch,
   }

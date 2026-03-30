@@ -1,0 +1,7 @@
+.pageContent {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-10) var(--content-padding) var(--space-16);
+  width: 100%;
+  min-height: calc(100vh - var(--navbar-height));
+}

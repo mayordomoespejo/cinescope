@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useLists } from '@/features/lists/useLists'
 import { getPosterUrl, getReleaseYear } from '@/lib/helpers'
 import type { CinescopeList, ListItem } from '@/features/lists/store'
+import PageContent from '@/components/ui/PageContent'
 import styles from './ListsPage.module.css'
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -369,7 +370,7 @@ export default function ListsPage() {
   const getItemCount = (listId: string): number => itemsByList[listId]?.length ?? 0
 
   return (
-    <div className={styles.page}>
+    <PageContent className={styles.page}>
       <div className={styles.layout}>
         {/* ── Left panel ── */}
         <aside className={styles.leftPanel} aria-label="My Lists">
@@ -474,6 +475,6 @@ export default function ListsPage() {
           )}
         </main>
       </div>
-    </div>
+    </PageContent>
   )
 }

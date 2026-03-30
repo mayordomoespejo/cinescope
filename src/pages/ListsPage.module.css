@@ -1,9 +1,6 @@
 /* ── Page shell ──────────────────────────────────────────────────── */
 .page {
   min-height: calc(100vh - var(--navbar-height));
-  padding: var(--space-8) var(--content-padding);
-  max-width: var(--max-width);
-  margin: 0 auto;
 }
 
 /* ── Two-panel layout ────────────────────────────────────────────── */

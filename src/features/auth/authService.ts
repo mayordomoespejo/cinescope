@@ -6,22 +6,10 @@ import {
   GoogleAuthProvider,
   signOut as firebaseSignOut,
   onAuthStateChanged as firebaseOnAuthStateChanged,
+  deleteUser,
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { auth } from './firebaseConfig'
-import { supabase } from '../../lib/supabaseClient'
-
-/**
- * Bridges a Firebase user session into Supabase so that RLS policies
- * using `auth.uid()::text = user_id` work correctly with Firebase UIDs.
- */
-async function bridgeToSupabase(firebaseUser: User): Promise<void> {
-  const token = await firebaseUser.getIdToken()
-  await supabase.auth.signInWithIdToken({
-    provider: 'firebase',
-    token,
-  })
-}
 
 const googleProvider = new GoogleAuthProvider()
 
@@ -33,7 +21,6 @@ const googleProvider = new GoogleAuthProvider()
  */
 export async function signInWithEmail(email: string, password: string): Promise<User> {
   const { user } = await signInWithEmailAndPassword(auth, email, password)
-  await bridgeToSupabase(user)
   return user
 }
 
@@ -45,7 +32,6 @@ export async function signInWithEmail(email: string, password: string): Promise<
  */
 export async function signUpWithEmail(email: string, password: string): Promise<User> {
   const { user } = await createUserWithEmailAndPassword(auth, email, password)
-  await bridgeToSupabase(user)
   return user
 }
 
@@ -74,7 +60,6 @@ export async function smartAuth(email: string, password: string): Promise<User> 
  */
 export async function signInWithGoogle(): Promise<User> {
   const { user } = await signInWithPopup(auth, googleProvider)
-  await bridgeToSupabase(user)
   return user
 }
 
@@ -91,31 +76,44 @@ export async function reauthenticateWithGoogle(): Promise<User> {
 }
 
 /**
- * Signs out the currently authenticated user from both Firebase and Supabase.
+ * Signs out the currently authenticated user from Firebase.
  */
 export async function signOut(): Promise<void> {
   await firebaseSignOut(auth)
-  await supabase.auth.signOut()
+}
+
+/**
+ * Deletes the current user's account:
+ * 1. Removes all Supabase data via Edge Function
+ * 2. Deletes the Firebase account
+ * 3. Clears all cinescope:* localStorage keys
+ * @param token - A fresh Firebase ID token for the current user.
+ */
+export async function deleteAccount(token: string): Promise<void> {
+  const currentUser = auth.currentUser
+  if (!currentUser) throw new Error('No authenticated user')
+
+  // 1. Delete all Supabase data via Edge Function
+  await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  // 2. Delete Firebase account
+  await deleteUser(currentUser)
+
+  // 3. Clear localStorage
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('cinescope:'))
+    .forEach(k => localStorage.removeItem(k))
 }
 
 /**
  * Subscribes to Firebase auth state changes.
- * When a Firebase user is present but no Supabase session exists, re-bridges the token
- * so that RLS policies remain functional after page reloads or token refreshes.
  * The callback is invoked immediately with the current user, and again on every auth change.
  * @param callback - Function called with the current User (or null if signed out).
  * @returns An unsubscribe function to stop listening for changes.
  */
 export function onAuthStateChanged(callback: (user: User | null) => void): () => void {
-  return firebaseOnAuthStateChanged(auth, async firebaseUser => {
-    if (firebaseUser) {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-      if (!session) {
-        await bridgeToSupabase(firebaseUser)
-      }
-    }
-    callback(firebaseUser)
-  })
+  return firebaseOnAuthStateChanged(auth, callback)
 }

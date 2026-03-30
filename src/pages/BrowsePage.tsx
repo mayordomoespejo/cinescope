@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useOutletContext } from '@/components/ui/LayoutContext'
 import { useTrending } from '@/features/movies/hooks/useTrending'
 import { useTopRated } from '@/features/movies/hooks/useTopRated'
@@ -24,6 +24,7 @@ import SortDropdown from '@/features/filters/components/SortDropdown'
 import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import type { SortOption } from '@/lib/config'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
+import PageContent from '@/components/ui/PageContent'
 import styles from './BrowsePage.module.css'
 
 /** Props for the BrowsePage component. */
@@ -49,6 +50,7 @@ export interface BrowsePageProps {
  */
 export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q') ?? ''
 
@@ -61,7 +63,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
 
   // ── Movie hooks ──────────────────────────────────────────────────────────
   const { prefetchMovieData } = useMoviePrefetch()
-  const { favorites, toggleFavorite, isFavorite } = useFavorites()
+  const { favorites, toggleFavorite } = useFavorites()
 
   const { data: movieTrendingData, isLoading: movieTrendingLoading } = useTrending('day')
   const { data: movieTopRatedData, isLoading: movieTopRatedLoading } = useTopRated()
@@ -125,6 +127,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const discoverMovies = movieDiscoverData?.results ?? []
   const searchMovies = movieSearchData?.results ?? []
   const hasNextMovieDiscover = discoverPage < (movieDiscoverData?.total_pages ?? 1)
+  const featuredMovie = trendingMovies.find(m => !!m.backdrop_path) ?? trendingMovies[0]
 
   // TV-derived
   const trendingShows = tvTrendingData?.results ?? []
@@ -132,6 +135,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const discoverShows = tvDiscoverData?.results ?? []
   const searchShows = tvSearchData?.results ?? []
   const hasNextTVDiscover = discoverPage < (tvDiscoverData?.total_pages ?? 1)
+  const featuredShow = trendingShows.find(s => !!s.backdrop_path) ?? trendingShows[0]
 
   // ── Handlers ──────────────────────────────────────────────────────────────
   const handleOpenMovie = (id: number) => {
@@ -139,8 +143,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   }
 
   const handleOpenShow = (id: number) => {
-    // TVCard navigates internally to /tv/:id; this callback is kept for API compatibility.
-    void id
+    navigate(`/tv/${id}`)
   }
 
   const handleGenreSelect = (id: number | null) => {
@@ -173,7 +176,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
     if (mediaType === 'movie') {
       return (
         <div className={styles.page}>
-          <div className={styles.section}>
+          <PageContent className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
                 Results for &ldquo;{searchQuery}&rdquo;
@@ -196,14 +199,14 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
               onToggleFavorite={toggleFavorite}
               emptyMessage={`No results for "${searchQuery}"`}
             />
-          </div>
+          </PageContent>
         </div>
       )
     }
 
     return (
       <div className={styles.page}>
-        <div className={styles.section}>
+        <PageContent className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
               Results for &ldquo;{searchQuery}&rdquo;
@@ -222,8 +225,10 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
             error={tvSearchError}
             onOpenShow={handleOpenShow}
             emptyMessage={`No results for "${searchQuery}"`}
+            favorites={favoriteIds}
+            onToggleFavorite={toggleFavorite}
           />
-        </div>
+        </PageContent>
       </div>
     )
   }
@@ -234,11 +239,9 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
       <div className={styles.page}>
         {/* Hero */}
         <HeroSection
-          movie={trendingMovies[0]}
+          movie={featuredMovie}
           isLoading={movieTrendingLoading}
           onOpenMovie={handleOpenMovie}
-          isFavorite={trendingMovies[0] ? isFavorite(trendingMovies[0].id) : false}
-          onToggleFavorite={toggleFavorite}
         />
 
         <div className={styles.content}>
@@ -303,7 +306,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
     <div className={styles.page}>
       {/* Hero */}
       <TVHeroSection
-        show={trendingShows[0]}
+        show={featuredShow}
         isLoading={tvTrendingLoading}
         onOpenShow={handleOpenShow}
       />
@@ -315,6 +318,8 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
           shows={trendingShows}
           isLoading={tvTrendingLoading}
           onOpenShow={handleOpenShow}
+          favorites={favoriteIds}
+          onToggleFavorite={toggleFavorite}
         />
 
         {/* Top Rated carousel */}
@@ -323,6 +328,8 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
           shows={topRatedShows}
           isLoading={tvTopRatedLoading}
           onOpenShow={handleOpenShow}
+          favorites={favoriteIds}
+          onToggleFavorite={toggleFavorite}
         />
 
         {/* Discover section with filters */}
@@ -373,6 +380,8 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
             hasNextPage={hasNextTVDiscover}
             onOpenShow={handleOpenShow}
             onLoadMore={() => setDiscoverPage(p => p + 1)}
+            favorites={favoriteIds}
+            onToggleFavorite={toggleFavorite}
           />
         </section>
       </div>

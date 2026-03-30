@@ -1,14 +1,14 @@
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--navbar-height));
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
-  padding: var(--space-12) var(--content-padding) var(--space-20);
+  gap: var(--space-10);
+  padding: var(--space-10) var(--content-padding) var(--space-16);
   max-width: var(--max-width);
   margin: 0 auto;
   width: 100%;
@@ -18,10 +18,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding: var(--space-12) var(--content-padding) var(--space-20);
-  max-width: var(--max-width);
-  margin: 0 auto;
-  width: 100%;
 }
 
 .sectionHeader {

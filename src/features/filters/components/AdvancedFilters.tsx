@@ -1,10 +1,11 @@
+import * as Select from '@radix-ui/react-select'
 import styles from './AdvancedFilters.module.css'
 
 const CURRENT_YEAR = new Date().getFullYear()
 const YEARS = Array.from({ length: CURRENT_YEAR - 1969 }, (_, i) => CURRENT_YEAR - i)
 
 const LANGUAGES = [
-  { value: '', label: 'Any language' },
+  { value: '__all__', label: 'Any language' },
   { value: 'en', label: 'English' },
   { value: 'es', label: 'Spanish' },
   { value: 'fr', label: 'French' },
@@ -24,6 +25,25 @@ interface AdvancedFiltersProps {
   onLanguageChange: (value: string) => void
 }
 
+/** Chevron icon for the select trigger */
+function ChevronIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2 4l4 4 4-4" />
+    </svg>
+  )
+}
+
 /**
  * @description Panel with advanced filtering controls: minimum rating slider, release year selector, and language selector.
  * @param props - Component props
@@ -36,6 +56,13 @@ export default function AdvancedFilters({
   language,
   onLanguageChange,
 }: AdvancedFiltersProps) {
+  const yearValue = year !== undefined ? String(year) : '__all__'
+  const yearLabel = year !== undefined ? String(year) : 'Any year'
+
+  const languageValue = language !== '' ? language : '__all__'
+  const languageLabel =
+    LANGUAGES.find(l => l.value === language || (language === '' && l.value === '__all__'))?.label ?? 'Any language'
+
   return (
     <div className={styles.wrapper} role="group" aria-label="Advanced filters">
       {/* Rating slider */}
@@ -67,41 +94,74 @@ export default function AdvancedFilters({
 
       {/* Year select */}
       <div className={styles.filterItem}>
-        <label className={styles.label} htmlFor="year-select">
+        <label className={styles.label} id="year-select-label">
           Year
         </label>
-        <select
-          id="year-select"
-          className={styles.select}
-          value={year ?? ''}
-          onChange={e => onYearChange(e.target.value ? Number(e.target.value) : undefined)}
+        <Select.Root
+          value={yearValue}
+          onValueChange={val => onYearChange(val === '__all__' ? undefined : Number(val))}
         >
-          <option value="">Any year</option>
-          {YEARS.map(y => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
+          <Select.Trigger
+            className={styles.trigger}
+            aria-labelledby="year-select-label"
+          >
+            <Select.Value>{yearLabel}</Select.Value>
+            <span className={styles.chevron}>
+              <ChevronIcon />
+            </span>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content className={styles.selectContent} position="popper" sideOffset={6}>
+              <Select.Viewport>
+                <Select.Item value="__all__" className={styles.selectItem}>
+                  <span className={styles.checkmark} aria-hidden="true">✓</span>
+                  <Select.ItemText>Any year</Select.ItemText>
+                </Select.Item>
+                {YEARS.map(y => (
+                  <Select.Item key={y} value={String(y)} className={styles.selectItem}>
+                    <span className={styles.checkmark} aria-hidden="true">✓</span>
+                    <Select.ItemText>{y}</Select.ItemText>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       </div>
 
       {/* Language select */}
       <div className={styles.filterItem}>
-        <label className={styles.label} htmlFor="language-select">
+        <label className={styles.label} id="language-select-label">
           Language
         </label>
-        <select
-          id="language-select"
-          className={styles.select}
-          value={language}
-          onChange={e => onLanguageChange(e.target.value)}
+        <Select.Root
+          value={languageValue}
+          onValueChange={val => onLanguageChange(val === '__all__' ? '' : val)}
         >
-          {LANGUAGES.map(lang => (
-            <option key={lang.value} value={lang.value}>
-              {lang.label}
-            </option>
-          ))}
-        </select>
+          <Select.Trigger
+            className={styles.trigger}
+            aria-labelledby="language-select-label"
+          >
+            <Select.Value>{languageLabel}</Select.Value>
+            <span className={styles.chevron}>
+              <ChevronIcon />
+            </span>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content className={styles.selectContent} position="popper" sideOffset={6}>
+              <Select.Viewport>
+                {LANGUAGES.map(lang => (
+                  <Select.Item key={lang.value} value={lang.value} className={styles.selectItem}>
+                    <span className={styles.checkmark} aria-hidden="true">✓</span>
+                    <Select.ItemText>{lang.label}</Select.ItemText>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       </div>
     </div>
   )
