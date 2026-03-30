@@ -45,14 +45,6 @@
   opacity: 0.8;
 }
 
-.logoWhite {
-  color: var(--color-text-primary);
-}
-
-.logoAmber {
-  color: var(--color-accent);
-}
-
 /* ── Heading ── */
 .heading {
   display: flex;

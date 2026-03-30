@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 import iconBtnStyles from './IconButton.module.css'
 import IconButton from './IconButton'
+import CinescopeLogo from './CinescopeLogo'
 import { DEBOUNCE_DELAY } from '@/lib/config'
 import {
   addSearchQuery,
@@ -134,8 +135,7 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
       <div className={styles.inner}>
         {/* Logo */}
         <NavLink to="/" className={styles.logo} aria-label="CineScope Home">
-          <span className={styles.logoIcon}>🎬</span>
-          <span className={styles.logoText}>CineScope</span>
+          <CinescopeLogo variant="navbar" />
         </NavLink>
 
         {/* Nav links */}

@@ -2,6 +2,7 @@ import { useState, useRef, type FormEvent } from 'react'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import styles from './LoginPage.module.css'
+import CinescopeLogo from '@/components/ui/CinescopeLogo'
 
 // ─── Firebase error → Spanish message map ───────────────────────────────────
 
@@ -199,8 +200,7 @@ export default function LoginPage() {
       <div className={styles.card}>
         {/* Logo */}
         <Link to="/welcome" className={styles.logoLink} aria-label="Volver a inicio">
-          <span className={styles.logoWhite}>CINE</span>
-          <span className={styles.logoAmber}>SCOPE</span>
+          <CinescopeLogo variant="navbar" />
         </Link>
 
         {/* Heading */}

@@ -43,22 +43,13 @@
 /* Logo */
 .logo {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: 2px;
   text-decoration: none;
   flex-shrink: 0;
 }
 
-.logoIcon {
-  font-size: 1.25rem;
-}
-
-.logoText {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-accent);
-  letter-spacing: -0.02em;
-}
 
 /* Nav */
 .nav {
@@ -363,9 +354,6 @@
   }
   .searchWrapper {
     max-width: unset;
-  }
-  .logoText {
-    display: none;
   }
   .inner {
     gap: var(--space-3);
