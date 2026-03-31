@@ -1,6 +1,6 @@
 import * as jose from 'https://deno.land/x/jose@v4.14.4/index.ts';
 
-const FIREBASE_PROJECT_ID = 'cinescope-c722f';
+const FIREBASE_PROJECT_ID = Deno.env.get('FIREBASE_PROJECT_ID') ?? 'cinescope-c722f';
 const JWKS_URL =
   'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
 

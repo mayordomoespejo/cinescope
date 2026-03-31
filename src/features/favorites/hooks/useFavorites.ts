@@ -22,7 +22,7 @@ export function useFavorites() {
   const getToken = useCallback(async (): Promise<string | undefined> => {
     if (!user) return undefined
     try {
-      return await user.getIdToken()
+      return await user.getIdToken(false)
     } catch {
       return undefined
     }

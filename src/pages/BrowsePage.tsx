@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useOutletContext } from '@/components/ui/LayoutContext'
 import { useTrending } from '@/features/movies/hooks/useTrending'
@@ -119,7 +119,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   }, [searchQuery])
 
   // ── Derived values ────────────────────────────────────────────────────────
-  const favoriteIds = favorites.map(f => f.id)
+  const favoriteIds = useMemo(() => favorites.map(f => f.id), [favorites])
 
   // Movie-derived
   const trendingMovies = movieTrendingData?.results ?? []

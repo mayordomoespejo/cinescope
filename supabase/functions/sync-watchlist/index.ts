@@ -17,7 +17,8 @@ Deno.serve(async (req: Request) => {
   try {
     userId = await requireAuth(req)
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Unauthorized', detail: String(err) }), {
+    console.error('Auth error:', err)
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
@@ -33,7 +34,13 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', userId)
         .maybeSingle()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        return new Response(JSON.stringify({ error: 'Database error' }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
 
       return new Response(JSON.stringify({ movies: data?.movies ?? [] }), {
         status: 200,
@@ -59,7 +66,13 @@ Deno.serve(async (req: Request) => {
           { onConflict: 'user_id' },
         )
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        return new Response(JSON.stringify({ error: 'Database error' }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
 
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
@@ -72,7 +85,8 @@ Deno.serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Internal server error', detail: String(err) }), {
+    console.error('Error:', err)
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

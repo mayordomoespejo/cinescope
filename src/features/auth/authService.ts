@@ -95,10 +95,14 @@ export async function deleteAccount(token: string): Promise<void> {
   if (!currentUser) throw new Error('No authenticated user')
 
   // 1. Delete all Supabase data via Edge Function
-  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.deleteAccount), {
+  const res = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.deleteAccount), {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Server deletion failed: ${res.status}`)
+  }
 
   // 2. Re-authenticate to satisfy Firebase's recent-login requirement, then delete
   await reauthenticateWithPopup(currentUser, googleProvider)

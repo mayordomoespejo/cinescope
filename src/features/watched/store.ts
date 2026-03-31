@@ -21,7 +21,7 @@ export interface WatchedItem {
  * @param item - The watched item to persist.
  */
 export async function upsertToSupabase(token: string, item: WatchedItem): Promise<void> {
-  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched), {
+  const response = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -34,6 +34,10 @@ export async function upsertToSupabase(token: string, item: WatchedItem): Promis
       watched_at: item.watched_at,
     }),
   })
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
+  }
 }
 
 /**
@@ -47,7 +51,7 @@ export async function deleteFromSupabase(
   mediaId: number,
   mediaType: MediaType
 ): Promise<void> {
-  await fetch(
+  const response = await fetch(
     `${edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched)}?media_id=${mediaId}&media_type=${mediaType}`,
     {
       method: 'DELETE',
@@ -56,6 +60,10 @@ export async function deleteFromSupabase(
       },
     }
   )
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
+  }
 }
 
 /**
@@ -70,8 +78,15 @@ export async function hydrateWatched(token: string): Promise<WatchedItem[]> {
 
   if (!res.ok) return []
 
-  const data = (await res.json()) as {
-    items?: Array<{
+  const data = (await res.json()) as unknown
+
+  if (!Array.isArray((data as { items?: unknown })?.items)) {
+    console.warn('[cinescope] Unexpected watched response shape:', data)
+    return []
+  }
+
+  const typed = data as {
+    items: Array<{
       media_id: number
       media_type: MediaType
       media_data: Movie | TVShow
@@ -79,9 +94,9 @@ export async function hydrateWatched(token: string): Promise<WatchedItem[]> {
     }>
   }
 
-  if (!data.items?.length) return []
+  if (!typed.items.length) return []
 
-  return data.items.map(row => ({
+  return typed.items.map(row => ({
     media_id: row.media_id,
     media_type: row.media_type,
     media_data: row.media_data,
