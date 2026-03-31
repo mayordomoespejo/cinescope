@@ -33,13 +33,17 @@ export function useFavorites() {
     if (user && user.uid !== prevUserIdRef.current) {
       prevUserIdRef.current = user.uid
       setIsLoading(true)
+      const controller = new AbortController()
       ;(async () => {
-        const token = await user.getIdToken()
+        const token = await user.getIdToken(false)
+        if (controller.signal.aborted) return
         const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(token)
+        if (controller.signal.aborted) return
         setFavorites(favs)
         setWatchlist(watch)
         setIsLoading(false)
       })().catch(err => console.warn('[cinescope] Failed to hydrate from Supabase:', err))
+      return () => controller.abort()
     } else if (!user) {
       prevUserIdRef.current = null
       setFavorites([])

@@ -12,6 +12,7 @@ export function useTVCredits(tvId: number | null) {
     queryKey: queryKeys.tvCredits(tvId ?? 0),
     queryFn: () => fetchTVCredits(tvId!),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
     enabled: tvId !== null && tvId > 0,
   })
 }

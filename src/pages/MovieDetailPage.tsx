@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useMovieDetail } from '@/features/movies/hooks/useMovieDetail'
 import { useMovieVideos } from '@/features/movies/hooks/useMovieVideos'
@@ -61,12 +62,12 @@ export default function MovieDetailPage() {
       }
     : null
 
-  const movieExtras: MovieExtras = {
+  const movieExtras: MovieExtras = useMemo(() => ({
     runtime: movie?.runtime,
     budget: movie?.budget,
     revenue: movie?.revenue,
     productionCompanies: movie?.production_companies,
-  }
+  }), [movie?.runtime, movie?.budget, movie?.revenue, movie?.production_companies])
 
   // Recommendations slot: rendered as individual listitem divs
   const recommendationsSlot =
