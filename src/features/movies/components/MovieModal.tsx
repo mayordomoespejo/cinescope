@@ -60,10 +60,14 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
     }
     // Videos finished loading but no trailer found — reset play state to avoid a stuck spinner.
     if (!loadingVideos && !videos?.results?.length) {
-      setPlayWhenReady(false)
-      setTrailerPlaying(false)
+      const t = setTimeout(() => {
+        setPlayWhenReady(false)
+        setTrailerPlaying(false)
+      }, 0)
+      return () => clearTimeout(t)
     }
-  }, [playWhenReady, trailer, trailerPlaying, loadingVideos, videos])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadingVideos, videos])
 
   return (
     <Dialog.Root open onOpenChange={open => !open && onClose()}>
