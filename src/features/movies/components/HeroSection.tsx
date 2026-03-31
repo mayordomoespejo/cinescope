@@ -17,11 +17,7 @@ interface HeroSectionProps {
  * @description Full-width hero banner displaying a featured movie with backdrop image, metadata, and action buttons.
  * @param props - Component props
  */
-export default function HeroSection({
-  movie,
-  isLoading,
-  onOpenMovie,
-}: HeroSectionProps) {
+export default function HeroSection({ movie, isLoading, onOpenMovie }: HeroSectionProps) {
   const [imgLoaded, setImgLoaded] = useState(false)
 
   if (isLoading) {

@@ -27,25 +27,25 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + TypeScript 5 |
-| Build | Vite 7 |
-| Routing | React Router v7 |
-| Data fetching | TanStack Query v5 |
-| Styling | CSS Modules + CSS custom properties (design tokens) |
-| Auth | Firebase Authentication (email/password + Google OAuth) |
-| Backend | Supabase Edge Functions (Deno) |
-| Database | Supabase (PostgreSQL) |
-| Data | TMDB API v4 |
-| UI primitives | Radix UI (Dialog, Tabs, Dropdown, Select, Tooltip) |
-| Animations | Framer Motion |
-| Drag & Drop | dnd-kit |
-| Unit tests | Vitest + Testing Library |
-| E2E tests | Playwright |
-| Lint / format | ESLint + Prettier |
-| Git hooks | Husky + lint-staged |
-| Deploy | Vercel |
+| Layer         | Technology                                              |
+| ------------- | ------------------------------------------------------- |
+| Framework     | React 19 + TypeScript 5                                 |
+| Build         | Vite 7                                                  |
+| Routing       | React Router v7                                         |
+| Data fetching | TanStack Query v5                                       |
+| Styling       | CSS Modules + CSS custom properties (design tokens)     |
+| Auth          | Firebase Authentication (email/password + Google OAuth) |
+| Backend       | Supabase Edge Functions (Deno)                          |
+| Database      | Supabase (PostgreSQL)                                   |
+| Data          | TMDB API v4                                             |
+| UI primitives | Radix UI (Dialog, Tabs, Dropdown, Select, Tooltip)      |
+| Animations    | Framer Motion                                           |
+| Drag & Drop   | dnd-kit                                                 |
+| Unit tests    | Vitest + Testing Library                                |
+| E2E tests     | Playwright                                              |
+| Lint / format | ESLint + Prettier                                       |
+| Git hooks     | Husky + lint-staged                                     |
+| Deploy        | Vercel                                                  |
 
 ---
 
@@ -119,17 +119,17 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-| Variable | Description |
-|----------|------------|
-| `VITE_TMDB_ACCESS_TOKEN` | TMDB API v4 Read Access Token |
-| `VITE_SUPABASE_URL` | Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous (public) key |
-| `VITE_FIREBASE_API_KEY` | Firebase project API key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain (e.g. `project-id.firebaseapp.com`) |
-| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
-| `VITE_FIREBASE_APP_ID` | Firebase app ID |
+| Variable                            | Description                                              |
+| ----------------------------------- | -------------------------------------------------------- |
+| `VITE_TMDB_ACCESS_TOKEN`            | TMDB API v4 Read Access Token                            |
+| `VITE_SUPABASE_URL`                 | Supabase project URL                                     |
+| `VITE_SUPABASE_ANON_KEY`            | Supabase anonymous (public) key                          |
+| `VITE_FIREBASE_API_KEY`             | Firebase project API key                                 |
+| `VITE_FIREBASE_AUTH_DOMAIN`         | Firebase auth domain (e.g. `project-id.firebaseapp.com`) |
+| `VITE_FIREBASE_PROJECT_ID`          | Firebase project ID                                      |
+| `VITE_FIREBASE_STORAGE_BUCKET`      | Firebase storage bucket                                  |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID                             |
+| `VITE_FIREBASE_APP_ID`              | Firebase app ID                                          |
 
 ### Run the dev server
 
@@ -191,19 +191,19 @@ Favorites, watchlist, watched history, and ratings are written to **localStorage
 
 ## Available Scripts
 
-| Command | Description |
-|---------|------------|
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Type-check and build for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Run ESLint with auto-fix |
-| `npm run format` | Format all files with Prettier |
-| `npm run format:check` | Check formatting without writing |
-| `npm run test` | Run unit tests with Vitest |
-| `npm run test:watch` | Run unit tests in watch mode |
-| `npm run test:coverage` | Generate test coverage report |
-| `npm run test:e2e` | Run Playwright end-to-end tests |
+| Command                 | Description                          |
+| ----------------------- | ------------------------------------ |
+| `npm run dev`           | Start the Vite development server    |
+| `npm run build`         | Type-check and build for production  |
+| `npm run preview`       | Preview the production build locally |
+| `npm run lint`          | Run ESLint                           |
+| `npm run lint:fix`      | Run ESLint with auto-fix             |
+| `npm run format`        | Format all files with Prettier       |
+| `npm run format:check`  | Check formatting without writing     |
+| `npm run test`          | Run unit tests with Vitest           |
+| `npm run test:watch`    | Run unit tests in watch mode         |
+| `npm run test:coverage` | Generate test coverage report        |
+| `npm run test:e2e`      | Run Playwright end-to-end tests      |
 
 ---
 
@@ -211,20 +211,20 @@ Favorites, watchlist, watched history, and ratings are written to **localStorage
 
 All functions run on Deno and require a valid Firebase ID token in the `Authorization: Bearer <token>` header. Authentication is handled by shared helpers in `supabase/functions/_shared/`.
 
-| Function | Methods | Purpose |
-|----------|---------|---------|
-| `sync-favorites` | `GET`, `POST` | Read and upsert the user's favorite movies list |
-| `sync-watchlist` | `GET`, `POST` | Read and upsert the user's watchlist |
-| `sync-watched` | `GET`, `POST`, `DELETE` | Read, upsert, and remove entries from the user's watched history |
+| Function         | Methods                 | Purpose                                                          |
+| ---------------- | ----------------------- | ---------------------------------------------------------------- |
+| `sync-favorites` | `GET`, `POST`           | Read and upsert the user's favorite movies list                  |
+| `sync-watchlist` | `GET`, `POST`           | Read and upsert the user's watchlist                             |
+| `sync-watched`   | `GET`, `POST`, `DELETE` | Read, upsert, and remove entries from the user's watched history |
 
 The `_shared/` directory contains modules reused across all functions:
 
-| Module | Purpose |
-|--------|---------|
-| `auth.ts` | `requireAuth` helper — extracts and verifies the Bearer token |
-| `firebaseAuth.ts` | Firebase Admin SDK initialization |
-| `supabaseClient.ts` | Supabase Admin client factory |
-| `cors.ts` | CORS headers and preflight (`OPTIONS`) handler |
+| Module              | Purpose                                                       |
+| ------------------- | ------------------------------------------------------------- |
+| `auth.ts`           | `requireAuth` helper — extracts and verifies the Bearer token |
+| `firebaseAuth.ts`   | Firebase Admin SDK initialization                             |
+| `supabaseClient.ts` | Supabase Admin client factory                                 |
+| `cors.ts`           | CORS headers and preflight (`OPTIONS`) handler                |
 
 ---
 
@@ -236,16 +236,16 @@ Styles use CSS Modules for component-level encapsulation paired with a global se
 
 **Token categories:**
 
-| Category | Examples |
-|----------|---------|
-| Colors | `--color-bg`, `--color-accent` (`#e8a838`), `--color-text-primary`, `--color-surface` |
-| Typography | `--font-family` (Inter), `--font-size-xs` through `--font-size-hero`, `--font-weight-*` |
-| Spacing | `--space-1` through `--space-24` (4 px base unit) |
-| Border radius | `--radius-xs` through `--radius-full` |
-| Shadows | `--shadow-sm` through `--shadow-xl` |
-| Transitions | `--transition-fast` (120 ms), `--transition-base` (220 ms), `--transition-slow` (380 ms) |
-| Layout | `--navbar-height` (64 px), `--max-width` (1400 px), `--content-padding` |
-| Z-index | `--z-base` through `--z-toast` |
+| Category      | Examples                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| Colors        | `--color-bg`, `--color-accent` (`#e8a838`), `--color-text-primary`, `--color-surface`    |
+| Typography    | `--font-family` (Inter), `--font-size-xs` through `--font-size-hero`, `--font-weight-*`  |
+| Spacing       | `--space-1` through `--space-24` (4 px base unit)                                        |
+| Border radius | `--radius-xs` through `--radius-full`                                                    |
+| Shadows       | `--shadow-sm` through `--shadow-xl`                                                      |
+| Transitions   | `--transition-fast` (120 ms), `--transition-base` (220 ms), `--transition-slow` (380 ms) |
+| Layout        | `--navbar-height` (64 px), `--max-width` (1400 px), `--content-padding`                  |
+| Z-index       | `--z-base` through `--z-toast`                                                           |
 
 ---
 

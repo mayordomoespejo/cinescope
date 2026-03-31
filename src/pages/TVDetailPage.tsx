@@ -110,8 +110,7 @@ export default function TVDetailPage() {
       onToggleFavorite={() => showAsMovie && toggleFavorite(showAsMovie)}
       onToggleWatchlist={() => showAsMovie && toggleWatchlist(showAsMovie)}
       onToggleWatched={() =>
-        show &&
-        toggleWatched({ media_id: show.id, media_type: 'tv', media_data: show })
+        show && toggleWatched({ media_id: show.id, media_type: 'tv', media_data: show })
       }
     />
   )

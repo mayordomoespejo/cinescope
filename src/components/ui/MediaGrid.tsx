@@ -77,7 +77,11 @@ export default function MediaGrid({
 
   if (isLoading) {
     return (
-      <div className={`${styles.grid}${className ? ` ${className}` : ''}`} aria-busy="true" aria-label={`Loading ${ariaLabel}`}>
+      <div
+        className={`${styles.grid}${className ? ` ${className}` : ''}`}
+        aria-busy="true"
+        aria-label={`Loading ${ariaLabel}`}
+      >
         {Array.from({ length: skeletonCount }, (_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -114,9 +118,10 @@ export default function MediaGrid({
         aria-label={ariaLabel}
       >
         <AnimatePresence>{children}</AnimatePresence>
-        {isFetchingMore && Array.from({ length: fetchingMoreCount }, (_, i) => (
-          <SkeletonCard key={`fetching-${i}`} />
-        ))}
+        {isFetchingMore &&
+          Array.from({ length: fetchingMoreCount }, (_, i) => (
+            <SkeletonCard key={`fetching-${i}`} />
+          ))}
       </motion.div>
 
       {hasMore && onLoadMore && !isFetchingMore && (

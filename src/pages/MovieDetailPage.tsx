@@ -62,12 +62,15 @@ export default function MovieDetailPage() {
       }
     : null
 
-  const movieExtras: MovieExtras = useMemo(() => ({
-    runtime: movie?.runtime,
-    budget: movie?.budget,
-    revenue: movie?.revenue,
-    productionCompanies: movie?.production_companies,
-  }), [movie?.runtime, movie?.budget, movie?.revenue, movie?.production_companies])
+  const movieExtras: MovieExtras = useMemo(
+    () => ({
+      runtime: movie?.runtime,
+      budget: movie?.budget,
+      revenue: movie?.revenue,
+      productionCompanies: movie?.production_companies,
+    }),
+    [movie?.runtime, movie?.budget, movie?.revenue, movie?.production_companies]
+  )
 
   // Recommendations slot: rendered as individual listitem divs
   const recommendationsSlot =
@@ -101,7 +104,11 @@ export default function MovieDetailPage() {
       onToggleWatchlist={() => movieAsBase && toggleWatchlist(movieAsBase)}
       onToggleWatched={() =>
         movie &&
-        toggleWatched({ media_id: movie.id, media_type: 'movie', media_data: movieDetailAsBase(movie) })
+        toggleWatched({
+          media_id: movie.id,
+          media_type: 'movie',
+          media_data: movieDetailAsBase(movie),
+        })
       }
     />
   )

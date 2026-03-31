@@ -29,7 +29,8 @@ export const queryKeys = {
 
   personMovieCredits: (id: number) => ['person', id, 'movie_credits'] as const,
 
-  tvTrending: (timeWindow: 'day' | 'week' = 'day', page: number = 1) => ['tv', 'trending', timeWindow, page] as const,
+  tvTrending: (timeWindow: 'day' | 'week' = 'day', page: number = 1) =>
+    ['tv', 'trending', timeWindow, page] as const,
 
   tvTopRated: (page: number = 1) => ['tv', 'topRated', page] as const,
 

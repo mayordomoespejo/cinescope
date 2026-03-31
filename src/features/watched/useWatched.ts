@@ -1,11 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { auth } from '@/features/auth/firebaseConfig'
 import { onAuthStateChanged } from '@/features/auth/authService'
-import {
-  upsertToSupabase,
-  deleteFromSupabase,
-  hydrateWatched,
-} from './store'
+import { upsertToSupabase, deleteFromSupabase, hydrateWatched } from './store'
 import type { WatchedItem, MediaType } from './store'
 
 /**

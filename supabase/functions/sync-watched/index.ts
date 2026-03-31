@@ -60,18 +60,16 @@ Deno.serve(async (req: Request) => {
         })
       }
 
-      const { error } = await supabase
-        .from('watched')
-        .upsert(
-          {
-            user_id: userId,
-            media_id,
-            media_type,
-            media_data: media_data ?? null,
-            watched_at: watched_at ?? new Date().toISOString(),
-          },
-          { onConflict: 'user_id,media_id,media_type' },
-        )
+      const { error } = await supabase.from('watched').upsert(
+        {
+          user_id: userId,
+          media_id,
+          media_type,
+          media_data: media_data ?? null,
+          watched_at: watched_at ?? new Date().toISOString(),
+        },
+        { onConflict: 'user_id,media_id,media_type' }
+      )
 
       if (error) {
         console.error('Supabase error:', error)

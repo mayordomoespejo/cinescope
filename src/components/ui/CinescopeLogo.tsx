@@ -43,10 +43,7 @@ export default function CinescopeLogo({ variant = 'navbar', className }: Cinesco
     )
 
   return (
-    <div
-      className={`${styles.wrap}${className ? ` ${className}` : ''}`}
-      data-variant={variant}
-    >
+    <div className={`${styles.wrap}${className ? ` ${className}` : ''}`} data-variant={variant}>
       {filmStrip}
       {logoText}
       {filmStrip}

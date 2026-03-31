@@ -22,7 +22,18 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
  * Supports `asChild` via Radix Slot to render as any element (e.g. NavLink).
  */
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ size = 'md', active = false, success = false, glass = false, asChild = false, className, ...props }, ref) => {
+  (
+    {
+      size = 'md',
+      active = false,
+      success = false,
+      glass = false,
+      asChild = false,
+      className,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : 'button'
 
     const classes = [
@@ -36,14 +47,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       .filter(Boolean)
       .join(' ')
 
-    return (
-      <Comp
-        ref={ref}
-        type={asChild ? undefined : 'button'}
-        className={classes}
-        {...props}
-      />
-    )
+    return <Comp ref={ref} type={asChild ? undefined : 'button'} className={classes} {...props} />
   }
 )
 
