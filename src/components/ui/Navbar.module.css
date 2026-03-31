@@ -261,13 +261,17 @@
 }
 
 /* Auth — Avatar button (extends IconButton size="sm") */
+/* transform: none is locked here so Radix can anchor the dropdown to a
+   stable bounding box — IconButton applies scale(1.08) on hover which
+   causes the trigger rect to shift and the dropdown to reposition. */
 .avatarBtn {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
+  transform: none !important;
 }
 
 .avatarBtn:hover {
-  transform: none;
+  transform: none !important;
 }
 
 /* Auth — Dropdown menu */
