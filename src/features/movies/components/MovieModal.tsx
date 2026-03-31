@@ -58,7 +58,12 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
         setPlayWhenReady(false)
       })
     }
-  }, [playWhenReady, trailer, trailerPlaying])
+    // Videos finished loading but no trailer found — reset play state to avoid a stuck spinner.
+    if (!loadingVideos && !videos?.results?.length) {
+      setPlayWhenReady(false)
+      setTrailerPlaying(false)
+    }
+  }, [playWhenReady, trailer, trailerPlaying, loadingVideos, videos])
 
   return (
     <Dialog.Root open onOpenChange={open => !open && onClose()}>

@@ -18,8 +18,10 @@ function readStorage<T>(key: string, fallback: T): T {
 function writeStorage<T>(key: string, value: T): void {
   try {
     localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    /* storage full – ignore */
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'QuotaExceededError') {
+      console.warn('localStorage quota exceeded — data may not be persisted')
+    }
   }
 }
 
@@ -56,7 +58,7 @@ export function clearSearchHistory(): void {
  * @param movies - Current list of favorite movies to persist.
  */
 export async function syncFavoritesToSupabase(token: string, movies: Movie[]): Promise<void> {
-  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
+  const response = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -64,6 +66,10 @@ export async function syncFavoritesToSupabase(token: string, movies: Movie[]): P
     },
     body: JSON.stringify({ movies }),
   })
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
+  }
 }
 
 /**
@@ -72,7 +78,7 @@ export async function syncFavoritesToSupabase(token: string, movies: Movie[]): P
  * @param movies - Current watchlist movies to persist.
  */
 export async function syncWatchlistToSupabase(token: string, movies: Movie[]): Promise<void> {
-  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
+  const response = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -80,6 +86,10 @@ export async function syncWatchlistToSupabase(token: string, movies: Movie[]): P
     },
     body: JSON.stringify({ movies }),
   })
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
+  }
 }
 
 /**
@@ -101,14 +111,23 @@ export async function hydrateFromSupabase(
   ])
 
   const [favData, watchData] = await Promise.all([
-    favRes.ok ? (favRes.json() as Promise<{ movies: Movie[] }>) : Promise.resolve({ movies: [] }),
-    watchRes.ok
-      ? (watchRes.json() as Promise<{ movies: Movie[] }>)
-      : Promise.resolve({ movies: [] }),
+    favRes.ok ? (favRes.json() as Promise<unknown>) : Promise.resolve({ movies: [] }),
+    watchRes.ok ? (watchRes.json() as Promise<unknown>) : Promise.resolve({ movies: [] }),
   ])
 
+  if (!Array.isArray((favData as { movies?: unknown })?.movies)) {
+    console.warn('[cinescope] Unexpected favorites response shape:', favData)
+  }
+  if (!Array.isArray((watchData as { movies?: unknown })?.movies)) {
+    console.warn('[cinescope] Unexpected watchlist response shape:', watchData)
+  }
+
   return {
-    favorites: favData.movies ?? [],
-    watchlist: watchData.movies ?? [],
+    favorites: Array.isArray((favData as { movies?: Movie[] })?.movies)
+      ? (favData as { movies: Movie[] }).movies
+      : [],
+    watchlist: Array.isArray((watchData as { movies?: Movie[] })?.movies)
+      ? (watchData as { movies: Movie[] }).movies
+      : [],
   }
 }

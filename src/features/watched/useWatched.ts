@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { onAuthStateChanged } from '@/features/auth/authService'
+import { auth } from '@/features/auth/firebaseConfig'
 import {
   upsertToSupabase,
   deleteFromSupabase,
@@ -58,9 +59,17 @@ export function useWatched() {
    * @param item - The media item to toggle (without watched_at).
    */
   const toggleWatched = useCallback(
-    (item: Omit<WatchedItem, 'watched_at'>): void => {
-      const token = tokenRef.current
-      if (!token) return
+    async (item: Omit<WatchedItem, 'watched_at'>): Promise<void> => {
+      const currentUser = auth.currentUser
+      if (!currentUser) {
+        console.warn('[cinescope] toggleWatched called without authenticated user')
+        return
+      }
+      const token = await currentUser.getIdToken(false)
+      if (!token) {
+        console.warn('[cinescope] toggleWatched: could not obtain token')
+        return
+      }
 
       setWatchedList(prev => {
         const already = prev.some(
