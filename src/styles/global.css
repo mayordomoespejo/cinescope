@@ -12,11 +12,13 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  /* overflow-y: scroll keeps the scrollbar always visible so window.innerWidth
-     always equals document.documentElement.clientWidth. react-remove-scroll-bar
-     computes gap = window.innerWidth - clientWidth, which is 0, so it injects
-     margin-right: 0px !important — no layout shift when modals/selects open. */
+  /* overflow-y: scroll keeps the scrollbar always visible.
+     scrollbar-gutter: stable reserves the scrollbar lane permanently so that
+     window.innerWidth - document.documentElement.clientWidth === 0 at all times.
+     react-remove-scroll-bar measures this gap and injects margin-right equal to it,
+     so a gap of 0 means it injects margin-right: 0px — no layout shift. */
   overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 /* Belt-and-suspenders: also zero out the margin-right compensation in case
