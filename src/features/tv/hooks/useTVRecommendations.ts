@@ -13,6 +13,7 @@ export function useTVRecommendations(tvId: number | null, page: number = 1) {
     queryKey: queryKeys.tvRecommendations(tvId ?? 0, page),
     queryFn: () => fetchTVRecommendations(tvId!, page),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
     enabled: tvId !== null && tvId > 0,
   })
 }
