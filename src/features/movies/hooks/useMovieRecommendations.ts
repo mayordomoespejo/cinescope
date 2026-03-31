@@ -13,6 +13,7 @@ export function useMovieRecommendations(id: number | null, page: number = 1) {
     queryKey: queryKeys.movieRecommendations(id ?? 0, page),
     queryFn: () => fetchMovieRecommendations(id!, page),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
     enabled: id !== null && id > 0,
   })
 }

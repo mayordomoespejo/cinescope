@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { onAuthStateChanged } from '@/features/auth/authService'
 import { auth } from '@/features/auth/firebaseConfig'
 import {
   upsertToSupabase,

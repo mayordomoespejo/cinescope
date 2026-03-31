@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/useAuth'
 import { useWatched } from '@/features/watched/useWatched'
@@ -150,8 +150,11 @@ export default function ProfilePage() {
   const initial = getInitial(user?.displayName ?? null, user?.email ?? null)
 
   // Sort watched list most-recently-watched first
-  const sortedWatched = [...watchedList].sort(
-    (a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime()
+  const sortedWatched = useMemo(
+    () => [...watchedList].sort(
+      (a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime()
+    ),
+    [watchedList]
   )
 
   function handleRemoveWatched(item: WatchedItem) {
