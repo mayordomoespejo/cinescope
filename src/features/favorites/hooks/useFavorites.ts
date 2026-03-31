@@ -32,9 +32,9 @@ export function useFavorites() {
   useEffect(() => {
     if (user && user.uid !== prevUserIdRef.current) {
       prevUserIdRef.current = user.uid
-      setIsLoading(true)
       const controller = new AbortController()
       ;(async () => {
+        setIsLoading(true)
         const token = await user.getIdToken(false)
         if (controller.signal.aborted) return
         const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(token)
@@ -46,9 +46,12 @@ export function useFavorites() {
       return () => controller.abort()
     } else if (!user) {
       prevUserIdRef.current = null
-      setFavorites([])
-      setWatchlist([])
-      setIsLoading(false)
+      const t = setTimeout(() => {
+        setFavorites([])
+        setWatchlist([])
+        setIsLoading(false)
+      }, 0)
+      return () => clearTimeout(t)
     }
   }, [user])
 

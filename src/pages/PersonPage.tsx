@@ -105,7 +105,10 @@ export default function PersonPage() {
       : tab === 'directing' ? credits.crew.filter(c => c.job === 'Director').length > 0
       : credits.crew.filter(c => c.job === 'Writer' || c.job === 'Screenplay' || c.department === 'Writing').length > 0
     )
-    setActiveTab(prev => available.includes(prev) ? prev : (available[0] ?? prev))
+    const t = setTimeout(() => {
+      setActiveTab(prev => available.includes(prev) ? prev : (available[0] ?? prev))
+    }, 0)
+    return () => clearTimeout(t)
   }, [credits])
 
   const isLoading = personLoading || creditsLoading

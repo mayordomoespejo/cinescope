@@ -24,6 +24,7 @@ import SortDropdown from '@/features/filters/components/SortDropdown'
 import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import type { SortOption } from '@/lib/config'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
+import type { TVShow } from '@/features/tv/types/tv'
 import PageContent from '@/components/ui/PageContent'
 import styles from './BrowsePage.module.css'
 
@@ -171,6 +172,10 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
     setDiscoverPage(1)
   }
 
+  const handleToggleFavoriteTV = (show: TVShow) => {
+    void toggleFavorite(show as unknown as Parameters<typeof toggleFavorite>[0])
+  }
+
   // ── Search mode ───────────────────────────────────────────────────────────
   if (searchQuery) {
     if (mediaType === 'movie') {
@@ -226,7 +231,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
             onOpenShow={handleOpenShow}
             emptyMessage={`No results for "${searchQuery}"`}
             favorites={favoriteIds}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavoriteTV}
           />
         </PageContent>
       </div>
@@ -319,7 +324,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
           isLoading={tvTrendingLoading}
           onOpenShow={handleOpenShow}
           favorites={favoriteIds}
-          onToggleFavorite={toggleFavorite}
+          onToggleFavorite={handleToggleFavoriteTV}
         />
 
         {/* Top Rated carousel */}
@@ -329,7 +334,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
           isLoading={tvTopRatedLoading}
           onOpenShow={handleOpenShow}
           favorites={favoriteIds}
-          onToggleFavorite={toggleFavorite}
+          onToggleFavorite={handleToggleFavoriteTV}
         />
 
         {/* Discover section with filters */}
@@ -381,7 +386,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
             onOpenShow={handleOpenShow}
             onLoadMore={() => setDiscoverPage(p => p + 1)}
             favorites={favoriteIds}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavoriteTV}
           />
         </section>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react'
+import { useState, memo } from 'react'
 import {
   DndContext,
   DragOverlay,
