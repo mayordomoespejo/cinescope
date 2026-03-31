@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, memo } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -48,7 +48,7 @@ interface SortableCardProps {
   onToggleFavorite?: (movie: Movie) => void
 }
 
-function SortableMovieCard({
+const SortableMovieCard = memo(function SortableMovieCard({
   movie,
   onOpen,
   onPrefetch,
@@ -98,7 +98,7 @@ function SortableMovieCard({
       />
     </div>
   )
-}
+})
 
 // ── Sortable grid ──────────────────────────────────────────────────────────
 

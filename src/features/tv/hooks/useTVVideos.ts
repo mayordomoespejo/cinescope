@@ -23,6 +23,7 @@ export function useTVVideos(id: number | null) {
     queryKey: queryKeys.tvVideos(id ?? 0),
     queryFn: () => fetchTVVideosForQuery(id!),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
     enabled: id !== null && id > 0,
   })
 }
