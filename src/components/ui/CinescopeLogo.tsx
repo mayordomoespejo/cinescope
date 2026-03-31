@@ -1,7 +1,10 @@
 import styles from './CinescopeLogo.module.css'
 
+/** Props for CinescopeLogo */
 interface CinescopeLogoProps {
+  /** Visual variant controlling size and frame count. Defaults to `"navbar"`. */
   variant?: 'navbar' | 'hero'
+  /** Optional extra CSS class applied to the root wrapper. */
   className?: string
 }
 

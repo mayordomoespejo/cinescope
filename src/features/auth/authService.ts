@@ -10,6 +10,7 @@ import {
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
 import { auth } from './firebaseConfig'
+import { edgeFunctionUrl, SUPABASE_FUNCTIONS } from '@/lib/supabaseFunctions'
 
 const googleProvider = new GoogleAuthProvider()
 
@@ -46,7 +47,7 @@ export async function smartAuth(email: string, password: string): Promise<User> 
   try {
     return await signUpWithEmail(email, password)
   } catch (err: unknown) {
-    const code = (err as { code?: string }).code
+    const code = err instanceof Error && 'code' in err ? (err as { code: string }).code : ''
     if (code === 'auth/email-already-in-use') {
       return await signInWithEmail(email, password)
     }
@@ -94,7 +95,7 @@ export async function deleteAccount(token: string): Promise<void> {
   if (!currentUser) throw new Error('No authenticated user')
 
   // 1. Delete all Supabase data via Edge Function
-  await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.deleteAccount), {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   })

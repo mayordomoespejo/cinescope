@@ -55,6 +55,11 @@ function useActiveIndex(): number {
   return 0
 }
 
+/**
+ * BottomNav — fixed mobile navigation bar with Home, TV Shows, Favorites, and Profile tabs.
+ *
+ * Renders a sliding indicator that tracks the active route. Hidden on desktop via CSS.
+ */
 export default function BottomNav() {
   const activeIndex = useActiveIndex()
 

@@ -266,6 +266,10 @@
   font-weight: var(--font-weight-bold);
 }
 
+.avatarBtn:hover {
+  transform: none;
+}
+
 /* Auth — Dropdown menu */
 .dropdownContent {
   min-width: 220px;
@@ -274,7 +278,7 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: var(--space-2);
-  z-index: var(--z-dropdown);
+  z-index: 500;
 }
 
 .dropdownUserInfo {

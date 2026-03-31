@@ -33,12 +33,13 @@ export function useFavorites() {
     if (user && user.uid !== prevUserIdRef.current) {
       prevUserIdRef.current = user.uid
       setIsLoading(true)
-      void user.getIdToken().then(async token => {
+      ;(async () => {
+        const token = await user.getIdToken()
         const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(token)
         setFavorites(favs)
         setWatchlist(watch)
         setIsLoading(false)
-      })
+      })().catch(err => console.warn('[cinescope] Failed to hydrate from Supabase:', err))
     } else if (!user) {
       prevUserIdRef.current = null
       setFavorites([])
@@ -53,7 +54,9 @@ export function useFavorites() {
       setFavorites(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token) void syncFavoritesToSupabase(token, updated)
+        if (token) syncFavoritesToSupabase(token, updated).catch(err =>
+          console.warn('[cinescope] Failed to sync favorites:', err)
+        )
         return updated
       })
     },
@@ -66,7 +69,9 @@ export function useFavorites() {
       setWatchlist(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token) void syncWatchlistToSupabase(token, updated)
+        if (token) syncWatchlistToSupabase(token, updated).catch(err =>
+          console.warn('[cinescope] Failed to sync watchlist:', err)
+        )
         return updated
       })
     },
@@ -87,7 +92,9 @@ export function useFavorites() {
     async (newOrder: Movie[]) => {
       setFavorites(newOrder)
       const token = await getToken()
-      if (token) void syncFavoritesToSupabase(token, newOrder)
+      if (token) syncFavoritesToSupabase(token, newOrder).catch(err =>
+        console.warn('[cinescope] Failed to sync favorites:', err)
+      )
     },
     [getToken]
   )
@@ -96,7 +103,9 @@ export function useFavorites() {
     async (newOrder: Movie[]) => {
       setWatchlist(newOrder)
       const token = await getToken()
-      if (token) void syncWatchlistToSupabase(token, newOrder)
+      if (token) syncWatchlistToSupabase(token, newOrder).catch(err =>
+        console.warn('[cinescope] Failed to sync watchlist:', err)
+      )
     },
     [getToken]
   )

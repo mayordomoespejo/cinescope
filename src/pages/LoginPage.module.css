@@ -32,6 +32,7 @@
 /* ── Logo link ── */
 .logoLink {
   display: inline-flex;
+  align-self: center;
   text-decoration: none;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-extrabold);

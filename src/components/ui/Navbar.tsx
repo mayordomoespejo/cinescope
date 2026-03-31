@@ -289,7 +289,7 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
           {/* Auth */}
           {!authLoading &&
             (user ? (
-              <DropdownMenu.Root>
+              <DropdownMenu.Root modal={false}>
                 <DropdownMenu.Trigger asChild>
                   <IconButton
                     size="sm"
