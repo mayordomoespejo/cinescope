@@ -1,6 +1,5 @@
 import type { Movie } from '@/features/movies/types/movie'
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+import { edgeFunctionUrl, SUPABASE_FUNCTIONS } from '@/lib/supabaseFunctions'
 
 // ── Search history (localStorage — UX convenience only) ────────────
 
@@ -57,7 +56,7 @@ export function clearSearchHistory(): void {
  * @param movies - Current list of favorite movies to persist.
  */
 export async function syncFavoritesToSupabase(token: string, movies: Movie[]): Promise<void> {
-  await fetch(`${SUPABASE_URL}/functions/v1/sync-favorites`, {
+  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -73,7 +72,7 @@ export async function syncFavoritesToSupabase(token: string, movies: Movie[]): P
  * @param movies - Current watchlist movies to persist.
  */
 export async function syncWatchlistToSupabase(token: string, movies: Movie[]): Promise<void> {
-  await fetch(`${SUPABASE_URL}/functions/v1/sync-watchlist`, {
+  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -93,10 +92,10 @@ export async function hydrateFromSupabase(
   token: string
 ): Promise<{ favorites: Movie[]; watchlist: Movie[] }> {
   const [favRes, watchRes] = await Promise.all([
-    fetch(`${SUPABASE_URL}/functions/v1/sync-favorites`, {
+    fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
       headers: { Authorization: `Bearer ${token}` },
     }),
-    fetch(`${SUPABASE_URL}/functions/v1/sync-watchlist`, {
+    fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
       headers: { Authorization: `Bearer ${token}` },
     }),
   ])

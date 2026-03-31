@@ -22,7 +22,7 @@ const SORT_LABELS: Record<SortOption, string> = {
  */
 export default function SortDropdown({ value, onChange }: SortDropdownProps) {
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger className={styles.trigger} aria-label="Sort movies by">
         <span className={styles.triggerIcon} aria-hidden="true">
           <svg

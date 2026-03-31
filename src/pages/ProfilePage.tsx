@@ -50,6 +50,26 @@ function getMediaPosterPath(mediaData: Movie | TVShow | undefined): string | nul
   return mediaData?.poster_path ?? null
 }
 
+// ── AnimatedCounter ───────────────────────────────────────────────────────────
+
+/**
+ * Renders a stat number with a YouTube-style vertical carousel animation.
+ * When `value` changes, React re-mounts the element (via `key`) and the CSS
+ * animation replays — new number slides in from below, old one is gone.
+ */
+function AnimatedCounter({ value }: { value: number }) {
+  return (
+    <span
+      key={value}
+      className={`${styles.statValue} ${styles.statValueAnimate}`}
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {value}
+    </span>
+  )
+}
+
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 interface WatchedCardProps {
@@ -190,15 +210,15 @@ export default function ProfilePage() {
         {/* ── Stats Row ────────────────────────────────────────────────── */}
         <section aria-label="Profile statistics" className={styles.statsRow}>
           <div className={styles.statTile}>
-            <span className={styles.statValue}>{favorites.length}</span>
+            <AnimatedCounter value={favorites.length} />
             <span className={styles.statLabel}>Favorites</span>
           </div>
           <div className={styles.statTile}>
-            <span className={styles.statValue}>{watchlist.length}</span>
+            <AnimatedCounter value={watchlist.length} />
             <span className={styles.statLabel}>Watchlist</span>
           </div>
           <div className={styles.statTile}>
-            <span className={styles.statValue}>{watchedList.length}</span>
+            <AnimatedCounter value={watchedList.length} />
             <span className={styles.statLabel}>Watched</span>
           </div>
         </section>

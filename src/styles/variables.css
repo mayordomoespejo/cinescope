@@ -90,6 +90,11 @@
   --max-width: 1400px;
   --content-padding: clamp(1rem, 4vw, 2.5rem);
 
+  /* Carousel card widths */
+  --card-width-sm: 140px; /* mobile */
+  --card-width-md: 160px; /* tablet */
+  --card-width-lg: 175px; /* desktop */
+
   /* Z-index scale */
   --z-base: 0;
   --z-raised: 10;

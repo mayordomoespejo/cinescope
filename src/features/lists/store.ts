@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
+import type { MediaType } from '@/lib/types'
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ export interface CinescopeList {
 export interface ListItem {
   list_id: string
   media_id: number
-  media_type: 'movie' | 'tv'
+  media_type: MediaType
   /** Full TMDB object serialised as JSON column. */
   media_data: Record<string, unknown>
   added_at: string
@@ -113,7 +114,7 @@ export async function fetchListItems(listId: string): Promise<ListItem[]> {
  */
 export async function addToList(
   listId: string,
-  item: { media_id: number; media_type: 'movie' | 'tv'; media_data: Record<string, unknown> }
+  item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
 ): Promise<void> {
   const { error } = await supabase.from('cinescope_list_items').upsert(
     {
@@ -136,7 +137,7 @@ export async function addToList(
 export async function removeFromList(
   listId: string,
   mediaId: number,
-  mediaType: 'movie' | 'tv'
+  mediaType: MediaType
 ): Promise<void> {
   const { error } = await supabase
     .from('cinescope_list_items')
@@ -158,7 +159,7 @@ export async function removeFromList(
 export async function isInList(
   listId: string,
   mediaId: number,
-  mediaType: 'movie' | 'tv'
+  mediaType: MediaType
 ): Promise<boolean> {
   const { data, error } = await supabase
     .from('cinescope_list_items')

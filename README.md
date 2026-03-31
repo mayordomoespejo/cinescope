@@ -33,11 +33,12 @@
 | Build | Vite 7 |
 | Routing | React Router v7 |
 | Data fetching | TanStack Query v5 |
-| Styling | CSS Modules + CSS variables |
-| Auth (identity) | Firebase Authentication |
-| Database & sync | Supabase (PostgreSQL + RLS) |
-| API | TMDB API v4 |
-| UI primitives | Radix UI (Dialog, Tabs, Dropdown, Tooltip) |
+| Styling | CSS Modules + CSS custom properties (design tokens) |
+| Auth | Firebase Authentication (email/password + Google OAuth) |
+| Backend | Supabase Edge Functions (Deno) |
+| Database | Supabase (PostgreSQL) |
+| Data | TMDB API v4 |
+| UI primitives | Radix UI (Dialog, Tabs, Dropdown, Select, Tooltip) |
 | Animations | Framer Motion |
 | Drag & Drop | dnd-kit |
 | Unit tests | Vitest + Testing Library |
@@ -48,27 +49,34 @@
 
 ---
 
-## Architecture
-
-### Dual auth layer
-
-Firebase handles **identity** (sign in, tokens, session lifecycle). Supabase handles **data** (favorites, watchlist, watched, ratings, custom lists) with Row Level Security policies that scope every row to the authenticated user.
-
-When a Firebase user signs in, a Supabase session is created via `supabase.auth.signInWithIdToken`, bridging the Firebase UID to the Supabase RLS context (`auth.uid()::text = user_id`).
-
-### Offline-first data pattern
-
-Favorites, watchlist, watched history, and ratings are read from and written to **localStorage first** for instant UI feedback. Changes are then synced to Supabase in the background. On login, Supabase data is hydrated back into localStorage so the latest state is always available after a session refresh.
-
-### Feature-based folder structure
+## Project Structure
 
 ```
-src/features/{feature}/
-  api/          — TMDB/Supabase fetch functions
-  hooks/        — TanStack Query hooks
-  components/   — React components
-  types/        — TypeScript interfaces and types
-  store.ts      — localStorage + Supabase store functions
+src/
+├── app/              # Router definition and app shell
+├── assets/           # Static assets (images, icons)
+├── components/
+│   └── ui/           # Shared UI components (Layout, Navbar, Button, Skeleton, etc.)
+├── features/         # Domain-specific logic, co-located by feature
+│   ├── auth/         # Firebase auth service, AuthGuard, hooks
+│   ├── favorites/    # Favorites state and components
+│   ├── filters/      # Filter/sort UI and logic
+│   ├── lists/        # Custom user lists with drag-and-drop
+│   ├── movies/       # Movie data fetching and components
+│   ├── tv/           # TV show data fetching and components
+│   └── watched/      # Watched history state and components
+├── hooks/            # Shared custom hooks
+├── lib/              # Supabase client, function URL helpers, Firebase config
+├── pages/            # Route-level page components
+├── styles/           # Global styles and design tokens (variables.css)
+└── tests/            # Unit and integration tests
+
+supabase/
+└── functions/
+    ├── _shared/        # Shared Deno modules (auth, CORS, Supabase client, Firebase Admin)
+    ├── sync-favorites/ # Edge Function: favorites persistence
+    ├── sync-watchlist/ # Edge Function: watchlist persistence
+    └── sync-watched/   # Edge Function: watched history persistence
 ```
 
 ---
@@ -92,36 +100,36 @@ npm install
 
 ### Environment variables
 
-Create a `.env` file at the project root (copy from `.env.example` if present):
+Copy `.env.example` to `.env` and fill in all values:
 
 ```env
-# TMDB
-VITE_TMDB_ACCESS_TOKEN=        # TMDB v4 Bearer token
+# TMDB — https://www.themoviedb.org/settings/api
+VITE_TMDB_ACCESS_TOKEN=        # v4 Read Access Token
 
-# Firebase
+# Supabase — https://supabase.com/dashboard/project/_/settings/api
+VITE_SUPABASE_URL=             # Project URL (e.g. https://xyz.supabase.co)
+VITE_SUPABASE_ANON_KEY=        # Public anon key
+
+# Firebase — https://console.firebase.google.com/project/_/settings/general
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
-
-# Supabase
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
 ```
 
 | Variable | Description |
 |----------|------------|
-| `VITE_TMDB_ACCESS_TOKEN` | TMDB API v4 Read Access Token — get it at [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api) |
+| `VITE_TMDB_ACCESS_TOKEN` | TMDB API v4 Read Access Token |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous (public) key |
 | `VITE_FIREBASE_API_KEY` | Firebase project API key |
 | `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain (e.g. `project-id.firebaseapp.com`) |
 | `VITE_FIREBASE_PROJECT_ID` | Firebase project ID |
 | `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
 | `VITE_FIREBASE_APP_ID` | Firebase app ID |
-| `VITE_SUPABASE_URL` | Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous (public) key |
 
 ### Run the dev server
 
@@ -131,6 +139,54 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
+To create a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## Architecture
+
+### Auth flow
+
+Firebase handles identity (sign-in, tokens, session lifecycle). Supabase handles data persistence (favorites, watchlist, watched history, custom lists) via Edge Functions that verify the caller's Firebase ID token before touching the database.
+
+```
+User
+ └─ Firebase Authentication (email/password or Google OAuth)
+      └─ Firebase ID Token (short-lived JWT)
+           └─ Authorization: Bearer <token>
+                └─ Supabase Edge Function
+                     ├─ Firebase Admin SDK verifies token
+                     └─ Supabase Admin client reads/writes PostgreSQL
+```
+
+All protected routes use `AuthGuard`, which redirects unauthenticated users to `/login`.
+
+### Data flow
+
+```
+Browser
+  │
+  ├─ TMDB API (direct, client-side, read-only)
+  │    Movie/TV metadata, images, search results
+  │
+  └─ Supabase Edge Functions (authenticated via Firebase token)
+       Favorites, Watchlist, Watched history, Custom lists
+         │
+         └─ PostgreSQL (Supabase)
+              Per-user persistent data
+```
+
+TanStack Query manages all remote state — caching, background refetching, optimistic updates, and loading/error states.
+
+### Offline-first data pattern
+
+Favorites, watchlist, watched history, and ratings are written to **localStorage first** for instant UI feedback, then synced to Supabase in the background. On login, Supabase data is hydrated back into localStorage so the latest state is always available after a session refresh.
+
 ---
 
 ## Available Scripts
@@ -138,42 +194,58 @@ Open [http://localhost:5173](http://localhost:5173).
 | Command | Description |
 |---------|------------|
 | `npm run dev` | Start the Vite development server |
-| `npm run build` | Production build |
+| `npm run build` | Type-check and build for production |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint |
 | `npm run lint:fix` | Run ESLint with auto-fix |
 | `npm run format` | Format all files with Prettier |
 | `npm run format:check` | Check formatting without writing |
-| `npm test` | Run unit tests with Vitest |
+| `npm run test` | Run unit tests with Vitest |
 | `npm run test:watch` | Run unit tests in watch mode |
 | `npm run test:coverage` | Generate test coverage report |
 | `npm run test:e2e` | Run Playwright end-to-end tests |
 
 ---
 
-## Project Structure
+## Supabase Edge Functions
 
-```
-src/
-  components/
-    ui/              — Shared UI: Button, Chip, Skeleton, ErrorBoundary, Layout, Navbar
-  features/
-    auth/            — Firebase auth service, AuthModal, AuthGuard, useAuth
-    movies/          — Movie API, hooks, components (cards, carousels, grid, hero, modal)
-    tv/              — TV API, hooks, components (cards, carousels, grid, hero)
-    filters/         — GenreFilter, SortDropdown, AdvancedFilters, useGenres
-    favorites/       — Favorites/watchlist store + useFavorites hook
-    watched/         — Watch history store + useWatched hook
-    ratings/         — Ratings store + useRatings hook
-    lists/           — Custom lists store + useLists hook
-  lib/
-    helpers.ts       — Image URL builders, formatters, utilities
-    tmdbClient.ts    — Authenticated TMDB fetch wrapper
-    queryKeys.ts     — TanStack Query key factory
-    config.ts        — Environment-derived constants
-    supabaseClient.ts
-  pages/             — Route-level page components
-```
+All functions run on Deno and require a valid Firebase ID token in the `Authorization: Bearer <token>` header. Authentication is handled by shared helpers in `supabase/functions/_shared/`.
+
+| Function | Methods | Purpose |
+|----------|---------|---------|
+| `sync-favorites` | `GET`, `POST` | Read and upsert the user's favorite movies list |
+| `sync-watchlist` | `GET`, `POST` | Read and upsert the user's watchlist |
+| `sync-watched` | `GET`, `POST`, `DELETE` | Read, upsert, and remove entries from the user's watched history |
+
+The `_shared/` directory contains modules reused across all functions:
+
+| Module | Purpose |
+|--------|---------|
+| `auth.ts` | `requireAuth` helper — extracts and verifies the Bearer token |
+| `firebaseAuth.ts` | Firebase Admin SDK initialization |
+| `supabaseClient.ts` | Supabase Admin client factory |
+| `cors.ts` | CORS headers and preflight (`OPTIONS`) handler |
+
+---
+
+## Design System
+
+Styles use CSS Modules for component-level encapsulation paired with a global set of CSS custom properties defined in `src/styles/variables.css`.
+
+**Theming:** dark mode is the default. Light mode is activated by setting `data-theme="light"` on the root element — all color, shadow, and surface tokens are overridden at that selector with no JavaScript logic required inside components.
+
+**Token categories:**
+
+| Category | Examples |
+|----------|---------|
+| Colors | `--color-bg`, `--color-accent` (`#e8a838`), `--color-text-primary`, `--color-surface` |
+| Typography | `--font-family` (Inter), `--font-size-xs` through `--font-size-hero`, `--font-weight-*` |
+| Spacing | `--space-1` through `--space-24` (4 px base unit) |
+| Border radius | `--radius-xs` through `--radius-full` |
+| Shadows | `--shadow-sm` through `--shadow-xl` |
+| Transitions | `--transition-fast` (120 ms), `--transition-base` (220 ms), `--transition-slow` (380 ms) |
+| Layout | `--navbar-height` (64 px), `--max-width` (1400 px), `--content-padding` |
+| Z-index | `--z-base` through `--z-toast` |
 
 ---
 

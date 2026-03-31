@@ -67,13 +67,17 @@ export function useWatched() {
           w => w.media_id === item.media_id && w.media_type === item.media_type
         )
         if (already) {
-          void deleteFromSupabase(token, item.media_id, item.media_type)
+          deleteFromSupabase(token, item.media_id, item.media_type).catch(err =>
+            console.warn('[cinescope] Failed to delete watched item:', err)
+          )
           return prev.filter(
             w => !(w.media_id === item.media_id && w.media_type === item.media_type)
           )
         } else {
           const entry: WatchedItem = { ...item, watched_at: new Date().toISOString() }
-          void upsertToSupabase(token, entry)
+          upsertToSupabase(token, entry).catch(err =>
+            console.warn('[cinescope] Failed to upsert watched item:', err)
+          )
           return [entry, ...prev]
         }
       })

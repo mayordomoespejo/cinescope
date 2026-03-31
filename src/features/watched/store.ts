@@ -1,10 +1,9 @@
 import type { Movie } from '@/features/movies/types/movie'
 import type { TVShow } from '@/features/tv/types/tv'
+import { edgeFunctionUrl, SUPABASE_FUNCTIONS } from '@/lib/supabaseFunctions'
+import type { MediaType } from '@/lib/types'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
-
-/** Media type discriminator */
-export type MediaType = 'movie' | 'tv'
+export type { MediaType }
 
 /** Unified media item stored in watched list */
 export interface WatchedItem {
@@ -22,7 +21,7 @@ export interface WatchedItem {
  * @param item - The watched item to persist.
  */
 export async function upsertToSupabase(token: string, item: WatchedItem): Promise<void> {
-  await fetch(`${SUPABASE_URL}/functions/v1/sync-watched`, {
+  await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched), {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -49,7 +48,7 @@ export async function deleteFromSupabase(
   mediaType: MediaType
 ): Promise<void> {
   await fetch(
-    `${SUPABASE_URL}/functions/v1/sync-watched?media_id=${mediaId}&media_type=${mediaType}`,
+    `${edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched)}?media_id=${mediaId}&media_type=${mediaType}`,
     {
       method: 'DELETE',
       headers: {
@@ -65,7 +64,7 @@ export async function deleteFromSupabase(
  * @param token - Firebase ID token of the authenticated user.
  */
 export async function hydrateWatched(token: string): Promise<WatchedItem[]> {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/sync-watched`, {
+  const res = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched), {
     headers: { Authorization: `Bearer ${token}` },
   })
 

@@ -3,10 +3,11 @@ import { createAdminClient } from '../_shared/supabaseClient.ts'
 import { requireAuth } from '../_shared/auth.ts'
 
 /**
- * Edge Function: sync-watchlist
+ * Edge Function: sync-watched
  *
- * GET  — Returns the authenticated user's watchlist.
- * POST — Upserts the authenticated user's watchlist.
+ * GET    — Returns the authenticated user's watched movies list.
+ * POST   — Upserts the authenticated user's watched movies list.
+ * DELETE — Removes a movie from the authenticated user's watched list.
  */
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -28,7 +29,7 @@ Deno.serve(async (req: Request) => {
   try {
     if (req.method === 'GET') {
       const { data, error } = await supabase
-        .from('cinescope_watchlist')
+        .from('cinescope_watched')
         .select('movies')
         .eq('user_id', userId)
         .maybeSingle()
@@ -53,11 +54,25 @@ Deno.serve(async (req: Request) => {
       }
 
       const { error } = await supabase
-        .from('cinescope_watchlist')
+        .from('cinescope_watched')
         .upsert(
           { user_id: userId, movies, updated_at: new Date().toISOString() },
           { onConflict: 'user_id' },
         )
+
+      if (error) throw error
+
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (req.method === 'DELETE') {
+      const { error } = await supabase
+        .from('cinescope_watched')
+        .delete()
+        .eq('user_id', userId)
 
       if (error) throw error
 

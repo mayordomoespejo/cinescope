@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { SkeletonGrid } from '@/features/movies/components/SkeletonCard'
+import SkeletonCard from '@/components/ui/SkeletonCard'
 import Button from '@/components/ui/Button'
 import { mediaGridContainer } from './mediaGridVariants'
 import styles from './MediaGrid.module.css'
@@ -78,7 +78,9 @@ export default function MediaGrid({
   if (isLoading) {
     return (
       <div className={`${styles.grid}${className ? ` ${className}` : ''}`} aria-busy="true" aria-label={`Loading ${ariaLabel}`}>
-        <SkeletonGrid count={skeletonCount} />
+        {Array.from({ length: skeletonCount }, (_, i) => (
+          <SkeletonCard key={i} />
+        ))}
       </div>
     )
   }
@@ -112,7 +114,9 @@ export default function MediaGrid({
         aria-label={ariaLabel}
       >
         <AnimatePresence>{children}</AnimatePresence>
-        {isFetchingMore && <SkeletonGrid count={fetchingMoreCount} />}
+        {isFetchingMore && Array.from({ length: fetchingMoreCount }, (_, i) => (
+          <SkeletonCard key={`fetching-${i}`} />
+        ))}
       </motion.div>
 
       {hasMore && onLoadMore && !isFetchingMore && (

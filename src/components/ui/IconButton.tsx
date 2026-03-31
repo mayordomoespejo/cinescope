@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import styles from './IconButton.module.css'
 
+/** Props for IconButton */
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** 'xs' = 30px (card), 'sm' = 36px (navbar), 'md' = 42px (detail). Default: 'md' */
   size?: 'xs' | 'sm' | 'md'
@@ -15,6 +16,11 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   asChild?: boolean
 }
 
+/**
+ * IconButton — square icon-only button with size, active, success, and glass variants.
+ *
+ * Supports `asChild` via Radix Slot to render as any element (e.g. NavLink).
+ */
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ size = 'md', active = false, success = false, glass = false, asChild = false, className, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
