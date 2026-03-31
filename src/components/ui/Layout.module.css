@@ -9,3 +9,9 @@
   flex: 1;
   padding-top: var(--navbar-height);
 }
+
+@media (max-width: 640px) {
+  .main {
+    padding-bottom: var(--navbar-height);
+  }
+}

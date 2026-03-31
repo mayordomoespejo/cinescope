@@ -1,0 +1,91 @@
+/* ── Fixed bottom bar ── */
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  background: rgba(15, 15, 15, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 -1px 0 var(--color-border);
+  overflow: hidden;
+  padding: 0;
+}
+
+[data-theme='light'] .bar {
+  background: rgba(244, 244, 245, 0.96);
+}
+
+/* ── Sliding circle indicator — lives inside the bar ── */
+.indicator {
+  position: absolute;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.15;
+  transform: translate(-50%, -50%);
+  transition: left 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+/* ── Individual tab items ── */
+.item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+/* Active icon — accent color */
+.iconActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.iconActive svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Inactive icons */
+.iconInactive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.iconInactive svg {
+  width: 22px;
+  height: 22px;
+}
+
+.item:hover .iconInactive {
+  color: var(--color-text-secondary);
+}
+
+/* itemActive — hook for accessibility, no extra visual treatment needed */
+.itemActive {
+}
+
+@media (min-width: 641px) {
+  .bar {
+    display: none;
+  }
+}

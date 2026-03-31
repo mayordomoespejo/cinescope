@@ -1,0 +1,458 @@
+/* ─── Page wrapper ───────────────────────────────────────────────── */
+.page {
+  min-height: calc(100vh - var(--navbar-height));
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+/* ─── Content wrapper (single PageContent) ───────────────────────── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ─── Profile Header ─────────────────────────────────────────────── */
+.profileHeader {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+
+/* ─── Profile photo ──────────────────────────────────────────────── */
+.profileWrapper {
+  flex-shrink: 0;
+  width: 160px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  background: var(--color-surface);
+}
+
+.profilePhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileSkeleton {
+  width: 160px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Hero info ──────────────────────────────────────────────────── */
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.personName {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.department {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.metaLine {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.metaLabel {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  margin-right: var(--space-1);
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.06em;
+}
+
+/* ─── Section ────────────────────────────────────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+/* ─── Biography ──────────────────────────────────────────────────── */
+.bioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bioText {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: pre-line;
+}
+
+.bioCollapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMoreBtn {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color var(--transition-fast);
+  align-self: flex-start;
+}
+
+.readMoreBtn:hover {
+  color: var(--color-accent-hover);
+}
+
+.emptyState {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ─── Known For Carousel ─────────────────────────────────────────── */
+.carousel {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-raised) transparent;
+}
+
+.carousel::-webkit-scrollbar {
+  height: 4px;
+}
+
+.carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-full);
+}
+
+/* ─── Mini Poster Card ───────────────────────────────────────────── */
+.miniCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  outline: none;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 120px;
+  transition: transform var(--transition-base);
+}
+
+.miniCard:hover {
+  transform: translateY(-3px);
+}
+
+.miniCard:focus-visible {
+  box-shadow: var(--shadow-accent);
+  border-radius: var(--radius-lg);
+}
+
+.miniPosterWrapper {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.miniPosterSkeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.miniPoster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.miniPosterLoaded {
+  opacity: 1;
+}
+
+.miniCardTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.miniCardSub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tab:hover {
+  color: var(--color-text-secondary);
+}
+
+.tabActive {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.tabCount {
+  font-size: var(--font-size-xs);
+  background: var(--color-surface-overlay);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  padding: 1px 7px;
+  font-weight: var(--font-weight-normal);
+}
+
+/* ─── Filmography Grid ───────────────────────────────────────────── */
+.filmographyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  justify-items: center;
+  gap: var(--space-4);
+}
+
+/* ─── Error State ────────────────────────────────────────────────── */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: var(--space-4);
+  padding: var(--content-padding);
+  text-align: center;
+}
+
+.errorTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.errorSub {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 42ch;
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+.backBtn {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  margin-top: var(--space-2);
+}
+
+.backBtn:hover {
+  background: var(--color-accent-hover);
+}
+
+/* ─── Skeleton helpers ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeletonLine {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonTitle {
+  height: 36px;
+  width: 260px;
+}
+
+.skeletonMeta {
+  height: 16px;
+  width: 200px;
+}
+
+.skeletonSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--content-padding);
+  width: 100%;
+}
+
+.skeletonSectionTitle {
+  height: 26px;
+  width: 140px;
+}
+
+.skeletonBio {
+  height: 16px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.skeletonBioShort {
+  height: 16px;
+  width: 320px;
+}
+
+.skeletonCarousel {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.skeletonMiniCard {
+  width: 120px;
+  height: 180px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .profileHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+  }
+
+  .profileWrapper {
+    width: 120px;
+  }
+
+  .profileSkeleton {
+    width: 120px;
+  }
+
+  .personName {
+    font-size: var(--font-size-3xl);
+  }
+
+  .miniCard {
+    width: 100px;
+  }
+}

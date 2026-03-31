@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -48,7 +48,7 @@ interface SortableCardProps {
   onToggleFavorite?: (movie: Movie) => void
 }
 
-function SortableMovieCard({
+const SortableMovieCard = memo(function SortableMovieCard({
   movie,
   onOpen,
   onPrefetch,
@@ -98,10 +98,11 @@ function SortableMovieCard({
       />
     </div>
   )
-}
+})
 
 // ── Sortable grid ──────────────────────────────────────────────────────────
 
+/** Props for the SortableMovieGrid component. */
 interface SortableMovieGridProps {
   movies: Movie[]
   onReorder: (newOrder: Movie[]) => void
@@ -112,6 +113,10 @@ interface SortableMovieGridProps {
   emptyMessage?: string
 }
 
+/**
+ * @description Drag-and-drop sortable movie grid using dnd-kit. Supports pointer, touch, and keyboard sensors with a DragOverlay ghost card.
+ * @param props - Component props
+ */
 export default function SortableMovieGrid({
   movies,
   onReorder,

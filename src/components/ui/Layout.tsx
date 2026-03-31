@@ -1,47 +1,63 @@
-import { Outlet, useSearchParams } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import Navbar from './Navbar'
-import MovieModal from '@/features/movies/components/MovieModal'
+import BottomNav from './BottomNav'
+import ScrollToTop from './ScrollToTop'
 import styles from './Layout.module.css'
 
+/**
+ * @description Root layout component. Manages theme (dark/light), renders the Navbar, and the outlet for child routes.
+ */
 export default function Layout() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const movieId = searchParams.get('movieId')
+  const navigate = useNavigate()
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const stored = localStorage.getItem('cinescope:theme')
-    return (stored as 'dark' | 'light') ?? 'dark'
+    if (stored === 'dark' || stored === 'light') return stored
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
+
+  // Track whether the user has manually overridden the theme
+  const manualOverride = useRef(localStorage.getItem('cinescope:theme') !== null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('cinescope:theme', theme)
+    // Only persist when user has manually overridden (manualOverride.current is set in handleThemeToggle)
   }, [theme])
 
-  const handleThemeToggle = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
-  }
+  // Listen to system theme changes and follow them unless user has overridden
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (!manualOverride.current) {
+        setTheme(e.matches ? 'dark' : 'light')
+      }
+    }
+    mq.addEventListener('change', handleChange)
+    return () => mq.removeEventListener('change', handleChange)
+  }, [])
 
-  const handleModalClose = () => {
-    const next = new URLSearchParams(searchParams)
-    next.delete('movieId')
-    setSearchParams(next, { replace: true })
+  const handleThemeToggle = () => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark'
+      manualOverride.current = true
+      localStorage.setItem('cinescope:theme', next)
+      return next
+    })
   }
 
   const handleOpenMovie = (id: number) => {
-    const next = new URLSearchParams(searchParams)
-    next.set('movieId', String(id))
-    setSearchParams(next, { replace: true })
+    navigate(`/movie/${id}`)
   }
 
   return (
     <div className={styles.root}>
+      <ScrollToTop />
       <Navbar theme={theme} onThemeToggle={handleThemeToggle} />
       <main className={styles.main} id="main-content">
         <Outlet context={{ onOpenMovie: handleOpenMovie }} />
       </main>
-
-      {movieId && <MovieModal key={movieId} movieId={Number(movieId)} onClose={handleModalClose} />}
+      <BottomNav />
     </div>
   )
 }

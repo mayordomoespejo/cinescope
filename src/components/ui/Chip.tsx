@@ -1,5 +1,6 @@
 import styles from './Chip.module.css'
 
+/** Props for the Chip component. */
 interface ChipProps {
   label: string
   active?: boolean
@@ -9,6 +10,10 @@ interface ChipProps {
   className?: string
 }
 
+/**
+ * @description Toggleable chip/tag button, optionally with a remove action. Used for filter selections.
+ * @param props - Component props
+ */
 export default function Chip({
   label,
   active = false,

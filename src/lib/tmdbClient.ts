@@ -16,6 +16,10 @@ function buildUrl(path: string, params?: FetchOptions['params']): string {
   return url.toString()
 }
 
+/**
+ * @description Authenticated TMDB API fetch wrapper. Appends query params, sets the Bearer token header, and throws on non-2xx responses.
+ * @returns Parsed JSON response typed as T.
+ */
 export async function tmdbFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
   const { params, ...rest } = options
 
@@ -30,11 +34,9 @@ export async function tmdbFetch<T>(path: string, options: FetchOptions = {}): Pr
   })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}))
-    throw new Error(
-      (error as { status_message?: string }).status_message ??
-        `TMDB API error: ${response.status} ${response.statusText}`
-    )
+    const data = await response.json().catch(() => ({}))
+    const msg = (data as { status_message?: string }).status_message ?? 'Unknown error'
+    throw new Error(`TMDB [${response.status}]: ${msg}`)
   }
 
   return response.json() as Promise<T>

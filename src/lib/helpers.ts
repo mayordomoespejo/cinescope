@@ -9,6 +9,15 @@ export function getPosterUrl(
   return `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.poster[size]}${path}`
 }
 
+/** Returns the full TMDB image URL for a person profile photo */
+export function getProfileUrl(
+  path: string | null,
+  size: keyof typeof IMAGE_SIZES.profile = 'md'
+): string {
+  if (!path) return 'https://placehold.co/185x278/1a1a1a/444?text=No+Photo'
+  return `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.profile[size]}${path}`
+}
+
 /** Returns the full TMDB image URL for a backdrop */
 export function getBackdropUrl(
   path: string | null,
@@ -76,7 +85,7 @@ export function getYouTubeEmbedUrl(key: string): string {
   return `https://www.youtube.com/embed/${key}?autoplay=1&rel=0&modestbranding=1`
 }
 
-/** Format large numbers (e.g. revenue) */
+/** Format large numbers (e.g. revenue) as currency — alias: formatCurrency */
 export function formatMoney(amount: number): string {
   if (amount === 0) return 'N/A'
   return new Intl.NumberFormat('en-US', {
@@ -86,3 +95,6 @@ export function formatMoney(amount: number): string {
     notation: amount >= 1_000_000 ? 'compact' : 'standard',
   }).format(amount)
 }
+
+/** Alias for formatMoney — formats a monetary amount as USD currency */
+export const formatCurrency = formatMoney

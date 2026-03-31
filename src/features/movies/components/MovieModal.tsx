@@ -18,11 +18,16 @@ import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import styles from './MovieModal.module.css'
 
+/** Props for the MovieModal component. */
 interface MovieModalProps {
   movieId: number
   onClose: () => void
 }
 
+/**
+ * @description Accessible modal dialog showing full movie details: backdrop, poster, trailer, genres, overview, cast actions, and favorites/watchlist toggles.
+ * @param props - Component props
+ */
 export default function MovieModal({ movieId, onClose }: MovieModalProps) {
   const { data: movie, isLoading: loadingDetail, error } = useMovieDetail(movieId)
   const { data: videos, isLoading: loadingVideos } = useMovieVideos(movieId)
@@ -53,7 +58,16 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
         setPlayWhenReady(false)
       })
     }
-  }, [playWhenReady, trailer, trailerPlaying])
+    // Videos finished loading but no trailer found — reset play state to avoid a stuck spinner.
+    if (!loadingVideos && !videos?.results?.length) {
+      const t = setTimeout(() => {
+        setPlayWhenReady(false)
+        setTrailerPlaying(false)
+      }, 0)
+      return () => clearTimeout(t)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadingVideos, videos])
 
   return (
     <Dialog.Root open onOpenChange={open => !open && onClose()}>

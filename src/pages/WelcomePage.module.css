@@ -1,0 +1,252 @@
+/* ─── WelcomePage ──────────────────────────────────────────────── */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ── Starfield background ── */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 60%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 80%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 10%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 45%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 90%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 5%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 75%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5% 40%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 90%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Film grain noise overlay ── */
+.page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+  animation: grainShift 8s steps(10) infinite;
+}
+
+@keyframes grainShift {
+  0% {
+    background-position: 0 0;
+  }
+  10% {
+    background-position: -10% -15%;
+  }
+  20% {
+    background-position: 15% 5%;
+  }
+  30% {
+    background-position: -5% 20%;
+  }
+  40% {
+    background-position: 20% -10%;
+  }
+  50% {
+    background-position: -15% 15%;
+  }
+  60% {
+    background-position: 5% -20%;
+  }
+  70% {
+    background-position: -20% 5%;
+  }
+  80% {
+    background-position: 10% 20%;
+  }
+  90% {
+    background-position: -5% -5%;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* ── Center content ── */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-6) var(--content-padding);
+  text-align: center;
+  width: 100%;
+  max-width: 540px;
+  box-sizing: border-box;
+}
+
+/* ── Film strips (top & bottom) ── */
+.filmStrip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: var(--space-3) var(--content-padding);
+  max-width: 100%;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInDown 0.6s ease 0.1s forwards;
+}
+
+.filmStrip.bottom {
+  animation-name: fadeInUp;
+}
+
+.frame {
+  width: 20px;
+  height: 32px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xs);
+  animation: frameFill 2s ease-in-out infinite;
+}
+
+@keyframes frameFill {
+  0%,
+  100% {
+    background: transparent;
+  }
+  50% {
+    background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+}
+
+/* ── Logo ── */
+.logoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.logo {
+  font-size: clamp(2.5rem, 10vw, 6rem);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 0.3em;
+  line-height: 1;
+  margin: 0;
+  padding-right: 0.3em; /* compensate letter-spacing on last char */
+  white-space: nowrap;
+  overflow: visible;
+  opacity: 0;
+  animation: fadeInScale 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+.logoWhite {
+  color: var(--color-text-primary);
+}
+
+.logoAmber {
+  color: var(--color-accent);
+}
+
+/* ── Tagline ── */
+.tagline {
+  font-size: clamp(var(--font-size-sm), 2.5vw, var(--font-size-lg));
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 0.5s forwards;
+}
+
+/* ── CTA ── */
+.cta {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease 0.7s forwards;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-12);
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: clamp(var(--font-size-base), 2vw, var(--font-size-xl));
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(232, 168, 56, 0.35);
+  transition:
+    background var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.ctaBtn:hover {
+  background: var(--color-accent-hover);
+  box-shadow: 0 8px 32px rgba(232, 168, 56, 0.5);
+  transform: translateY(-2px);
+}
+
+.ctaBtn:active {
+  transform: scale(0.97);
+}
+
+/* ── Keyframes ── */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

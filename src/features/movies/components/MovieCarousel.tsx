@@ -1,10 +1,11 @@
-import { useRef, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import type { Movie } from '../types/movie'
 import MovieCard from './MovieCard'
 import { SkeletonGrid } from './SkeletonCard'
+import { useCarouselScroll } from '@/hooks/useCarouselScroll'
 import styles from './MovieCarousel.module.css'
 
+/** Props for the MovieCarousel component. */
 interface MovieCarouselProps {
   title: string
   movies: Movie[]
@@ -16,6 +17,10 @@ interface MovieCarouselProps {
   viewAllHref?: string
 }
 
+/**
+ * @description Horizontally scrollable carousel of MovieCard items with animated arrow navigation and skeleton loaders.
+ * @param props - Component props
+ */
 export default function MovieCarousel({
   title,
   movies,
@@ -25,27 +30,7 @@ export default function MovieCarousel({
   favorites = [],
   onToggleFavorite,
 }: MovieCarouselProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [atStart, setAtStart] = useState(true)
-  const [atEnd, setAtEnd] = useState(false)
-
-  const THRESHOLD = 2 // px — tolerancia subpíxeles
-
-  const updateBounds = useCallback(() => {
-    const el = scrollRef.current
-    if (!el) return
-    setAtStart(el.scrollLeft <= THRESHOLD)
-    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - THRESHOLD)
-  }, [])
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (!scrollRef.current) return
-    const amount = scrollRef.current.clientWidth * 0.75
-    scrollRef.current.scrollBy({
-      left: direction === 'left' ? -amount : amount,
-      behavior: 'smooth',
-    })
-  }
+  const { trackRef, canScrollLeft, canScrollRight, scroll, updateBounds } = useCarouselScroll()
 
   return (
     <section className={styles.section} aria-labelledby={`carousel-${title}`}>
@@ -58,19 +43,35 @@ export default function MovieCarousel({
             type="button"
             className={styles.arrow}
             onClick={() => scroll('left')}
-            disabled={atStart}
+            disabled={!canScrollLeft}
             aria-label="Scroll left"
           >
-            ‹
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <path
+                d="M6.5 1.5 3 5l3.5 3.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
           <button
             type="button"
             className={styles.arrow}
             onClick={() => scroll('right')}
-            disabled={atEnd}
+            disabled={!canScrollRight}
             aria-label="Scroll right"
           >
-            ›
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <path
+                d="M3.5 1.5 7 5l-3.5 3.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -78,7 +79,7 @@ export default function MovieCarousel({
       <div className={styles.trackWrapper}>
         <div
           className={styles.track}
-          ref={scrollRef}
+          ref={trackRef}
           role="list"
           aria-label={title}
           onScroll={updateBounds}

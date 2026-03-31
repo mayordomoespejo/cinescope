@@ -12,7 +12,20 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* overflow-y: scroll keeps the scrollbar always visible.
+     scrollbar-gutter: stable reserves the scrollbar lane permanently so that
+     window.innerWidth - document.documentElement.clientWidth === 0 at all times.
+     react-remove-scroll-bar measures this gap and injects margin-right equal to it,
+     so a gap of 0 means it injects margin-right: 0px — no layout shift. */
+  overflow-y: scroll;
   scrollbar-gutter: stable;
+}
+
+/* Belt-and-suspenders: also zero out the margin-right compensation in case
+   the gap measurement ever rounds to non-zero (e.g. fractional pixel scrollbar). */
+body[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0px !important;
+  margin-right: 0 !important;
 }
 
 body {
@@ -95,7 +108,7 @@ h6 {
 
 /* ─── Selection ─────────────────────────────────────────────────── */
 ::selection {
-  background: var(--color-accent-muted);
+  background: var(--color-accent-dim);
   color: var(--color-text-primary);
 }
 
