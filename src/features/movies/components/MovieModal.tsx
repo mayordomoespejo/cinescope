@@ -66,7 +66,7 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
       }, 0)
       return () => clearTimeout(t)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingVideos, videos])
 
   return (

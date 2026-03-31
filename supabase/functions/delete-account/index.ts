@@ -107,10 +107,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // 5. Delete watched history
-    const { error: watchedError } = await supabase
-      .from('watched')
-      .delete()
-      .eq('user_id', userId)
+    const { error: watchedError } = await supabase.from('watched').delete().eq('user_id', userId)
 
     if (watchedError) {
       console.error('Error deleting watched history:', watchedError)

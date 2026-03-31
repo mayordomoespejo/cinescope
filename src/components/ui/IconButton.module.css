@@ -15,9 +15,18 @@
     transform var(--transition-fast);
 }
 
-.iconBtnXs { width: 30px; height: 30px; }
-.iconBtnSm { width: 36px; height: 36px; }
-.iconBtnMd { width: 42px; height: 42px; }
+.iconBtnXs {
+  width: 30px;
+  height: 30px;
+}
+.iconBtnSm {
+  width: 36px;
+  height: 36px;
+}
+.iconBtnMd {
+  width: 42px;
+  height: 42px;
+}
 
 /* Glass variant — semi-transparent dark bg for use over images */
 .iconBtnGlass {
@@ -51,11 +60,15 @@
   border-color: var(--color-accent);
   background: var(--color-surface);
 }
-.iconBtnActive:hover { background: var(--color-accent-dim); }
+.iconBtnActive:hover {
+  background: var(--color-accent-dim);
+}
 
 .iconBtnSuccess {
   color: #22c55e;
   border-color: #22c55e;
   background: var(--color-surface);
 }
-.iconBtnSuccess:hover { background: rgba(34, 197, 94, 0.1); }
+.iconBtnSuccess:hover {
+  background: rgba(34, 197, 94, 0.1);
+}

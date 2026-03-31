@@ -26,7 +26,7 @@ import './styles/global.css'
     document.head.appendChild(el)
   }
 
-  const observer = new MutationObserver((mutations) => {
+  const observer = new MutationObserver(mutations => {
     for (const m of mutations) {
       for (const node of m.addedNodes) {
         if (

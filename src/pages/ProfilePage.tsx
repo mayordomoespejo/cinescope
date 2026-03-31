@@ -95,11 +95,7 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
   }
 
   return (
-    <article
-      className={styles.card}
-      onClick={handleCardClick}
-      style={{ cursor: 'pointer' }}
-    >
+    <article className={styles.card} onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       <div className={styles.posterWrap}>
         <img
           src={getPosterUrl(posterPath, 'sm')}
@@ -113,17 +109,29 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
           aria-label={`Remove ${title} from watch history`}
           type="button"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6"/>
-            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
           </svg>
         </button>
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardTitle}>{title}</p>
-        <p className={styles.cardMeta} style={{ marginTop: 'auto' }}>{formatDate(item.watched_at)}</p>
+        <p className={styles.cardMeta} style={{ marginTop: 'auto' }}>
+          {formatDate(item.watched_at)}
+        </p>
       </div>
     </article>
   )
@@ -151,9 +159,10 @@ export default function ProfilePage() {
 
   // Sort watched list most-recently-watched first
   const sortedWatched = useMemo(
-    () => [...watchedList].sort(
-      (a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime()
-    ),
+    () =>
+      [...watchedList].sort(
+        (a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime()
+      ),
     [watchedList]
   )
 
@@ -234,9 +243,7 @@ export default function ProfilePage() {
           {watchedLoading ? (
             <SkeletonCardGrid count={6} />
           ) : sortedWatched.length === 0 ? (
-            <p className={styles.emptyState}>
-              Nothing watched yet. Start exploring!
-            </p>
+            <p className={styles.emptyState}>Nothing watched yet. Start exploring!</p>
           ) : (
             <div className={styles.grid}>
               {sortedWatched.map(item => (
@@ -256,7 +263,10 @@ export default function ProfilePage() {
           <button
             type="button"
             className={styles.deleteAccountBtn}
-            onClick={() => { setDeleteError(null); setShowDeleteModal(true) }}
+            onClick={() => {
+              setDeleteError(null)
+              setShowDeleteModal(true)
+            }}
           >
             Delete account
           </button>
@@ -270,18 +280,19 @@ export default function ProfilePage() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="delete-modal-title"
-          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
+          onClick={e => {
+            if (e.target === e.currentTarget) setShowDeleteModal(false)
+          }}
         >
           <div className={styles.modalCard}>
             <h2 className={styles.modalTitle} id="delete-modal-title">
               Delete account
             </h2>
             <p className={styles.modalBody}>
-              This will permanently delete your account and all your data. This action cannot be undone.
+              This will permanently delete your account and all your data. This action cannot be
+              undone.
             </p>
-            {deleteError && (
-              <p className={styles.modalError}>{deleteError}</p>
-            )}
+            {deleteError && <p className={styles.modalError}>{deleteError}</p>}
             <div className={styles.modalActions}>
               <Button
                 variant="secondary"

@@ -39,11 +39,7 @@ interface SkeletonCardGridProps {
  */
 export function SkeletonCardGrid({ count = 6, className = '' }: SkeletonCardGridProps) {
   return (
-    <div
-      className={`${styles.grid} ${className}`}
-      aria-busy="true"
-      aria-label="Loading cards"
-    >
+    <div className={`${styles.grid} ${className}`} aria-busy="true" aria-label="Loading cards">
       {Array.from({ length: count }, (_, i) => (
         <SkeletonCard key={i} />
       ))}

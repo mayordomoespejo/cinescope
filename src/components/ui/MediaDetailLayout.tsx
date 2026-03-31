@@ -160,23 +160,25 @@ export default function MediaDetailLayout({
       <div className={styles.hero} aria-hidden="true">
         {isLoading ? (
           <Skeleton width="100%" height="100%" />
-        ) : (() => {
-          const heroSrc = data?.backdrop_path
-            ? `https://image.tmdb.org/t/p/original${data.backdrop_path}`
-            : data?.poster_path
-              ? `https://image.tmdb.org/t/p/w780${data.poster_path}`
-              : null
-          const isPosterFallback = !data?.backdrop_path && !!data?.poster_path
-          return heroSrc ? (
-            <img
-              src={heroSrc}
-              alt=""
-              className={`${styles.heroImg}${isPosterFallback ? ` ${styles.heroImgPoster}` : ''}`}
-              loading="eager"
-              decoding="async"
-            />
-          ) : null
-        })()}
+        ) : (
+          (() => {
+            const heroSrc = data?.backdrop_path
+              ? `https://image.tmdb.org/t/p/original${data.backdrop_path}`
+              : data?.poster_path
+                ? `https://image.tmdb.org/t/p/w780${data.poster_path}`
+                : null
+            const isPosterFallback = !data?.backdrop_path && !!data?.poster_path
+            return heroSrc ? (
+              <img
+                src={heroSrc}
+                alt=""
+                className={`${styles.heroImg}${isPosterFallback ? ` ${styles.heroImgPoster}` : ''}`}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null
+          })()
+        )}
         <div className={styles.heroGradient} />
       </div>
 
@@ -209,15 +211,30 @@ export default function MediaDetailLayout({
                         aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                         aria-pressed={isFavorite}
                       >
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                          <path d="M10 17.5S2 12.5 2 7a4 4 0 0 1 8 0 4 4 0 0 1 8 0c0 5.5-8 10.5-8 10.5z"
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M10 17.5S2 12.5 2 7a4 4 0 0 1 8 0 4 4 0 0 1 8 0c0 5.5-8 10.5-8 10.5z"
                             fill={isFavorite ? 'currentColor' : 'none'}
-                            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </IconButton>
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
-                      <Tooltip.Content className={styles.tooltipContent} side="bottom" sideOffset={6}>
+                      <Tooltip.Content
+                        className={styles.tooltipContent}
+                        side="bottom"
+                        sideOffset={6}
+                      >
                         {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                       </Tooltip.Content>
                     </Tooltip.Portal>
@@ -233,15 +250,30 @@ export default function MediaDetailLayout({
                         aria-label={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
                         aria-pressed={isInWatchlist}
                       >
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                          <path d="M5 2h10a1 1 0 0 1 1 1v15l-6-3-6 3V3a1 1 0 0 1 1-1z"
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M5 2h10a1 1 0 0 1 1 1v15l-6-3-6 3V3a1 1 0 0 1 1-1z"
                             fill={isInWatchlist ? 'currentColor' : 'none'}
-                            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </IconButton>
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
-                      <Tooltip.Content className={styles.tooltipContent} side="bottom" sideOffset={6}>
+                      <Tooltip.Content
+                        className={styles.tooltipContent}
+                        side="bottom"
+                        sideOffset={6}
+                      >
                         {isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
                       </Tooltip.Content>
                     </Tooltip.Portal>
@@ -257,18 +289,37 @@ export default function MediaDetailLayout({
                         aria-label={isWatched ? 'Mark as unwatched' : 'Mark as watched'}
                         aria-pressed={isWatched}
                       >
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                          <circle cx="10" cy="10" r="8"
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="8"
                             fill={isWatched ? 'currentColor' : 'none'}
-                            stroke="currentColor" strokeWidth="1.5"/>
-                          <path d="M6.5 10l2.5 2.5 4.5-4.5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                          <path
+                            d="M6.5 10l2.5 2.5 4.5-4.5"
                             stroke={isWatched ? 'var(--color-bg)' : 'currentColor'}
-                            strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </IconButton>
                     </Tooltip.Trigger>
                     <Tooltip.Portal>
-                      <Tooltip.Content className={styles.tooltipContent} side="bottom" sideOffset={6}>
+                      <Tooltip.Content
+                        className={styles.tooltipContent}
+                        side="bottom"
+                        sideOffset={6}
+                      >
                         {isWatched ? 'Mark as unwatched' : 'Mark as watched'}
                       </Tooltip.Content>
                     </Tooltip.Portal>
@@ -315,9 +366,7 @@ export default function MediaDetailLayout({
                     </span>
                   )}
                   {mediaType === 'tv' && tvExtras?.numberOfEpisodes != null && (
-                    <span className={styles.metaItem}>
-                      {tvExtras.numberOfEpisodes} Episodes
-                    </span>
+                    <span className={styles.metaItem}>{tvExtras.numberOfEpisodes} Episodes</span>
                   )}
                   {mediaType === 'tv' && tvExtras?.episodeRuntime != null && (
                     <span className={styles.metaItem}>
@@ -411,10 +460,7 @@ export default function MediaDetailLayout({
             className={styles.section}
             aria-labelledby={`${trailerIdPrefix}-trailer-heading`}
           >
-            <h2
-              className={styles.sectionTitle}
-              id={`${trailerIdPrefix}-trailer-heading`}
-            >
+            <h2 className={styles.sectionTitle} id={`${trailerIdPrefix}-trailer-heading`}>
               Trailer
             </h2>
             <div className={styles.trailerWrapper}>
@@ -432,10 +478,7 @@ export default function MediaDetailLayout({
 
         {/* ── Cast section ── */}
         {cast.length > 0 && (
-          <section
-            className={styles.section}
-            aria-labelledby={`${trailerIdPrefix}-cast-heading`}
-          >
+          <section className={styles.section} aria-labelledby={`${trailerIdPrefix}-cast-heading`}>
             <h2 className={styles.sectionTitle} id={`${trailerIdPrefix}-cast-heading`}>
               Cast
             </h2>
@@ -469,10 +512,7 @@ export default function MediaDetailLayout({
             className={styles.section}
             aria-labelledby={`${trailerIdPrefix}-recommendations-heading`}
           >
-            <h2
-              className={styles.sectionTitle}
-              id={`${trailerIdPrefix}-recommendations-heading`}
-            >
+            <h2 className={styles.sectionTitle} id={`${trailerIdPrefix}-recommendations-heading`}>
               You May Also Like
             </h2>
             <div className={styles.recommendationsGrid} role="list">

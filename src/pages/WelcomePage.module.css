@@ -130,8 +130,13 @@
 }
 
 @keyframes frameFill {
-  0%, 100% { background: transparent; }
-  50% { background: color-mix(in srgb, var(--color-accent) 40%, transparent); }
+  0%,
+  100% {
+    background: transparent;
+  }
+  50% {
+    background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
 }
 
 /* ── Logo ── */

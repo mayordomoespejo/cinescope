@@ -78,11 +78,7 @@ function CreateListForm({ onSubmit, onCancel }: CreateFormProps) {
         <button type="button" className={styles.cancelBtn} onClick={onCancel} disabled={submitting}>
           Cancel
         </button>
-        <button
-          type="submit"
-          className={styles.submitBtn}
-          disabled={!name.trim() || submitting}
-        >
+        <button type="submit" className={styles.submitBtn} disabled={!name.trim() || submitting}>
           {submitting ? 'Creating…' : 'Create'}
         </button>
       </div>
@@ -377,9 +373,7 @@ export default function ListsPage() {
           <div className={styles.leftPanelHeader}>
             <span className={styles.panelTitle}>
               My Lists
-              {lists.length > 0 && (
-                <span className={styles.panelTitleCount}>{lists.length}</span>
-              )}
+              {lists.length > 0 && <span className={styles.panelTitleCount}>{lists.length}</span>}
             </span>
             <button
               className={styles.newListBtn}
@@ -391,10 +385,7 @@ export default function ListsPage() {
           </div>
 
           {showCreateForm && (
-            <CreateListForm
-              onSubmit={handleCreateList}
-              onCancel={() => setShowCreateForm(false)}
-            />
+            <CreateListForm onSubmit={handleCreateList} onCancel={() => setShowCreateForm(false)} />
           )}
 
           {loading ? (

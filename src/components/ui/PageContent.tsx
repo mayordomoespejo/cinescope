@@ -12,9 +12,5 @@ interface PageContentProps {
  * PageContent — centered, max-width content wrapper used by all page-level routes.
  */
 export default function PageContent({ children, className }: PageContentProps) {
-  return (
-    <div className={[styles.pageContent, className].filter(Boolean).join(' ')}>
-      {children}
-    </div>
-  )
+  return <div className={[styles.pageContent, className].filter(Boolean).join(' ')}>{children}</div>
 }

@@ -81,7 +81,8 @@
 }
 
 /* itemActive — hook for accessibility, no extra visual treatment needed */
-.itemActive {}
+.itemActive {
+}
 
 @media (min-width: 641px) {
   .bar {

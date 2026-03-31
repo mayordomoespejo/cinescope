@@ -63,7 +63,7 @@ Deno.serve(async (req: Request) => {
         .from('cinescope_watchlist')
         .upsert(
           { user_id: userId, movies, updated_at: new Date().toISOString() },
-          { onConflict: 'user_id' },
+          { onConflict: 'user_id' }
         )
 
       if (error) {

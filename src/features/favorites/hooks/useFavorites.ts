@@ -1,10 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Movie } from '@/features/movies/types/movie'
-import {
-  hydrateFromSupabase,
-  syncFavoritesToSupabase,
-  syncWatchlistToSupabase,
-} from '../store'
+import { hydrateFromSupabase, syncFavoritesToSupabase, syncWatchlistToSupabase } from '../store'
 import { useAuth } from '@/features/auth/useAuth'
 
 /**
@@ -61,9 +57,10 @@ export function useFavorites() {
       setFavorites(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token) syncFavoritesToSupabase(token, updated).catch(err =>
-          console.warn('[cinescope] Failed to sync favorites:', err)
-        )
+        if (token)
+          syncFavoritesToSupabase(token, updated).catch(err =>
+            console.warn('[cinescope] Failed to sync favorites:', err)
+          )
         return updated
       })
     },
@@ -76,32 +73,28 @@ export function useFavorites() {
       setWatchlist(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token) syncWatchlistToSupabase(token, updated).catch(err =>
-          console.warn('[cinescope] Failed to sync watchlist:', err)
-        )
+        if (token)
+          syncWatchlistToSupabase(token, updated).catch(err =>
+            console.warn('[cinescope] Failed to sync watchlist:', err)
+          )
         return updated
       })
     },
     [getToken]
   )
 
-  const isFavorite = useCallback(
-    (id: number) => favorites.some(m => m.id === id),
-    [favorites]
-  )
+  const isFavorite = useCallback((id: number) => favorites.some(m => m.id === id), [favorites])
 
-  const isInWatchlist = useCallback(
-    (id: number) => watchlist.some(m => m.id === id),
-    [watchlist]
-  )
+  const isInWatchlist = useCallback((id: number) => watchlist.some(m => m.id === id), [watchlist])
 
   const reorderFavs = useCallback(
     async (newOrder: Movie[]) => {
       setFavorites(newOrder)
       const token = await getToken()
-      if (token) syncFavoritesToSupabase(token, newOrder).catch(err =>
-        console.warn('[cinescope] Failed to sync favorites:', err)
-      )
+      if (token)
+        syncFavoritesToSupabase(token, newOrder).catch(err =>
+          console.warn('[cinescope] Failed to sync favorites:', err)
+        )
     },
     [getToken]
   )
@@ -110,9 +103,10 @@ export function useFavorites() {
     async (newOrder: Movie[]) => {
       setWatchlist(newOrder)
       const token = await getToken()
-      if (token) syncWatchlistToSupabase(token, newOrder).catch(err =>
-        console.warn('[cinescope] Failed to sync watchlist:', err)
-      )
+      if (token)
+        syncWatchlistToSupabase(token, newOrder).catch(err =>
+          console.warn('[cinescope] Failed to sync watchlist:', err)
+        )
     },
     [getToken]
   )

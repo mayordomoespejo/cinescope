@@ -73,7 +73,11 @@ export function PersonPageSkeleton() {
           <div className={`${styles.skeletonLine} ${styles.skeletonSectionTitle}`} />
           <div className={styles.skeletonCarousel}>
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={`skeleton-card-${i}`} className={styles.skeletonMiniCard} aria-hidden="true" />
+              <div
+                key={`skeleton-card-${i}`}
+                className={styles.skeletonMiniCard}
+                aria-hidden="true"
+              />
             ))}
           </div>
         </div>
@@ -101,12 +105,16 @@ export default function PersonPage() {
   useEffect(() => {
     if (!credits) return
     const available = (['acting', 'directing', 'writing'] as FilmographyTab[]).filter(tab =>
-      tab === 'acting' ? credits.cast.length > 0
-      : tab === 'directing' ? credits.crew.filter(c => c.job === 'Director').length > 0
-      : credits.crew.filter(c => c.job === 'Writer' || c.job === 'Screenplay' || c.department === 'Writing').length > 0
+      tab === 'acting'
+        ? credits.cast.length > 0
+        : tab === 'directing'
+          ? credits.crew.filter(c => c.job === 'Director').length > 0
+          : credits.crew.filter(
+              c => c.job === 'Writer' || c.job === 'Screenplay' || c.department === 'Writing'
+            ).length > 0
     )
     const t = setTimeout(() => {
-      setActiveTab(prev => available.includes(prev) ? prev : (available[0] ?? prev))
+      setActiveTab(prev => (available.includes(prev) ? prev : (available[0] ?? prev)))
     }, 0)
     return () => clearTimeout(t)
   }, [credits])
@@ -167,7 +175,6 @@ export default function PersonPage() {
           return dateB.localeCompare(dateA)
         })
     : []
-
 
   // Birthday / deathday display
   const birthdayFormatted = person.birthday
@@ -254,9 +261,11 @@ export default function PersonPage() {
           <div className={styles.tabs} role="tablist" aria-label="Filmography categories">
             {(['acting', 'directing', 'writing'] as FilmographyTab[])
               .filter(tab =>
-                tab === 'acting' ? actingCredits.length > 0
-                : tab === 'directing' ? directingCredits.length > 0
-                : writingCredits.length > 0
+                tab === 'acting'
+                  ? actingCredits.length > 0
+                  : tab === 'directing'
+                    ? directingCredits.length > 0
+                    : writingCredits.length > 0
               )
               .map(tab => (
                 <button
@@ -332,9 +341,10 @@ export default function PersonPage() {
   )
 }
 
-
 /** Grid of poster cards for a filmography tab */
-export function FilmographyGrid<T extends { id: number; title: string; poster_path: string | null; release_date: string },>({
+export function FilmographyGrid<
+  T extends { id: number; title: string; poster_path: string | null; release_date: string },
+>({
   credits,
   subtitle,
   onMovieClick,

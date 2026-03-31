@@ -61,7 +61,8 @@ export default function AdvancedFilters({
 
   const languageValue = language !== '' ? language : '__all__'
   const languageLabel =
-    LANGUAGES.find(l => l.value === language || (language === '' && l.value === '__all__'))?.label ?? 'Any language'
+    LANGUAGES.find(l => l.value === language || (language === '' && l.value === '__all__'))
+      ?.label ?? 'Any language'
 
   return (
     <div className={styles.wrapper} role="group" aria-label="Advanced filters">
@@ -101,10 +102,7 @@ export default function AdvancedFilters({
           value={yearValue}
           onValueChange={val => onYearChange(val === '__all__' ? undefined : Number(val))}
         >
-          <Select.Trigger
-            className={styles.trigger}
-            aria-labelledby="year-select-label"
-          >
+          <Select.Trigger className={styles.trigger} aria-labelledby="year-select-label">
             <Select.Value>{yearLabel}</Select.Value>
             <span className={styles.chevron}>
               <ChevronIcon />
@@ -115,12 +113,16 @@ export default function AdvancedFilters({
             <Select.Content className={styles.selectContent} position="popper" sideOffset={6}>
               <Select.Viewport>
                 <Select.Item value="__all__" className={styles.selectItem}>
-                  <span className={styles.checkmark} aria-hidden="true">✓</span>
+                  <span className={styles.checkmark} aria-hidden="true">
+                    ✓
+                  </span>
                   <Select.ItemText>Any year</Select.ItemText>
                 </Select.Item>
                 {YEARS.map(y => (
                   <Select.Item key={y} value={String(y)} className={styles.selectItem}>
-                    <span className={styles.checkmark} aria-hidden="true">✓</span>
+                    <span className={styles.checkmark} aria-hidden="true">
+                      ✓
+                    </span>
                     <Select.ItemText>{y}</Select.ItemText>
                   </Select.Item>
                 ))}
@@ -139,10 +141,7 @@ export default function AdvancedFilters({
           value={languageValue}
           onValueChange={val => onLanguageChange(val === '__all__' ? '' : val)}
         >
-          <Select.Trigger
-            className={styles.trigger}
-            aria-labelledby="language-select-label"
-          >
+          <Select.Trigger className={styles.trigger} aria-labelledby="language-select-label">
             <Select.Value>{languageLabel}</Select.Value>
             <span className={styles.chevron}>
               <ChevronIcon />
@@ -154,7 +153,9 @@ export default function AdvancedFilters({
               <Select.Viewport>
                 {LANGUAGES.map(lang => (
                   <Select.Item key={lang.value} value={lang.value} className={styles.selectItem}>
-                    <span className={styles.checkmark} aria-hidden="true">✓</span>
+                    <span className={styles.checkmark} aria-hidden="true">
+                      ✓
+                    </span>
                     <Select.ItemText>{lang.label}</Select.ItemText>
                   </Select.Item>
                 ))}

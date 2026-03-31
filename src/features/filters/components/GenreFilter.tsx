@@ -19,7 +19,11 @@ export default function GenreFilter({ selectedGenreId, onSelect }: GenreFilterPr
     return (
       <div className={styles.track} aria-hidden="true">
         {Array.from({ length: 8 }, (_, i) => (
-          <div key={i} className={styles.chipSkeleton} style={{ width: `${60 + (i % 3) * 20}px` }} />
+          <div
+            key={i}
+            className={styles.chipSkeleton}
+            style={{ width: `${60 + (i % 3) * 20}px` }}
+          />
         ))}
       </div>
     )
@@ -27,7 +31,12 @@ export default function GenreFilter({ selectedGenreId, onSelect }: GenreFilterPr
 
   return (
     <div className={styles.track} role="group" aria-label="Filter by genre">
-      <Chip label="All" size="sm" active={selectedGenreId === null} onClick={() => onSelect(null)} />
+      <Chip
+        label="All"
+        size="sm"
+        active={selectedGenreId === null}
+        onClick={() => onSelect(null)}
+      />
       {genres.map(genre => (
         <Chip
           key={genre.id}

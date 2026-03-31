@@ -7,11 +7,7 @@ import iconBtnStyles from './IconButton.module.css'
 import IconButton from './IconButton'
 import CinescopeLogo from './CinescopeLogo'
 import { DEBOUNCE_DELAY } from '@/lib/config'
-import {
-  addSearchQuery,
-  getSearchHistory,
-  clearSearchHistory,
-} from '@/features/favorites/store'
+import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/favorites/store'
 import { useAuth } from '@/features/auth/useAuth'
 
 /** Props for the Navbar component. */
@@ -243,7 +239,6 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
           </AnimatePresence>
         </div>
 
-
         {/* Right controls — tighter gap between icon buttons */}
         <div className={styles.rightControls}>
           {/* Favorites */}
@@ -300,26 +295,30 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
                     {userInitial}
                   </IconButton>
                 </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content className={styles.dropdownContent} align="end" sideOffset={6}>
-                  <div className={styles.dropdownUserInfo}>
-                    <span className={styles.dropdownAvatar}>{userInitial}</span>
-                    <div className={styles.dropdownUserDetails}>
-                      {user.displayName && (
-                        <span className={styles.dropdownName}>{user.displayName}</span>
-                      )}
-                      <span className={styles.dropdownEmail}>{user.email}</span>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    className={styles.dropdownContent}
+                    align="end"
+                    sideOffset={6}
+                  >
+                    <div className={styles.dropdownUserInfo}>
+                      <span className={styles.dropdownAvatar}>{userInitial}</span>
+                      <div className={styles.dropdownUserDetails}>
+                        {user.displayName && (
+                          <span className={styles.dropdownName}>{user.displayName}</span>
+                        )}
+                        <span className={styles.dropdownEmail}>{user.email}</span>
+                      </div>
                     </div>
-                  </div>
-                  <DropdownMenu.Separator className={styles.dropdownSeparator} />
-                  <DropdownMenu.Item className={styles.dropdownItem} asChild>
-                    <Link to="/profile">Profile</Link>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className={styles.dropdownItem} onSelect={handleSignOut}>
-                    Sign out
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
+                    <DropdownMenu.Separator className={styles.dropdownSeparator} />
+                    <DropdownMenu.Item className={styles.dropdownItem} asChild>
+                      <Link to="/profile">Profile</Link>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className={styles.dropdownItem} onSelect={handleSignOut}>
+                      Sign out
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
               </DropdownMenu.Root>
             ) : (
               <Link to="/login" className={styles.signInBtn}>
