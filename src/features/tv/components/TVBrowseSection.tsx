@@ -9,6 +9,9 @@ import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import ErrorAlert from '@/components/ui/ErrorAlert'
 import styles from '@/pages/BrowsePage.module.css'
 
+/** Staggered skeleton chip width: 60 / 80 / 100 px cycling by index. */
+const skeletonChipWidth = (i: number) => 60 + (i % 3) * 20
+
 /**
  * TV discovery section: hero, trending + top-rated carousels, discover grid with filters.
  * Owns its own filter/data state — no prop drilling from parent.
@@ -75,7 +78,7 @@ export default function TVBrowseSection() {
                   <div
                     key={i}
                     className={styles.chipSkeleton}
-                    style={{ width: `${60 + (i % 3) * 20}px` }}
+                    style={{ width: `${skeletonChipWidth(i)}px` }}
                     aria-hidden="true"
                   />
                 ))

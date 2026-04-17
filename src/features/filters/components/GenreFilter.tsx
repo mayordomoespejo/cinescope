@@ -12,6 +12,9 @@ interface GenreFilterProps {
  * @description Wrapping chip list for filtering content by genre. Shows skeleton chips while loading.
  * @param props - Component props
  */
+/** Staggered skeleton chip width: 60 / 80 / 100 px cycling by index. */
+const skeletonChipWidth = (i: number) => 60 + (i % 3) * 20
+
 export default function GenreFilter({ selectedGenreId, onSelect }: GenreFilterProps) {
   const { data: genres = [], isLoading } = useGenres()
 
@@ -22,7 +25,7 @@ export default function GenreFilter({ selectedGenreId, onSelect }: GenreFilterPr
           <div
             key={i}
             className={styles.chipSkeleton}
-            style={{ width: `${60 + (i % 3) * 20}px` }}
+            style={{ width: `${skeletonChipWidth(i)}px` }}
           />
         ))}
       </div>
