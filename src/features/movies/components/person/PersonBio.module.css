@@ -1,0 +1,38 @@
+/* ─── Biography ──────────────────────────────────────────────────── */
+.bioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bioText {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: pre-line;
+}
+
+.bioCollapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMoreBtn {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color var(--transition-fast);
+  align-self: flex-start;
+}
+
+.readMoreBtn:hover {
+  color: var(--color-accent-hover);
+}

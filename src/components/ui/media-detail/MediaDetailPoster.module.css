@@ -1,0 +1,48 @@
+/* ─── Poster column ──────────────────────────────────────────────── */
+.posterCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: sticky;
+  top: calc(var(--navbar-height, 64px) + var(--space-4));
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  display: block;
+}
+
+/* ─── Action buttons ─────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+/* ─── Tooltips ───────────────────────────────────────────────────── */
+.tooltipContent {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  user-select: none;
+  z-index: var(--z-tooltip, 9999);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .posterCol {
+    max-width: 180px;
+    margin: 0 auto;
+    position: static;
+  }
+}

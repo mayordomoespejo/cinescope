@@ -48,16 +48,20 @@ export async function syncWatchlistToSupabase(token: string, movies: Movie[]): P
  * Returns both arrays so the hook can set React state directly.
  * Should be called once after the user authenticates.
  * @param token - Firebase ID token of the authenticated user.
+ * @param signal - Optional AbortSignal to cancel the request.
  */
 export async function hydrateFromSupabase(
-  token: string
+  token: string,
+  signal?: AbortSignal
 ): Promise<{ favorites: Movie[]; watchlist: Movie[] }> {
   const [favRes, watchRes] = await Promise.all([
     fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
       headers: { Authorization: `Bearer ${token}` },
+      signal,
     }),
     fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
       headers: { Authorization: `Bearer ${token}` },
+      signal,
     }),
   ])
 

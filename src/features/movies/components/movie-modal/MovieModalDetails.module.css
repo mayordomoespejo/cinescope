@@ -1,0 +1,164 @@
+/* Details */
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.rating {
+  color: var(--color-star);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.voteCount {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+.stat {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* Genres */
+.genres {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.genre {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  padding: 3px var(--space-3);
+  background: var(--color-surface-raised);
+}
+
+/* Overview */
+.overview {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+/* Extra info */
+.extraInfo {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.extraItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.extraLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Mobile-only trailer button (poster column is hidden on mobile) */
+.trailerMobileBtn {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .trailerMobileBtn {
+    display: contents;
+  }
+  .actions {
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+  }
+  .actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+    font-size: var(--font-size-xs);
+    height: 34px;
+  }
+  .trailerMobileBtn button {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .trailerMobileBtn button:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+}
+
+/* Stacked label toggle — two labels occupy the same grid cell; only one is visible */
+.labelStack {
+  display: inline-grid;
+}
+
+.labelStack > * {
+  grid-area: 1 / 1;
+}
+
+.labelVisible {
+  visibility: visible;
+}
+
+.labelHidden {
+  visibility: hidden;
+}

@@ -1,26 +1,30 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/components/ui/Layout'
-import Home from '@/pages/Home'
-import Favorites from '@/pages/Favorites'
-import NotFound from '@/pages/NotFound'
-import MovieDetailPage from '@/pages/MovieDetailPage'
-import TVBrowsePage from '@/pages/TVBrowsePage'
-import TVDetailPage from '@/pages/TVDetailPage'
-import PersonPage from '@/pages/PersonPage'
-import ProfilePage from '@/pages/ProfilePage'
-import ListsPage from '@/pages/ListsPage'
-import WelcomePage from '@/pages/WelcomePage'
-import LoginPage from '@/pages/LoginPage'
 import AuthGuard from '@/features/auth/AuthGuard'
+
+const Home = lazy(() => import('@/pages/Home'))
+const Favorites = lazy(() => import('@/pages/Favorites'))
+const NotFound = lazy(() => import('@/pages/NotFound'))
+const MovieDetailPage = lazy(() => import('@/pages/MovieDetailPage'))
+const TVBrowsePage = lazy(() => import('@/pages/TVBrowsePage'))
+const TVDetailPage = lazy(() => import('@/pages/TVDetailPage'))
+const PersonPage = lazy(() => import('@/pages/PersonPage'))
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const ListsPage = lazy(() => import('@/pages/ListsPage'))
+const WelcomePage = lazy(() => import('@/pages/WelcomePage'))
+const LoginPage = lazy(() => import('@/pages/LoginPage'))
+
+const pageFallback = <div style={{ minHeight: '100vh' }} aria-busy="true" />
 
 export const router = createBrowserRouter([
   {
     path: '/welcome',
-    element: <WelcomePage />,
+    element: <Suspense fallback={pageFallback}><WelcomePage /></Suspense>,
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: <Suspense fallback={pageFallback}><LoginPage /></Suspense>,
   },
   {
     path: '/',
@@ -30,7 +34,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <AuthGuard>
-            <Home />
+            <Suspense fallback={pageFallback}><Home /></Suspense>
           </AuthGuard>
         ),
       },
@@ -38,7 +42,7 @@ export const router = createBrowserRouter([
         path: 'favorites',
         element: (
           <AuthGuard>
-            <Favorites />
+            <Suspense fallback={pageFallback}><Favorites /></Suspense>
           </AuthGuard>
         ),
       },
@@ -46,7 +50,7 @@ export const router = createBrowserRouter([
         path: 'movie/:id',
         element: (
           <AuthGuard>
-            <MovieDetailPage />
+            <Suspense fallback={pageFallback}><MovieDetailPage /></Suspense>
           </AuthGuard>
         ),
       },
@@ -54,7 +58,7 @@ export const router = createBrowserRouter([
         path: 'tv',
         element: (
           <AuthGuard>
-            <TVBrowsePage />
+            <Suspense fallback={pageFallback}><TVBrowsePage /></Suspense>
           </AuthGuard>
         ),
       },
@@ -62,7 +66,7 @@ export const router = createBrowserRouter([
         path: 'tv/:id',
         element: (
           <AuthGuard>
-            <TVDetailPage />
+            <Suspense fallback={pageFallback}><TVDetailPage /></Suspense>
           </AuthGuard>
         ),
       },
@@ -70,7 +74,7 @@ export const router = createBrowserRouter([
         path: 'person/:id',
         element: (
           <AuthGuard>
-            <PersonPage />
+            <Suspense fallback={pageFallback}><PersonPage /></Suspense>
           </AuthGuard>
         ),
       },
@@ -78,7 +82,7 @@ export const router = createBrowserRouter([
         path: 'profile',
         element: (
           <AuthGuard>
-            <ProfilePage />
+            <Suspense fallback={pageFallback}><ProfilePage /></Suspense>
           </AuthGuard>
         ),
       },
@@ -86,13 +90,13 @@ export const router = createBrowserRouter([
         path: 'lists',
         element: (
           <AuthGuard>
-            <ListsPage />
+            <Suspense fallback={pageFallback}><ListsPage /></Suspense>
           </AuthGuard>
         ),
       },
       {
         path: '*',
-        element: <NotFound />,
+        element: <Suspense fallback={pageFallback}><NotFound /></Suspense>,
       },
     ],
   },

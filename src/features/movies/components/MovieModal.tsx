@@ -66,8 +66,7 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
       }, 0)
       return () => clearTimeout(t)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingVideos, videos])
+  }, [loadingVideos, videos, playWhenReady, trailer, trailerPlaying])
 
   return (
     <Dialog.Root open onOpenChange={open => !open && onClose()}>

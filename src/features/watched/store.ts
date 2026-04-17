@@ -70,10 +70,12 @@ export async function deleteFromSupabase(
  * Loads watched items from Supabase via Edge Function and returns them as an array.
  * Should be called once after the user authenticates.
  * @param token - Firebase ID token of the authenticated user.
+ * @param signal - Optional AbortSignal to cancel the request.
  */
-export async function hydrateWatched(token: string): Promise<WatchedItem[]> {
+export async function hydrateWatched(token: string, signal?: AbortSignal): Promise<WatchedItem[]> {
   const res = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatched), {
     headers: { Authorization: `Bearer ${token}` },
+    signal,
   })
 
   if (!res.ok) return []

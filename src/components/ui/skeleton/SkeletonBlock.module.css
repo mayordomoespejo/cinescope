@@ -1,0 +1,16 @@
+/* Shimmer background — @keyframes shimmer is defined once in global.css */
+.skeleton {
+  display: block;
+  width: var(--skeleton-w, 100%);
+  height: var(--skeleton-h, 1rem);
+  border-radius: var(--skeleton-radius, var(--radius-md));
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}

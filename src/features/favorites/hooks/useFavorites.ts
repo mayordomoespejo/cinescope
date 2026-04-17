@@ -6,12 +6,14 @@ import { useAuth } from '@/features/auth/useAuth'
 /**
  * @description React hook for managing favorites and watchlist as in-memory React state.
  * Hydrates from Supabase on login and syncs mutations back to Supabase (fire-and-forget).
+ * Exposes `syncError` when a Supabase sync fails so callers can surface it to users.
  * @returns Reactive state arrays and toggle/reorder action callbacks.
  */
 export function useFavorites() {
   const [favorites, setFavorites] = useState<Movie[]>([])
   const [watchlist, setWatchlist] = useState<Movie[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [syncError, setSyncError] = useState<Error | null>(null)
   const { user } = useAuth()
   const prevUserIdRef = useRef<string | null>(null)
 
@@ -33,12 +35,21 @@ export function useFavorites() {
         setIsLoading(true)
         const token = await user.getIdToken(false)
         if (controller.signal.aborted) return
-        const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(token)
+        const { favorites: favs, watchlist: watch } = await hydrateFromSupabase(
+          token,
+          controller.signal
+        )
         if (controller.signal.aborted) return
         setFavorites(favs)
         setWatchlist(watch)
         setIsLoading(false)
-      })().catch(err => console.warn('[cinescope] Failed to hydrate from Supabase:', err))
+      })().catch(err => {
+        if ((err as Error).name !== 'AbortError') {
+          console.warn('[cinescope] Failed to hydrate from Supabase:', err)
+          setSyncError(err instanceof Error ? err : new Error(String(err)))
+          setIsLoading(false)
+        }
+      })
       return () => controller.abort()
     } else if (!user) {
       prevUserIdRef.current = null
@@ -46,6 +57,7 @@ export function useFavorites() {
         setFavorites([])
         setWatchlist([])
         setIsLoading(false)
+        setSyncError(null)
       }, 0)
       return () => clearTimeout(t)
     }
@@ -54,13 +66,15 @@ export function useFavorites() {
   const toggleFavorite = useCallback(
     async (movie: Movie) => {
       const token = await getToken()
+      setSyncError(null)
       setFavorites(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
         if (token)
-          syncFavoritesToSupabase(token, updated).catch(err =>
+          syncFavoritesToSupabase(token, updated).catch(err => {
             console.warn('[cinescope] Failed to sync favorites:', err)
-          )
+            setSyncError(err instanceof Error ? err : new Error(String(err)))
+          })
         return updated
       })
     },
@@ -70,13 +84,15 @@ export function useFavorites() {
   const toggleWatchlist = useCallback(
     async (movie: Movie) => {
       const token = await getToken()
+      setSyncError(null)
       setWatchlist(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
         if (token)
-          syncWatchlistToSupabase(token, updated).catch(err =>
+          syncWatchlistToSupabase(token, updated).catch(err => {
             console.warn('[cinescope] Failed to sync watchlist:', err)
-          )
+            setSyncError(err instanceof Error ? err : new Error(String(err)))
+          })
         return updated
       })
     },
@@ -92,9 +108,10 @@ export function useFavorites() {
       setFavorites(newOrder)
       const token = await getToken()
       if (token)
-        syncFavoritesToSupabase(token, newOrder).catch(err =>
+        syncFavoritesToSupabase(token, newOrder).catch(err => {
           console.warn('[cinescope] Failed to sync favorites:', err)
-        )
+          setSyncError(err instanceof Error ? err : new Error(String(err)))
+        })
     },
     [getToken]
   )
@@ -104,9 +121,10 @@ export function useFavorites() {
       setWatchlist(newOrder)
       const token = await getToken()
       if (token)
-        syncWatchlistToSupabase(token, newOrder).catch(err =>
+        syncWatchlistToSupabase(token, newOrder).catch(err => {
           console.warn('[cinescope] Failed to sync watchlist:', err)
-        )
+          setSyncError(err instanceof Error ? err : new Error(String(err)))
+        })
     },
     [getToken]
   )
@@ -115,6 +133,7 @@ export function useFavorites() {
     favorites,
     watchlist,
     isLoading,
+    syncError,
     toggleFavorite,
     toggleWatchlist,
     isFavorite,

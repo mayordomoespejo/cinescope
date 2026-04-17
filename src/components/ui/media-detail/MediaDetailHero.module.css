@@ -1,0 +1,37 @@
+/* ─── Hero backdrop ──────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 520px;
+  overflow: hidden;
+}
+
+.heroImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.heroImgPoster {
+  object-position: center center;
+}
+
+.heroGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.4) 55%,
+    var(--color-bg) 92%
+  );
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero {
+    height: 320px;
+  }
+}

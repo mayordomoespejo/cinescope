@@ -13,20 +13,13 @@ import { useSearchTV } from '@/features/tv/hooks/useSearchTV'
 import { useTVGenres } from '@/features/tv/hooks/useTVGenres'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 import { addSearchQuery } from '@/features/search/searchHistoryStore'
-import HeroSection from '@/features/movies/components/HeroSection'
-import MovieCarousel from '@/features/movies/components/MovieCarousel'
-import MovieGrid from '@/features/movies/components/MovieGrid'
-import TVHeroSection from '@/features/tv/components/TVHeroSection'
-import TVCarousel from '@/features/tv/components/TVCarousel'
-import TVGrid from '@/features/tv/components/TVGrid'
-import GenreFilter from '@/features/filters/components/GenreFilter'
-import SortDropdown from '@/features/filters/components/SortDropdown'
-import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
+import MovieBrowseSection from '@/features/movies/components/MovieBrowseSection'
+import TVBrowseSection from '@/features/tv/components/TVBrowseSection'
+import SearchResults from '@/features/search/components/SearchResults'
+import { tvShowToMovie } from '@/features/tv/adapters'
 import type { SortOption } from '@/lib/config'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import type { TVShow } from '@/features/tv/types/tv'
-import PageContent from '@/components/ui/PageContent'
-import styles from './BrowsePage.module.css'
 
 /** Props for the BrowsePage component. */
 export interface BrowsePageProps {
@@ -35,19 +28,9 @@ export interface BrowsePageProps {
 }
 
 /**
- * @description Shared browse page for movies and TV shows. Accepts a single
- * `mediaType` prop and internally selects the appropriate hooks and components.
- *
- * Layout (top to bottom):
- * 1. Hero — backdrop + CTA for the first trending item
- * 2. "Trending Today" carousel
- * 3. "Top Rated" carousel
- * 4. Discover section — genre filter chips, sort/advanced filters, grid, load-more
- *
- * Search mode: when `?q=` is present in the URL the normal layout is replaced
- * by a full-page results grid.
- *
- * @param props - Component props
+ * Thin coordinator page for movie and TV browsing.
+ * Manages shared filter/pagination state and delegates rendering to
+ * MovieBrowseSection, TVBrowseSection, or SearchResults.
  */
 export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
@@ -91,7 +74,6 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
 
   // ── TV hooks ─────────────────────────────────────────────────────────────
   const { data: tvGenres = [], isLoading: tvGenresLoading } = useTVGenres()
-
   const { data: tvTrendingData, isLoading: tvTrendingLoading } = useTrendingTV('day')
   const { data: tvTopRatedData, isLoading: tvTopRatedLoading } = useTopRatedTV()
   const {
@@ -122,274 +104,128 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   // ── Derived values ────────────────────────────────────────────────────────
   const favoriteIds = useMemo(() => favorites.map(f => f.id), [favorites])
 
-  // Movie-derived
   const trendingMovies = movieTrendingData?.results ?? []
   const topRatedMovies = movieTopRatedData?.results ?? []
   const discoverMovies = movieDiscoverData?.results ?? []
   const searchMovies = movieSearchData?.results ?? []
   const hasNextMovieDiscover = discoverPage < (movieDiscoverData?.total_pages ?? 1)
-  const featuredMovie = trendingMovies.find(m => !!m.backdrop_path) ?? trendingMovies[0]
 
-  // TV-derived
   const trendingShows = tvTrendingData?.results ?? []
   const topRatedShows = tvTopRatedData?.results ?? []
   const discoverShows = tvDiscoverData?.results ?? []
   const searchShows = tvSearchData?.results ?? []
   const hasNextTVDiscover = discoverPage < (tvDiscoverData?.total_pages ?? 1)
-  const featuredShow = trendingShows.find(s => !!s.backdrop_path) ?? trendingShows[0]
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleOpenMovie = (id: number) => {
-    onOpenMovie(id)
-  }
-
-  const handleOpenShow = (id: number) => {
-    navigate(`/tv/${id}`)
-  }
+  const handleOpenMovie = (id: number) => { onOpenMovie(id) }
+  const handleOpenShow = (id: number) => { navigate(`/tv/${id}`) }
 
   const handleGenreSelect = (id: number | null) => {
     setSelectedGenre(id)
     setDiscoverPage(1)
   }
-
   const handleSortChange = (value: SortOption) => {
     setSortBy(value)
     setDiscoverPage(1)
   }
-
   const handleMinRatingChange = (value: number) => {
     setMinRating(value)
     setDiscoverPage(1)
   }
-
   const handleYearChange = (value: number | undefined) => {
     setSelectedYear(value)
     setDiscoverPage(1)
   }
-
   const handleLanguageChange = (value: string) => {
     setSelectedLanguage(value)
     setDiscoverPage(1)
   }
 
   const handleToggleFavoriteTV = (show: TVShow) => {
-    void toggleFavorite(show as unknown as Parameters<typeof toggleFavorite>[0])
+    void toggleFavorite(tvShowToMovie(show))
   }
 
   // ── Search mode ───────────────────────────────────────────────────────────
   if (searchQuery) {
-    if (mediaType === 'movie') {
-      return (
-        <div className={styles.page}>
-          <PageContent className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>
-                Results for &ldquo;{searchQuery}&rdquo;
-                {movieSearchData && (
-                  <span className={styles.count}>
-                    {movieSearchData.total_results === 1
-                      ? '1 movie'
-                      : `${movieSearchData.total_results} movies`}
-                  </span>
-                )}
-              </h2>
-            </div>
-            <MovieGrid
-              movies={searchMovies}
-              isLoading={movieSearchLoading}
-              error={movieSearchError}
-              onOpenMovie={handleOpenMovie}
-              onPrefetch={prefetchMovieData}
-              favorites={favoriteIds}
-              onToggleFavorite={toggleFavorite}
-              emptyMessage={`No results for "${searchQuery}"`}
-            />
-          </PageContent>
-        </div>
-      )
-    }
-
     return (
-      <div className={styles.page}>
-        <PageContent className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              Results for &ldquo;{searchQuery}&rdquo;
-              {tvSearchData && (
-                <span className={styles.count}>
-                  {tvSearchData.total_results === 1
-                    ? '1 show'
-                    : `${tvSearchData.total_results} shows`}
-                </span>
-              )}
-            </h2>
-          </div>
-          <TVGrid
-            shows={searchShows}
-            isLoading={tvSearchLoading}
-            error={tvSearchError}
-            onOpenShow={handleOpenShow}
-            emptyMessage={`No results for "${searchQuery}"`}
-            favorites={favoriteIds}
-            onToggleFavorite={handleToggleFavoriteTV}
-          />
-        </PageContent>
-      </div>
+      <SearchResults
+        mediaType={mediaType}
+        searchQuery={searchQuery}
+        searchMovies={searchMovies}
+        movieSearchLoading={movieSearchLoading}
+        movieSearchError={movieSearchError}
+        movieTotalResults={movieSearchData?.total_results}
+        searchShows={searchShows}
+        tvSearchLoading={tvSearchLoading}
+        tvSearchError={tvSearchError}
+        tvTotalResults={tvSearchData?.total_results}
+        favoriteIds={favoriteIds}
+        onOpenMovie={handleOpenMovie}
+        onPrefetch={prefetchMovieData}
+        onToggleFavorite={toggleFavorite}
+        onOpenShow={handleOpenShow}
+        onToggleFavoriteTV={handleToggleFavoriteTV}
+      />
     )
   }
 
   // ── Normal browse mode ────────────────────────────────────────────────────
   if (mediaType === 'movie') {
     return (
-      <div className={styles.page}>
-        {/* Hero */}
-        <HeroSection
-          movie={featuredMovie}
-          isLoading={movieTrendingLoading}
-          onOpenMovie={handleOpenMovie}
-        />
-
-        <div className={styles.content}>
-          {/* Trending carousel */}
-          <MovieCarousel
-            title="Trending Today"
-            movies={trendingMovies}
-            isLoading={movieTrendingLoading}
-            onOpenMovie={handleOpenMovie}
-            onPrefetch={prefetchMovieData}
-            favorites={favoriteIds}
-            onToggleFavorite={toggleFavorite}
-          />
-
-          {/* Top Rated carousel */}
-          <MovieCarousel
-            title="Top Rated"
-            movies={topRatedMovies}
-            isLoading={movieTopRatedLoading}
-            onOpenMovie={handleOpenMovie}
-            onPrefetch={prefetchMovieData}
-            favorites={favoriteIds}
-            onToggleFavorite={toggleFavorite}
-          />
-
-          {/* Discover section with filters */}
-          <section className={styles.section} aria-labelledby="discover-title">
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle} id="discover-title">
-                Discover
-              </h2>
-              <SortDropdown value={sortBy} onChange={handleSortChange} />
-            </div>
-            <GenreFilter selectedGenreId={selectedGenre} onSelect={handleGenreSelect} />
-            <AdvancedFilters
-              minRating={minRating}
-              onMinRatingChange={handleMinRatingChange}
-              year={selectedYear}
-              onYearChange={handleYearChange}
-              language={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-            />
-            <MovieGrid
-              movies={discoverMovies}
-              isLoading={movieDiscoverLoading}
-              error={movieDiscoverError}
-              hasNextPage={hasNextMovieDiscover}
-              onOpenMovie={handleOpenMovie}
-              onPrefetch={prefetchMovieData}
-              onLoadMore={() => setDiscoverPage(p => p + 1)}
-              favorites={favoriteIds}
-              onToggleFavorite={toggleFavorite}
-            />
-          </section>
-        </div>
-      </div>
+      <MovieBrowseSection
+        trendingMovies={trendingMovies}
+        topRatedMovies={topRatedMovies}
+        discoverMovies={discoverMovies}
+        movieTrendingLoading={movieTrendingLoading}
+        movieTopRatedLoading={movieTopRatedLoading}
+        movieDiscoverLoading={movieDiscoverLoading}
+        movieDiscoverError={movieDiscoverError}
+        hasNextMovieDiscover={hasNextMovieDiscover}
+        favoriteIds={favoriteIds}
+        selectedGenre={selectedGenre}
+        sortBy={sortBy}
+        minRating={minRating}
+        selectedYear={selectedYear}
+        selectedLanguage={selectedLanguage}
+        onOpenMovie={handleOpenMovie}
+        onPrefetch={prefetchMovieData}
+        onToggleFavorite={toggleFavorite}
+        onGenreSelect={handleGenreSelect}
+        onSortChange={handleSortChange}
+        onMinRatingChange={handleMinRatingChange}
+        onYearChange={handleYearChange}
+        onLanguageChange={handleLanguageChange}
+        onLoadMore={() => setDiscoverPage(p => p + 1)}
+      />
     )
   }
 
-  // mediaType === 'tv'
   return (
-    <div className={styles.page}>
-      {/* Hero */}
-      <TVHeroSection
-        show={featuredShow}
-        isLoading={tvTrendingLoading}
-        onOpenShow={handleOpenShow}
-      />
-
-      <div className={styles.content}>
-        {/* Trending carousel */}
-        <TVCarousel
-          title="Trending Today"
-          shows={trendingShows}
-          isLoading={tvTrendingLoading}
-          onOpenShow={handleOpenShow}
-          favorites={favoriteIds}
-          onToggleFavorite={handleToggleFavoriteTV}
-        />
-
-        {/* Top Rated carousel */}
-        <TVCarousel
-          title="Top Rated"
-          shows={topRatedShows}
-          isLoading={tvTopRatedLoading}
-          onOpenShow={handleOpenShow}
-          favorites={favoriteIds}
-          onToggleFavorite={handleToggleFavoriteTV}
-        />
-
-        {/* Discover section with filters */}
-        <section className={styles.section} aria-labelledby="tv-discover-title">
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle} id="tv-discover-title">
-              Discover
-            </h2>
-            <SortDropdown value={sortBy} onChange={handleSortChange} />
-          </div>
-
-          {/* TV genre filter — inline because GenreFilter uses the movie genres hook */}
-          <div className={styles.genreTrack} role="group" aria-label="Filter by genre">
-            {tvGenresLoading
-              ? Array.from({ length: 8 }, (_, i) => (
-                  <div
-                    key={i}
-                    className={styles.chipSkeleton}
-                    style={{ width: `${60 + (i % 3) * 20}px` }}
-                    aria-hidden="true"
-                  />
-                ))
-              : [{ id: null as number | null, name: 'All' }, ...tvGenres].map(genre => (
-                  <button
-                    key={genre.id ?? 'all'}
-                    type="button"
-                    className={`${styles.chip} ${selectedGenre === genre.id ? styles.chipActive : ''}`}
-                    onClick={() => handleGenreSelect(genre.id)}
-                    aria-pressed={selectedGenre === genre.id}
-                  >
-                    {genre.name}
-                  </button>
-                ))}
-          </div>
-
-          <AdvancedFilters
-            minRating={minRating}
-            onMinRatingChange={handleMinRatingChange}
-            year={selectedYear}
-            onYearChange={handleYearChange}
-            language={selectedLanguage}
-            onLanguageChange={handleLanguageChange}
-          />
-          <TVGrid
-            shows={discoverShows}
-            isLoading={tvDiscoverLoading}
-            error={tvDiscoverError}
-            hasNextPage={hasNextTVDiscover}
-            onOpenShow={handleOpenShow}
-            onLoadMore={() => setDiscoverPage(p => p + 1)}
-            favorites={favoriteIds}
-            onToggleFavorite={handleToggleFavoriteTV}
-          />
-        </section>
-      </div>
-    </div>
+    <TVBrowseSection
+      trendingShows={trendingShows}
+      topRatedShows={topRatedShows}
+      discoverShows={discoverShows}
+      tvTrendingLoading={tvTrendingLoading}
+      tvTopRatedLoading={tvTopRatedLoading}
+      tvDiscoverLoading={tvDiscoverLoading}
+      tvDiscoverError={tvDiscoverError}
+      tvGenres={tvGenres}
+      tvGenresLoading={tvGenresLoading}
+      hasNextTVDiscover={hasNextTVDiscover}
+      favoriteIds={favoriteIds}
+      selectedGenre={selectedGenre}
+      sortBy={sortBy}
+      minRating={minRating}
+      selectedYear={selectedYear}
+      selectedLanguage={selectedLanguage}
+      onOpenShow={handleOpenShow}
+      onToggleFavoriteTV={handleToggleFavoriteTV}
+      onGenreSelect={handleGenreSelect}
+      onSortChange={handleSortChange}
+      onMinRatingChange={handleMinRatingChange}
+      onYearChange={handleYearChange}
+      onLanguageChange={handleLanguageChange}
+      onLoadMore={() => setDiscoverPage(p => p + 1)}
+    />
   )
 }

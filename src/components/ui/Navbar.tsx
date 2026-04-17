@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink, Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, Link } from 'react-router-dom'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Navbar.module.css'
 import iconBtnStyles from './IconButton.module.css'
 import IconButton from './IconButton'
 import CinescopeLogo from './CinescopeLogo'
-import { DEBOUNCE_DELAY } from '@/lib/config'
-import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/search/searchHistoryStore'
+import { useNavSearch } from './navbar/useNavSearch'
 import { useAuth } from '@/features/auth/useAuth'
 
 /** Props for the Navbar component. */
@@ -21,23 +20,27 @@ interface NavbarProps {
  * @param props - Component props
  */
 export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
-  const navigate = useNavigate()
-
-  const [searchParams] = useSearchParams()
-  const [query, setQuery] = useState(searchParams.get('q') ?? '')
-  const [focused, setFocused] = useState(false)
-  const [history, setHistory] = useState<string[]>([])
   const [scrolled, setScrolled] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const searchParamQuery = searchParams.get('q') ?? ''
-
-  const { user, loading: authLoading, signOut } = useAuth()
-
-  // Detect mobile to show shorter search placeholder
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(max-width: 640px)').matches : false
   )
+
+  const { user, loading: authLoading, signOut } = useAuth()
+
+  const {
+    query,
+    focused,
+    history,
+    inputRef,
+    handleChange,
+    handleSubmit,
+    handleFocus,
+    handleBlur,
+    handleHistoryClick,
+    handleClear,
+    handleHistoryClear,
+  } = useNavSearch()
+
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 640px)')
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
@@ -50,73 +53,6 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
-
-  useEffect(() => {
-    setQuery(searchParamQuery)
-  }, [searchParamQuery])
-
-  useEffect(
-    () => () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    },
-    []
-  )
-
-  // "/" shortcut to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT') {
-        e.preventDefault()
-        inputRef.current?.focus()
-      }
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setQuery(val)
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      if (val.trim()) {
-        navigate(`/?q=${encodeURIComponent(val.trim())}`, { replace: true })
-      } else {
-        navigate('/', { replace: true })
-      }
-    }, DEBOUNCE_DELAY)
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    if (query.trim()) {
-      addSearchQuery(query.trim())
-      navigate(`/?q=${encodeURIComponent(query.trim())}`)
-    }
-    inputRef.current?.blur()
-  }
-
-  const handleFocus = () => {
-    setHistory(getSearchHistory())
-    setFocused(true)
-  }
-
-  const handleBlur = () => {
-    setTimeout(() => setFocused(false), 150)
-  }
-
-  const handleHistoryClick = (q: string) => {
-    setQuery(q)
-    navigate(`/?q=${encodeURIComponent(q)}`)
-    setFocused(false)
-  }
-
-  const handleClear = () => {
-    setQuery('')
-    navigate('/', { replace: true })
-    inputRef.current?.focus()
-  }
 
   const handleSignOut = async () => {
     await signOut()
@@ -214,10 +150,7 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
                   <button
                     type="button"
                     className={styles.clearHistory}
-                    onClick={() => {
-                      clearSearchHistory()
-                      setHistory([])
-                    }}
+                    onClick={handleHistoryClear}
                   >
                     Clear
                   </button>
