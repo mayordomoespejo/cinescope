@@ -1,7 +1,7 @@
 // Layout primitives
 export { default as Layout } from './Layout'
 export { default as PageContent } from './PageContent'
-export { default as Navbar } from './Navbar'
+export { default as Navbar } from './navbar/Navbar'
 export { default as BottomNav } from './BottomNav'
 export { useOutletContext } from './LayoutContext'
 export type { LayoutContext } from './LayoutContext'

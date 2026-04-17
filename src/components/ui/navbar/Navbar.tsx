@@ -55,6 +55,14 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
           >
             TV Shows
           </NavLink>
+          <NavLink
+            to="/watched"
+            className={({ isActive }) =>
+              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+            }
+          >
+            Watched
+          </NavLink>
         </nav>
 
         {/* Search */}

@@ -12,6 +12,7 @@ const TVDetailPage = lazy(() => import('@/pages/TVDetailPage'))
 const PersonPage = lazy(() => import('@/pages/PersonPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const ListsPage = lazy(() => import('@/pages/ListsPage'))
+const WatchedPage = lazy(() => import('@/pages/WatchedPage'))
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 
@@ -91,6 +92,14 @@ export const router = createBrowserRouter([
         element: (
           <AuthGuard>
             <Suspense fallback={pageFallback}><ListsPage /></Suspense>
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'watched',
+        element: (
+          <AuthGuard>
+            <Suspense fallback={pageFallback}><WatchedPage /></Suspense>
           </AuthGuard>
         ),
       },
