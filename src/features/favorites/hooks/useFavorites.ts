@@ -67,14 +67,18 @@ export function useFavorites() {
     async (movie: Movie) => {
       const token = await getToken()
       setSyncError(null)
+      // Capture previous state for rollback on sync failure
       setFavorites(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token)
+        if (token) {
           syncFavoritesToSupabase(token, updated).catch(err => {
             console.warn('[cinescope] Failed to sync favorites:', err)
             setSyncError(err instanceof Error ? err : new Error(String(err)))
+            // Rollback to previous state on sync failure
+            setFavorites(prev)
           })
+        }
         return updated
       })
     },

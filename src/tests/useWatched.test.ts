@@ -110,7 +110,7 @@ describe('useWatched', () => {
         expect(result.current.loading).toBe(false)
       })
 
-      expect(hydrateWatched).toHaveBeenCalledWith('mock-token')
+      expect(hydrateWatched).toHaveBeenCalledWith('mock-token', expect.any(AbortSignal))
     })
 
     it('clears state when user signs out', async () => {

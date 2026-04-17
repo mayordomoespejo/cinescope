@@ -100,6 +100,8 @@ export function useWatched() {
           deleteFromSupabase(token, item.media_id, item.media_type).catch(err => {
             console.warn('[cinescope] Failed to delete watched item:', err)
             setSyncError(err instanceof Error ? err : new Error(String(err)))
+            // Rollback to previous state on sync failure
+            setWatchedList(prev)
           })
           return prev.filter(
             w => !(w.media_id === item.media_id && w.media_type === item.media_type)
@@ -109,6 +111,8 @@ export function useWatched() {
           upsertToSupabase(token, entry).catch(err => {
             console.warn('[cinescope] Failed to upsert watched item:', err)
             setSyncError(err instanceof Error ? err : new Error(String(err)))
+            // Rollback to previous state on sync failure
+            setWatchedList(prev)
           })
           return [entry, ...prev]
         }

@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
-import Navbar from './Navbar'
+import Navbar from './navbar/Navbar'
 import BottomNav from './BottomNav'
 import ScrollToTop from './ScrollToTop'
 import { STORAGE_KEYS } from '@/lib/constants'

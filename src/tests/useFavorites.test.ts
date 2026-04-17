@@ -98,7 +98,7 @@ describe('useFavorites', () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(hydrateFromSupabase).toHaveBeenCalledWith('mock-token')
+      expect(hydrateFromSupabase).toHaveBeenCalledWith('mock-token', expect.any(AbortSignal))
     })
 
     it('does not call hydrateFromSupabase when user is null', () => {
