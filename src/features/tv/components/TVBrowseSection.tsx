@@ -1,5 +1,6 @@
-import type { SortOption } from '@/lib/config'
-import type { TVShow } from '../types/tv'
+import { useBrowseFilters } from '@/hooks/browse/useBrowseFilters'
+import { useTVData } from '@/hooks/browse/useTVData'
+import { useBrowseHandlers } from '@/hooks/browse/useBrowseHandlers'
 import TVHeroSection from './TVHeroSection'
 import TVCarousel from './TVCarousel'
 import TVGrid from './TVGrid'
@@ -8,63 +9,29 @@ import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import ErrorAlert from '@/components/ui/ErrorAlert'
 import styles from '@/pages/BrowsePage.module.css'
 
-export interface TVBrowseSectionProps {
-  trendingShows: TVShow[]
-  topRatedShows: TVShow[]
-  discoverShows: TVShow[]
-  tvTrendingLoading: boolean
-  tvTopRatedLoading: boolean
-  tvDiscoverLoading: boolean
-  tvDiscoverError: Error | null
-  tvGenres: Array<{ id: number; name: string }>
-  tvGenresLoading: boolean
-  hasNextTVDiscover: boolean
-  favoriteIds: number[]
-  selectedGenre: number | null
-  sortBy: SortOption
-  minRating: number
-  selectedYear: number | undefined
-  selectedLanguage: string
-  onOpenShow: (id: number) => void
-  onToggleFavoriteTV: (show: TVShow) => void
-  onGenreSelect: (id: number | null) => void
-  onSortChange: (value: SortOption) => void
-  onMinRatingChange: (value: number) => void
-  onYearChange: (value: number | undefined) => void
-  onLanguageChange: (value: string) => void
-  onLoadMore: () => void
-}
-
 /**
  * TV discovery section: hero, trending + top-rated carousels, discover grid with filters.
+ * Owns its own filter/data state — no prop drilling from parent.
  */
-export default function TVBrowseSection({
-  trendingShows,
-  topRatedShows,
-  discoverShows,
-  tvTrendingLoading,
-  tvTopRatedLoading,
-  tvDiscoverLoading,
-  tvDiscoverError,
-  tvGenres,
-  tvGenresLoading,
-  hasNextTVDiscover,
-  favoriteIds,
-  selectedGenre,
-  sortBy,
-  minRating,
-  selectedYear,
-  selectedLanguage,
-  onOpenShow,
-  onToggleFavoriteTV,
-  onGenreSelect,
-  onSortChange,
-  onMinRatingChange,
-  onYearChange,
-  onLanguageChange,
-  onLoadMore,
-}: TVBrowseSectionProps) {
-  const featuredShow = trendingShows.find(s => !!s.backdrop_path) ?? trendingShows[0]
+export default function TVBrowseSection() {
+  const { filters, onGenreSelect, onSortChange, onMinRatingChange, onYearChange, onLanguageChange, onLoadMore } =
+    useBrowseFilters()
+
+  const {
+    trendingShows,
+    topRatedShows,
+    discoverShows,
+    featuredShow,
+    tvTrendingLoading,
+    tvTopRatedLoading,
+    tvDiscoverLoading,
+    tvDiscoverError,
+    tvGenres,
+    tvGenresLoading,
+    hasNextTVDiscover,
+  } = useTVData('tv', filters)
+
+  const { favoriteIds, onOpenShow, onToggleFavorite } = useBrowseHandlers()
 
   return (
     <div className={styles.page}>
@@ -81,7 +48,7 @@ export default function TVBrowseSection({
           isLoading={tvTrendingLoading}
           onOpenShow={onOpenShow}
           favorites={favoriteIds}
-          onToggleFavorite={onToggleFavoriteTV}
+          onToggleFavorite={onToggleFavorite}
         />
 
         <TVCarousel
@@ -90,7 +57,7 @@ export default function TVBrowseSection({
           isLoading={tvTopRatedLoading}
           onOpenShow={onOpenShow}
           favorites={favoriteIds}
-          onToggleFavorite={onToggleFavoriteTV}
+          onToggleFavorite={onToggleFavorite}
         />
 
         <section className={styles.section} aria-labelledby="tv-discover-title">
@@ -98,7 +65,7 @@ export default function TVBrowseSection({
             <h2 className={styles.sectionTitle} id="tv-discover-title">
               Discover
             </h2>
-            <SortDropdown value={sortBy} onChange={onSortChange} />
+            <SortDropdown value={filters.sortBy} onChange={onSortChange} />
           </div>
 
           {/* TV genre filter */}
@@ -116,9 +83,9 @@ export default function TVBrowseSection({
                   <button
                     key={genre.id ?? 'all'}
                     type="button"
-                    className={`${styles.chip} ${selectedGenre === genre.id ? styles.chipActive : ''}`}
+                    className={`${styles.chip} ${filters.genre === genre.id ? styles.chipActive : ''}`}
                     onClick={() => onGenreSelect(genre.id)}
-                    aria-pressed={selectedGenre === genre.id}
+                    aria-pressed={filters.genre === genre.id}
                   >
                     {genre.name}
                   </button>
@@ -126,11 +93,11 @@ export default function TVBrowseSection({
           </div>
 
           <AdvancedFilters
-            minRating={minRating}
+            minRating={filters.minRating}
             onMinRatingChange={onMinRatingChange}
-            year={selectedYear}
+            year={filters.year}
             onYearChange={onYearChange}
-            language={selectedLanguage}
+            language={filters.language}
             onLanguageChange={onLanguageChange}
           />
           {tvDiscoverError && (
@@ -147,7 +114,7 @@ export default function TVBrowseSection({
             onOpenShow={onOpenShow}
             onLoadMore={onLoadMore}
             favorites={favoriteIds}
-            onToggleFavorite={onToggleFavoriteTV}
+            onToggleFavorite={onToggleFavorite}
           />
         </section>
       </div>
