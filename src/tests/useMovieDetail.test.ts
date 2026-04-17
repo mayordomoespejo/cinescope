@@ -42,7 +42,10 @@ const mockMovieDetail: MovieDetail = {
   adult: false,
   original_language: 'en',
   original_title: 'Inception',
-  genres: [{ id: 878, name: 'Science Fiction' }, { id: 28, name: 'Action' }],
+  genres: [
+    { id: 878, name: 'Science Fiction' },
+    { id: 28, name: 'Action' },
+  ],
   runtime: 148,
   tagline: 'Your mind is the scene of the crime.',
   status: 'Released',
@@ -121,10 +124,10 @@ describe('useMovieDetail', () => {
 
     const { wrapper } = createWrapper()
 
-    const { result, rerender } = renderHook(
-      ({ id }: { id: number | null }) => useMovieDetail(id),
-      { initialProps: { id: 42 as number | null }, wrapper },
-    )
+    const { result, rerender } = renderHook(({ id }: { id: number | null }) => useMovieDetail(id), {
+      initialProps: { id: 42 as number | null },
+      wrapper,
+    })
 
     await waitFor(() => expect(result.current.data?.id).toBe(42))
 

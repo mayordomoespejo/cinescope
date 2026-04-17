@@ -62,7 +62,9 @@ describe('retrySync', () => {
 
     // Attach a catch handler immediately so the promise is never "unhandled"
     let caught: unknown
-    const promise = retrySync(fn, 3, 100).catch(err => { caught = err })
+    const promise = retrySync(fn, 3, 100).catch(err => {
+      caught = err
+    })
 
     // Advance past attempt 1 delay (100ms * 2^0) and attempt 2 delay (100ms * 2^1)
     await vi.advanceTimersByTimeAsync(100)
@@ -98,7 +100,9 @@ describe('retrySync', () => {
 
     // Attach catch immediately to prevent unhandled rejection warning
     let caught: unknown
-    const promise = retrySync(fn, 1).catch(err => { caught = err })
+    const promise = retrySync(fn, 1).catch(err => {
+      caught = err
+    })
 
     // With maxAttempts=1 there is no retry delay — should reject without timer advance
     await promise
@@ -120,7 +124,9 @@ describe('retrySync', () => {
     // maxAttempts=2 — one delay of 50ms * 2^0 = 50ms between attempts
     // Attach .catch immediately to prevent unhandled rejection warnings
     let caught: unknown
-    const promise = retrySync(fn, 2, 50).catch(err => { caught = err })
+    const promise = retrySync(fn, 2, 50).catch(err => {
+      caught = err
+    })
 
     await vi.advanceTimersByTimeAsync(50)
     await promise

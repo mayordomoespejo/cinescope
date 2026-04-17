@@ -22,7 +22,7 @@ export type MediaType = 'movie' | 'tv'
 export async function fetchTrendingMedia<T>(
   mediaType: MediaType,
   timeWindow: 'day' | 'week',
-  page: number,
+  page: number
 ): Promise<T> {
   return tmdbFetch(`/trending/${mediaType}/${timeWindow}`, { params: { page } })
 }
@@ -42,7 +42,7 @@ export async function fetchTopRatedMedia<T>(mediaType: MediaType, page: number):
 export async function fetchSearchMedia<T>(
   mediaType: MediaType,
   query: string,
-  page: number,
+  page: number
 ): Promise<T> {
   return tmdbFetch(`/search/${mediaType}`, {
     params: { query, page, include_adult: false },
@@ -69,7 +69,10 @@ export async function fetchMediaDetail<T>(mediaType: MediaType, id: number): Pro
 // Videos
 // ---------------------------------------------------------------------------
 
-export async function fetchMediaVideos(mediaType: MediaType, id: number): Promise<VideoListResponse> {
+export async function fetchMediaVideos(
+  mediaType: MediaType,
+  id: number
+): Promise<VideoListResponse> {
   return tmdbFetch(`/${mediaType}/${id}/videos`, { params: { language: 'en-US' } })
 }
 
@@ -80,7 +83,7 @@ export async function fetchMediaVideos(mediaType: MediaType, id: number): Promis
 export async function fetchMediaRecommendations<T>(
   mediaType: MediaType,
   id: number,
-  page: number,
+  page: number
 ): Promise<T> {
   return tmdbFetch(`/${mediaType}/${id}/recommendations`, {
     params: { language: 'en-US', page },

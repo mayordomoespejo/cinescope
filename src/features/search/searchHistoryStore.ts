@@ -57,7 +57,10 @@ export function clearHistory(): void {
 export function removeFromHistory(query: string): void {
   const trimmed = query.trim()
   if (!trimmed) return
-  writeStorage(SEARCH_HISTORY_KEY, getHistory().filter(q => q !== trimmed))
+  writeStorage(
+    SEARCH_HISTORY_KEY,
+    getHistory().filter(q => q !== trimmed)
+  )
 }
 
 // ── Legacy aliases (used by useNavSearch and useMovieData) ──────────

@@ -38,9 +38,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const removeToast = useCallback((id: number) => {
     // Start exit animation first
-    setToasts(prev =>
-      prev.map(t => (t.id === id ? { ...t, exiting: true } : t))
-    )
+    setToasts(prev => prev.map(t => (t.id === id ? { ...t, exiting: true } : t)))
     // Remove from DOM after animation
     const removeTimer = setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id))
@@ -95,6 +93,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 // ── Hook ─────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useToast(): (message: string) => void {
   const ctx = useContext(ToastContext)
   if (!ctx) throw new Error('useToast must be used inside <ToastProvider>')

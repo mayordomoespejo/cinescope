@@ -17,8 +17,15 @@ const skeletonChipWidth = (i: number) => 60 + (i % 3) * 20
  * Owns its own filter/data state — no prop drilling from parent.
  */
 export default function TVBrowseSection() {
-  const { filters, onGenreSelect, onSortChange, onMinRatingChange, onYearChange, onLanguageChange, onLoadMore } =
-    useBrowseFilters()
+  const {
+    filters,
+    onGenreSelect,
+    onSortChange,
+    onMinRatingChange,
+    onYearChange,
+    onLanguageChange,
+    onLoadMore,
+  } = useBrowseFilters()
 
   const {
     trendingShows,
@@ -38,11 +45,7 @@ export default function TVBrowseSection() {
 
   return (
     <div className={styles.page}>
-      <TVHeroSection
-        show={featuredShow}
-        isLoading={tvTrendingLoading}
-        onOpenShow={onOpenShow}
-      />
+      <TVHeroSection show={featuredShow} isLoading={tvTrendingLoading} onOpenShow={onOpenShow} />
 
       <div className={styles.content}>
         <TVCarousel
@@ -104,10 +107,7 @@ export default function TVBrowseSection() {
             onLanguageChange={onLanguageChange}
           />
           {tvDiscoverError && (
-            <ErrorAlert
-              message="Failed to load discover results."
-              onRetry={onLoadMore}
-            />
+            <ErrorAlert message="Failed to load discover results." onRetry={onLoadMore} />
           )}
           <TVGrid
             shows={discoverShows}

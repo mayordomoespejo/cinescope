@@ -23,7 +23,11 @@ interface FirebaseError extends Error {
  * Narrows an unknown caught value to a Firebase-style error with a `code` field.
  */
 export function isFirebaseError(err: unknown): err is FirebaseError {
-  return err instanceof Error && 'code' in err && typeof (err as Record<string, unknown>).code === 'string'
+  return (
+    err instanceof Error &&
+    'code' in err &&
+    typeof (err as Record<string, unknown>).code === 'string'
+  )
 }
 
 // ── Lists store guards ───────────────────────────────────────────────
@@ -85,5 +89,7 @@ export function isWatchedResponse(data: unknown): data is { items: unknown[] } {
  * Used to safely extract arrays from Supabase Edge Function responses.
  */
 export function isMoviesResponse(data: unknown): data is { movies?: FavoriteItem[] } {
-  return isObject(data) && (!('movies' in data) || Array.isArray((data as { movies?: unknown }).movies))
+  return (
+    isObject(data) && (!('movies' in data) || Array.isArray((data as { movies?: unknown }).movies))
+  )
 }

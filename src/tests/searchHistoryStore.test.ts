@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { getHistory, addToHistory, clearHistory, removeFromHistory } from '@/features/search/searchHistoryStore'
+import {
+  getHistory,
+  addToHistory,
+  clearHistory,
+  removeFromHistory,
+} from '@/features/search/searchHistoryStore'
 import { STORAGE_KEYS } from '@/lib/constants'
 
 const KEY = STORAGE_KEYS.SEARCH_HISTORY

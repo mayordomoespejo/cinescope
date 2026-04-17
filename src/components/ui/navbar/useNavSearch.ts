@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { DEBOUNCE_DELAY } from '@/lib/config'
-import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/search/searchHistoryStore'
+import {
+  addSearchQuery,
+  getSearchHistory,
+  clearSearchHistory,
+} from '@/features/search/searchHistoryStore'
 
 export interface UseNavSearchReturn {
   query: string

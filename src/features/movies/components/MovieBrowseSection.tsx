@@ -15,8 +15,15 @@ import styles from '@/pages/BrowsePage.module.css'
  * Owns its own filter/data state — no prop drilling from parent.
  */
 export default function MovieBrowseSection() {
-  const { filters, onGenreSelect, onSortChange, onMinRatingChange, onYearChange, onLanguageChange, onLoadMore } =
-    useBrowseFilters()
+  const {
+    filters,
+    onGenreSelect,
+    onSortChange,
+    onMinRatingChange,
+    onYearChange,
+    onLanguageChange,
+    onLoadMore,
+  } = useBrowseFilters()
 
   const {
     trendingMovies,
@@ -78,10 +85,7 @@ export default function MovieBrowseSection() {
             onLanguageChange={onLanguageChange}
           />
           {movieDiscoverError && (
-            <ErrorAlert
-              message="Failed to load discover results."
-              onRetry={onLoadMore}
-            />
+            <ErrorAlert message="Failed to load discover results." onRetry={onLoadMore} />
           )}
           <MovieGrid
             movies={discoverMovies}

@@ -1,9 +1,4 @@
-import {
-  getReleaseYear,
-  formatRuntime,
-  formatRating,
-  formatMoney,
-} from '@/lib/helpers'
+import { getReleaseYear, formatRuntime, formatRating, formatMoney } from '@/lib/helpers'
 import Skeleton from '@/components/ui/Skeleton'
 import type { Genre } from '@/features/movies/types/movie'
 import type { MovieExtras, TVExtras } from '../MediaDetailLayout'
@@ -66,9 +61,7 @@ export default function MediaDetailInfo({
         className={styles.meta}
         aria-label={mediaType === 'movie' ? 'Movie metadata' : 'Show metadata'}
       >
-        {releaseDate && (
-          <span className={styles.metaItem}>{getReleaseYear(releaseDate)}</span>
-        )}
+        {releaseDate && <span className={styles.metaItem}>{getReleaseYear(releaseDate)}</span>}
 
         {/* Movie: runtime */}
         {mediaType === 'movie' && movieExtras?.runtime != null && (
@@ -78,17 +71,14 @@ export default function MediaDetailInfo({
         {/* TV: seasons + episodes + episode runtime */}
         {mediaType === 'tv' && tvExtras?.numberOfSeasons != null && (
           <span className={styles.metaItem}>
-            {tvExtras.numberOfSeasons}{' '}
-            {tvExtras.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
+            {tvExtras.numberOfSeasons} {tvExtras.numberOfSeasons === 1 ? 'Season' : 'Seasons'}
           </span>
         )}
         {mediaType === 'tv' && tvExtras?.numberOfEpisodes != null && (
           <span className={styles.metaItem}>{tvExtras.numberOfEpisodes} Episodes</span>
         )}
         {mediaType === 'tv' && tvExtras?.episodeRuntime != null && (
-          <span className={styles.metaItem}>
-            {formatRuntime(tvExtras.episodeRuntime)}/ep
-          </span>
+          <span className={styles.metaItem}>{formatRuntime(tvExtras.episodeRuntime)}/ep</span>
         )}
 
         {voteAverage != null && (
@@ -111,28 +101,20 @@ export default function MediaDetailInfo({
       {overview && <p className={styles.overview}>{overview}</p>}
 
       {/* TV only: Created By */}
-      {mediaType === 'tv' &&
-        tvExtras?.createdBy != null &&
-        tvExtras.createdBy.length > 0 && (
-          <div className={styles.infoBlock}>
-            <p className={styles.infoLabel}>Created By</p>
-            <p className={styles.infoValue}>
-              {tvExtras.createdBy.map(c => c.name).join(', ')}
-            </p>
-          </div>
-        )}
+      {mediaType === 'tv' && tvExtras?.createdBy != null && tvExtras.createdBy.length > 0 && (
+        <div className={styles.infoBlock}>
+          <p className={styles.infoLabel}>Created By</p>
+          <p className={styles.infoValue}>{tvExtras.createdBy.map(c => c.name).join(', ')}</p>
+        </div>
+      )}
 
       {/* TV only: Networks */}
-      {mediaType === 'tv' &&
-        tvExtras?.networks != null &&
-        tvExtras.networks.length > 0 && (
-          <div className={styles.infoBlock}>
-            <p className={styles.infoLabel}>Networks</p>
-            <p className={styles.infoValue}>
-              {tvExtras.networks.map(n => n.name).join(', ')}
-            </p>
-          </div>
-        )}
+      {mediaType === 'tv' && tvExtras?.networks != null && tvExtras.networks.length > 0 && (
+        <div className={styles.infoBlock}>
+          <p className={styles.infoLabel}>Networks</p>
+          <p className={styles.infoValue}>{tvExtras.networks.map(n => n.name).join(', ')}</p>
+        </div>
+      )}
 
       {/* Movie only: Budget / Revenue */}
       {mediaType === 'movie' &&

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import type { UseLoginFormReturn } from './useLoginForm'
 import styles from '@/pages/LoginPage.module.css'
 
@@ -75,7 +75,7 @@ export function LoginForm({
   handleSubmit,
 }: LoginFormProps) {
   // readOnly trick: suppress Chrome password manager popup until user focuses
-  const passwordReadOnly = useRef(true)
+  const [passwordReadOnly, setPasswordReadOnly] = useState(true)
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -120,9 +120,9 @@ export function LoginForm({
             className={`${styles.input} ${styles.inputWithToggle}`}
             placeholder="Mínimo 6 caracteres"
             value={password}
-            readOnly={passwordReadOnly.current}
+            readOnly={passwordReadOnly}
             onFocus={() => {
-              passwordReadOnly.current = false
+              setPasswordReadOnly(false)
             }}
             onChange={e => {
               setPassword(e.target.value)

@@ -11,7 +11,12 @@ interface HistoryDropdownProps {
  * Dropdown panel showing recent search history entries.
  * Rendered below the search input when the input is focused.
  */
-export default function HistoryDropdown({ visible, history, onSelect, onClear }: HistoryDropdownProps) {
+export default function HistoryDropdown({
+  visible,
+  history,
+  onSelect,
+  onClear,
+}: HistoryDropdownProps) {
   if (!visible || history.length === 0) return null
 
   return (
@@ -34,7 +39,7 @@ export default function HistoryDropdown({ visible, history, onSelect, onClear }:
           role="option"
           aria-selected={false}
           className={styles.historyItem}
-          onMouseDown={(e) => {
+          onMouseDown={e => {
             e.preventDefault() // prevent blur before click
             onSelect(q)
           }}

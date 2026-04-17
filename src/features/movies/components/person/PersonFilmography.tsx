@@ -1,6 +1,9 @@
 import { FilmographyGrid } from './FilmographyGrid'
 import { MiniPosterCard } from './MiniPosterCard'
-import { FilmographyTab, type FilmographyTab as FilmographyTabType } from '@/features/movies/hooks/usePersonFilmography'
+import {
+  FilmographyTab,
+  type FilmographyTab as FilmographyTabType,
+} from '@/features/movies/hooks/usePersonFilmography'
 import type { PersonCastCredit, PersonCrewCredit } from '@/features/movies/types/movie'
 import pageStyles from '@/pages/PersonPage.module.css'
 import styles from './PersonFilmography.module.css'

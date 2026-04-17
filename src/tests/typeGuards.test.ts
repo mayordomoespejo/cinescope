@@ -79,6 +79,7 @@ describe('isCinescopeList', () => {
   })
 
   it('returns false when id is missing', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: _id, ...row } = valid
     expect(isCinescopeList(row)).toBe(false)
   })
@@ -116,6 +117,7 @@ describe('isListItem', () => {
   })
 
   it('returns false when list_id is missing', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { list_id: _list_id, ...row } = valid
     expect(isListItem(row)).toBe(false)
   })

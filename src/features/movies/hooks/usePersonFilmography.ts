@@ -6,7 +6,7 @@ export const FilmographyTab = {
   DIRECTING: 'directing',
   WRITING: 'writing',
 } as const
-export type FilmographyTab = typeof FilmographyTab[keyof typeof FilmographyTab]
+export type FilmographyTab = (typeof FilmographyTab)[keyof typeof FilmographyTab]
 
 const KNOWN_FOR_COUNT = 8
 

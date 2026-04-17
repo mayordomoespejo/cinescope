@@ -36,9 +36,10 @@ export async function tmdbFetch<T>(path: string, options: FetchOptions = {}): Pr
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}))
-    const msg = (data as { status_message?: string; error?: string }).status_message
-      ?? (data as { error?: string }).error
-      ?? 'Unknown error'
+    const msg =
+      (data as { status_message?: string; error?: string }).status_message ??
+      (data as { error?: string }).error ??
+      'Unknown error'
     throw new Error(`TMDB proxy [${response.status}]: ${msg}`)
   }
 

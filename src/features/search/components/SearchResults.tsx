@@ -64,9 +64,7 @@ export default function SearchResults({
               )}
             </h2>
           </div>
-          {movieSearchError && (
-            <ErrorAlert message="Failed to search movies. Please try again." />
-          )}
+          {movieSearchError && <ErrorAlert message="Failed to search movies. Please try again." />}
           <MovieGrid
             movies={searchMovies}
             isLoading={movieSearchLoading}
@@ -95,9 +93,7 @@ export default function SearchResults({
             )}
           </h2>
         </div>
-        {tvSearchError && (
-          <ErrorAlert message="Failed to search TV shows. Please try again." />
-        )}
+        {tvSearchError && <ErrorAlert message="Failed to search TV shows. Please try again." />}
         <TVGrid
           shows={searchShows}
           isLoading={tvSearchLoading}

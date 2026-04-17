@@ -21,11 +21,19 @@ const pageFallback = <div style={{ minHeight: '100vh' }} aria-busy="true" />
 export const router = createBrowserRouter([
   {
     path: '/welcome',
-    element: <Suspense fallback={pageFallback}><WelcomePage /></Suspense>,
+    element: (
+      <Suspense fallback={pageFallback}>
+        <WelcomePage />
+      </Suspense>
+    ),
   },
   {
     path: '/login',
-    element: <Suspense fallback={pageFallback}><LoginPage /></Suspense>,
+    element: (
+      <Suspense fallback={pageFallback}>
+        <LoginPage />
+      </Suspense>
+    ),
   },
   {
     path: '/',
@@ -35,7 +43,9 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><Home /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <Home />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -43,7 +53,9 @@ export const router = createBrowserRouter([
         path: 'favorites',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><Favorites /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <Favorites />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -51,7 +63,9 @@ export const router = createBrowserRouter([
         path: 'movie/:id',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><MovieDetailPage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <MovieDetailPage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -59,7 +73,9 @@ export const router = createBrowserRouter([
         path: 'tv',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><TVBrowsePage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <TVBrowsePage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -67,7 +83,9 @@ export const router = createBrowserRouter([
         path: 'tv/:id',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><TVDetailPage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <TVDetailPage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -75,7 +93,9 @@ export const router = createBrowserRouter([
         path: 'person/:id',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><PersonPage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <PersonPage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -83,7 +103,9 @@ export const router = createBrowserRouter([
         path: 'profile',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><ProfilePage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <ProfilePage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -91,7 +113,9 @@ export const router = createBrowserRouter([
         path: 'lists',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><ListsPage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <ListsPage />
+            </Suspense>
           </AuthGuard>
         ),
       },
@@ -99,13 +123,19 @@ export const router = createBrowserRouter([
         path: 'watched',
         element: (
           <AuthGuard>
-            <Suspense fallback={pageFallback}><WatchedPage /></Suspense>
+            <Suspense fallback={pageFallback}>
+              <WatchedPage />
+            </Suspense>
           </AuthGuard>
         ),
       },
       {
         path: '*',
-        element: <Suspense fallback={pageFallback}><NotFound /></Suspense>,
+        element: (
+          <Suspense fallback={pageFallback}>
+            <NotFound />
+          </Suspense>
+        ),
       },
     ],
   },

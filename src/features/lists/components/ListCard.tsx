@@ -33,7 +33,7 @@ function getMediaTitle(item: ListItem): string {
 /** Extract a release date string from media_data. */
 function getMediaDate(item: ListItem): string | null {
   const d = asMedia(item)
-  return isMovie(d) ? (d.release_date || null) : (d.first_air_date || null)
+  return isMovie(d) ? d.release_date || null : d.first_air_date || null
 }
 
 /** Extract a poster_path string from media_data. */

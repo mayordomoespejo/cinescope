@@ -44,10 +44,7 @@ export default function TrailerLightbox({
       >
         ✕
       </button>
-      <div
-        className={styles.trailerOverlayContent}
-        onClick={e => e.stopPropagation()}
-      >
+      <div className={styles.trailerOverlayContent} onClick={e => e.stopPropagation()}>
         <iframe
           key={`trailer-${movieId}-${trailer.key}`}
           src={getYouTubeEmbedUrl(trailer.key)}

@@ -201,7 +201,9 @@ describe('useWatched', () => {
       // the test to observe the optimistic state before the rollback fires.
       let rejectUpsert!: (err: Error) => void
       vi.mocked(upsertToSupabase).mockReturnValue(
-        new Promise((_, reject) => { rejectUpsert = reject })
+        new Promise((_, reject) => {
+          rejectUpsert = reject
+        })
       )
       Object.defineProperty(auth, 'currentUser', {
         value: user,

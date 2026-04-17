@@ -19,9 +19,7 @@ export async function retrySync<T>(
     } catch (err) {
       lastError = err
       if (attempt < maxAttempts) {
-        await new Promise<void>(resolve =>
-          setTimeout(resolve, delayMs * Math.pow(2, attempt - 1))
-        )
+        await new Promise<void>(resolve => setTimeout(resolve, delayMs * Math.pow(2, attempt - 1)))
       }
     }
   }

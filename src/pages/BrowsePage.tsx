@@ -59,8 +59,12 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const searchShows = tvSearchData?.results ?? []
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleOpenMovie = (id: number) => { onOpenMovie(id) }
-  const handleOpenShow = (id: number) => { navigate(`/tv/${id}`) }
+  const handleOpenMovie = (id: number) => {
+    onOpenMovie(id)
+  }
+  const handleOpenShow = (id: number) => {
+    navigate(`/tv/${id}`)
+  }
 
   const handleToggleFavoriteTV = (show: TVShow) => {
     void toggleFavorite(tvShowToMovie(show))

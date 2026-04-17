@@ -26,11 +26,5 @@ export default function SkeletonBlock({
     ...(borderRadius !== undefined && { '--skeleton-radius': borderRadius }),
   } as CSSProperties
 
-  return (
-    <span
-      className={`${styles.skeleton} ${className}`}
-      style={cssVars}
-      aria-hidden="true"
-    />
-  )
+  return <span className={`${styles.skeleton} ${className}`} style={cssVars} aria-hidden="true" />
 }

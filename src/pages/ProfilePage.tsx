@@ -37,19 +37,30 @@ export default function ProfilePage() {
   )
 
   function handleRemoveWatched(item: WatchedItem) {
-    toggleWatched({ media_id: item.media_id, media_type: item.media_type, media_data: item.media_data })
+    toggleWatched({
+      media_id: item.media_id,
+      media_type: item.media_type,
+      media_data: item.media_data,
+    })
   }
 
   return (
     <div className={styles.page}>
       <PageContent className={styles.content}>
         <header className={styles.userHeader}>
-          <div className={styles.avatar} aria-hidden="true">{initial}</div>
+          <div className={styles.avatar} aria-hidden="true">
+            {initial}
+          </div>
           <div className={styles.userInfo}>
             <h1 className={styles.displayName}>{displayName}</h1>
             {user?.email && <p className={styles.email}>{user.email}</p>}
           </div>
-          <Button variant="secondary" size="sm" onClick={() => void signOut()} className={styles.signOutHeader}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => void signOut()}
+            className={styles.signOutHeader}
+          >
             Sign out
           </Button>
         </header>

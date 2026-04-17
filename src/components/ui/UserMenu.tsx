@@ -30,41 +30,26 @@ export default function UserMenu({ user, onSignOut }: UserMenuProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <IconButton
-          aria-label="Open user menu"
-          size="sm"
-          className={styles.avatarBtn}
-        >
+        <IconButton aria-label="Open user menu" size="sm" className={styles.avatarBtn}>
           {initials}
         </IconButton>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className={styles.dropdownContent}
-          align="end"
-          sideOffset={8}
-        >
+        <DropdownMenu.Content className={styles.dropdownContent} align="end" sideOffset={8}>
           <div className={styles.dropdownUserInfo}>
             <div className={styles.dropdownAvatar} aria-hidden="true">
               {initials}
             </div>
             <div className={styles.dropdownUserDetails}>
-              {user.displayName && (
-                <span className={styles.dropdownName}>{user.displayName}</span>
-              )}
-              {user.email && (
-                <span className={styles.dropdownEmail}>{user.email}</span>
-              )}
+              {user.displayName && <span className={styles.dropdownName}>{user.displayName}</span>}
+              {user.email && <span className={styles.dropdownEmail}>{user.email}</span>}
             </div>
           </div>
 
           <div className={styles.dropdownSeparator} role="separator" />
 
-          <DropdownMenu.Item
-            className={styles.dropdownItem}
-            onSelect={onSignOut}
-          >
+          <DropdownMenu.Item className={styles.dropdownItem} onSelect={onSignOut}>
             Sign out
           </DropdownMenu.Item>
         </DropdownMenu.Content>

@@ -21,16 +21,9 @@ vi.mock('firebase/auth', () => {
   }
 })
 
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from 'firebase/auth'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
-import {
-  signInWithEmail,
-  signUpWithEmail,
-  smartAuth,
-} from '@/features/auth/authService'
+import { signInWithEmail, signUpWithEmail, smartAuth } from '@/features/auth/authService'
 
 // ── Helpers ───────────────────────────────────────────────────────────
 
@@ -58,7 +51,9 @@ describe('mapFirebaseError', () => {
   })
 
   it('maps auth/too-many-requests to Spanish message', () => {
-    expect(mapFirebaseError('auth/too-many-requests')).toBe('Demasiados intentos. Espera un momento')
+    expect(mapFirebaseError('auth/too-many-requests')).toBe(
+      'Demasiados intentos. Espera un momento'
+    )
   })
 
   it('maps auth/network-request-failed to Spanish message', () => {

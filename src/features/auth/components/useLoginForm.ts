@@ -49,7 +49,12 @@ export function useLoginForm(): UseLoginFormReturn {
   // Prevents setState calls after unmount (navigate() unmounts this component
   // before the finally block in handleSubmit / handleGoogle can run)
   const isMounted = useRef(true)
-  useEffect(() => () => { isMounted.current = false }, [])
+  useEffect(
+    () => () => {
+      isMounted.current = false
+    },
+    []
+  )
 
   const busy = submitting || googleLoading
 

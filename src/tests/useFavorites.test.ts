@@ -179,7 +179,9 @@ describe('useFavorites', () => {
       // the test to observe the optimistic state before the rollback fires.
       let rejectSync!: (err: Error) => void
       vi.mocked(syncFavoritesToSupabase).mockReturnValue(
-        new Promise((_, reject) => { rejectSync = reject })
+        new Promise((_, reject) => {
+          rejectSync = reject
+        })
       )
 
       const { result } = renderHook(() => useFavorites())

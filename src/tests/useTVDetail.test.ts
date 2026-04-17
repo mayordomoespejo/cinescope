@@ -23,8 +23,8 @@ function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,         // fail fast in tests
-        gcTime: Infinity,     // keep data available for assertions
+        retry: false, // fail fast in tests
+        gcTime: Infinity, // keep data available for assertions
       },
     },
   })
@@ -128,9 +128,7 @@ describe('useTVDetail', () => {
 
   it('fetches fresh data when id changes', async () => {
     const show2: TVShowDetail = { ...mockTVShow, id: 2, name: 'Better Call Saul' }
-    vi.mocked(fetchTVDetail)
-      .mockResolvedValueOnce(mockTVShow)
-      .mockResolvedValueOnce(show2)
+    vi.mocked(fetchTVDetail).mockResolvedValueOnce(mockTVShow).mockResolvedValueOnce(show2)
 
     const { wrapper } = createWrapper()
 

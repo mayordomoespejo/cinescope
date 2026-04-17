@@ -1,9 +1,4 @@
-import {
-  formatRating,
-  formatDate,
-  formatRuntime,
-  formatMoney,
-} from '@/lib/helpers'
+import { formatRating, formatDate, formatRuntime, formatMoney } from '@/lib/helpers'
 import Button from '@/components/ui/Button'
 import type { MovieDetail, Video } from '../../types/movie'
 import styles from './MovieModalDetails.module.css'
@@ -55,9 +50,7 @@ export default function MovieModalDetails({
           <span className={styles.voteCount}>({movie.vote_count.toLocaleString()})</span>
         </span>
         <span className={styles.stat}>{formatDate(movie.release_date)}</span>
-        {movie.runtime && (
-          <span className={styles.stat}>{formatRuntime(movie.runtime)}</span>
-        )}
+        {movie.runtime && <span className={styles.stat}>{formatRuntime(movie.runtime)}</span>}
         {movie.original_language && (
           <span className={styles.stat}>{movie.original_language.toUpperCase()}</span>
         )}
@@ -114,12 +107,8 @@ export default function MovieModalDetails({
           aria-pressed={isFav}
         >
           <span className={styles.labelStack}>
-            <span className={isFav ? styles.labelVisible : styles.labelHidden}>
-              ❤️ Favorited
-            </span>
-            <span className={isFav ? styles.labelHidden : styles.labelVisible}>
-              🤍 Favorite
-            </span>
+            <span className={isFav ? styles.labelVisible : styles.labelHidden}>❤️ Favorited</span>
+            <span className={isFav ? styles.labelHidden : styles.labelVisible}>🤍 Favorite</span>
           </span>
         </Button>
 

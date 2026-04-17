@@ -120,9 +120,7 @@ export default function ListItemModal({
         <div className={styles.rightEmpty}>
           <span className={styles.emptyIcon}>🎬</span>
           <span className={styles.emptyTitle}>This list is empty</span>
-          <span className={styles.emptySubtitle}>
-            Browse movies and TV shows to add them here.
-          </span>
+          <span className={styles.emptySubtitle}>Browse movies and TV shows to add them here.</span>
         </div>
       ) : (
         <div className={styles.itemsGrid}>
@@ -130,9 +128,7 @@ export default function ListItemModal({
             <ItemCard
               key={`${item.media_type}-${item.media_id}`}
               item={item}
-              onRemove={() =>
-                onRemoveItem(item.list_id, item.media_id, item.media_type)
-              }
+              onRemove={() => onRemoveItem(item.list_id, item.media_id, item.media_type)}
             />
           ))}
         </div>

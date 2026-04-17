@@ -30,10 +30,7 @@ export interface MovieDataState {
  * Hooks are always mounted so React Query can cache results in the background;
  * `enabled` flags gate actual network requests to the active media type.
  */
-export function useMovieData(
-  mediaType: 'movie' | 'tv',
-  filters: FilterState
-): MovieDataState {
+export function useMovieData(mediaType: 'movie' | 'tv', filters: FilterState): MovieDataState {
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q') ?? ''
 

@@ -28,12 +28,24 @@ export function useBrowseHandlers(): BrowseHandlersState {
 
   const favoriteIds = useMemo(() => favorites.map(f => f.id), [favorites])
 
-  const handleOpenMovie = useCallback((id: number) => { onOpenMovie(id) }, [onOpenMovie])
+  const handleOpenMovie = useCallback(
+    (id: number) => {
+      onOpenMovie(id)
+    },
+    [onOpenMovie]
+  )
 
-  const handleOpenShow = useCallback((id: number) => { navigate(`/tv/${id}`) }, [navigate])
+  const handleOpenShow = useCallback(
+    (id: number) => {
+      navigate(`/tv/${id}`)
+    },
+    [navigate]
+  )
 
   const handleToggleFavorite = useCallback(
-    (item: Movie | TVShow) => { void toggleFavorite(item as Movie) },
+    (item: Movie | TVShow) => {
+      void toggleFavorite(item as Movie)
+    },
     [toggleFavorite]
   )
 

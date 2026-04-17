@@ -71,7 +71,9 @@ describe('useLoginForm', () => {
       const { result } = renderHook(() => useLoginForm())
 
       // Set valid password, leave email empty
-      act(() => { result.current.setPassword('validpassword') })
+      act(() => {
+        result.current.setPassword('validpassword')
+      })
 
       // Trigger submit with empty email to invoke validate()
       await act(async () => {
@@ -176,9 +178,11 @@ describe('useLoginForm', () => {
     })
 
     it('sets serverError when smartAuth rejects', async () => {
-      mockAuth.smartAuth = vi.fn().mockRejectedValue(
-        Object.assign(new Error('auth/wrong-password'), { code: 'auth/wrong-password' })
-      )
+      mockAuth.smartAuth = vi
+        .fn()
+        .mockRejectedValue(
+          Object.assign(new Error('auth/wrong-password'), { code: 'auth/wrong-password' })
+        )
       vi.mocked(useAuth).mockReturnValue(mockAuth)
 
       const { result } = renderHook(() => useLoginForm())
@@ -235,9 +239,13 @@ describe('useLoginForm', () => {
     })
 
     it('sets serverError when signInWithGoogle rejects', async () => {
-      mockAuth.signInWithGoogle = vi.fn().mockRejectedValue(
-        Object.assign(new Error('auth/popup-closed-by-user'), { code: 'auth/popup-closed-by-user' })
-      )
+      mockAuth.signInWithGoogle = vi
+        .fn()
+        .mockRejectedValue(
+          Object.assign(new Error('auth/popup-closed-by-user'), {
+            code: 'auth/popup-closed-by-user',
+          })
+        )
       vi.mocked(useAuth).mockReturnValue(mockAuth)
 
       const { result } = renderHook(() => useLoginForm())
@@ -253,20 +261,26 @@ describe('useLoginForm', () => {
     it('sets googleLoading to true during sign-in and false after', async () => {
       let resolveGoogle!: () => void
       mockAuth.signInWithGoogle = vi.fn().mockReturnValue(
-        new Promise<void>(resolve => { resolveGoogle = resolve })
+        new Promise<void>(resolve => {
+          resolveGoogle = resolve
+        })
       )
       vi.mocked(useAuth).mockReturnValue(mockAuth)
 
       const { result } = renderHook(() => useLoginForm())
 
       // Start Google sign-in without awaiting
-      act(() => { void result.current.handleGoogle() })
+      act(() => {
+        void result.current.handleGoogle()
+      })
 
       expect(result.current.googleLoading).toBe(true)
       expect(result.current.busy).toBe(true)
 
       // Resolve and verify cleanup
-      await act(async () => { resolveGoogle() })
+      await act(async () => {
+        resolveGoogle()
+      })
 
       await waitFor(() => expect(result.current.googleLoading).toBe(false))
     })
