@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useOutletContext } from '@/components/ui/LayoutContext'
-import { useTrending } from '@/features/movies/hooks/useTrending'
-import { useTopRated } from '@/features/movies/hooks/useTopRated'
-import { useDiscover } from '@/features/movies/hooks/useDiscover'
 import { useSearchMovies } from '@/features/movies/hooks/useSearch'
 import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
 import { useTrendingTV } from '@/features/tv/hooks/useTrendingTV'
@@ -29,8 +26,8 @@ export interface BrowsePageProps {
 
 /**
  * Thin coordinator page for movie and TV browsing.
- * Manages shared filter/pagination state and delegates rendering to
- * MovieBrowseSection, TVBrowseSection, or SearchResults.
+ * Movie browse state is owned by MovieBrowseSection.
+ * TV browse state and search state are managed here.
  */
 export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
@@ -38,6 +35,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const [searchParams] = useSearchParams()
   const searchQuery = searchParams.get('q') ?? ''
 
+  // ── TV filter state (TVBrowseSection still receives props) ────────────────
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('popularity.desc')
   const [discoverPage, setDiscoverPage] = useState(1)
@@ -45,34 +43,18 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined)
   const [selectedLanguage, setSelectedLanguage] = useState('')
 
-  // ── Movie hooks ──────────────────────────────────────────────────────────
+  // ── Shared ────────────────────────────────────────────────────────────────
   const { prefetchMovieData } = useMoviePrefetch()
   const { favorites, toggleFavorite } = useFavorites()
 
-  const { data: movieTrendingData, isLoading: movieTrendingLoading } = useTrending('day')
-  const { data: movieTopRatedData, isLoading: movieTopRatedLoading } = useTopRated()
-  const {
-    data: movieDiscoverData,
-    isLoading: movieDiscoverLoading,
-    error: movieDiscoverError,
-  } = useDiscover(
-    {
-      with_genres: selectedGenre?.toString(),
-      sort_by: sortBy,
-      page: discoverPage,
-      'vote_average.gte': minRating > 0 ? minRating : undefined,
-      primary_release_year: selectedYear,
-      with_original_language: selectedLanguage || undefined,
-    },
-    mediaType === 'movie' && !searchQuery
-  )
+  // ── Movie search (only for search mode) ──────────────────────────────────
   const {
     data: movieSearchData,
     isLoading: movieSearchLoading,
     error: movieSearchError,
   } = useSearchMovies(mediaType === 'movie' ? searchQuery : '')
 
-  // ── TV hooks ─────────────────────────────────────────────────────────────
+  // ── TV hooks ──────────────────────────────────────────────────────────────
   const { data: tvGenres = [], isLoading: tvGenresLoading } = useTVGenres()
   const { data: tvTrendingData, isLoading: tvTrendingLoading } = useTrendingTV('day')
   const { data: tvTopRatedData, isLoading: tvTopRatedLoading } = useTopRatedTV()
@@ -104,12 +86,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   // ── Derived values ────────────────────────────────────────────────────────
   const favoriteIds = useMemo(() => favorites.map(f => f.id), [favorites])
 
-  const trendingMovies = movieTrendingData?.results ?? []
-  const topRatedMovies = movieTopRatedData?.results ?? []
-  const discoverMovies = movieDiscoverData?.results ?? []
   const searchMovies = movieSearchData?.results ?? []
-  const hasNextMovieDiscover = discoverPage < (movieDiscoverData?.total_pages ?? 1)
-
   const trendingShows = tvTrendingData?.results ?? []
   const topRatedShows = tvTopRatedData?.results ?? []
   const discoverShows = tvDiscoverData?.results ?? []
@@ -171,33 +148,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
 
   // ── Normal browse mode ────────────────────────────────────────────────────
   if (mediaType === 'movie') {
-    return (
-      <MovieBrowseSection
-        trendingMovies={trendingMovies}
-        topRatedMovies={topRatedMovies}
-        discoverMovies={discoverMovies}
-        movieTrendingLoading={movieTrendingLoading}
-        movieTopRatedLoading={movieTopRatedLoading}
-        movieDiscoverLoading={movieDiscoverLoading}
-        movieDiscoverError={movieDiscoverError}
-        hasNextMovieDiscover={hasNextMovieDiscover}
-        favoriteIds={favoriteIds}
-        selectedGenre={selectedGenre}
-        sortBy={sortBy}
-        minRating={minRating}
-        selectedYear={selectedYear}
-        selectedLanguage={selectedLanguage}
-        onOpenMovie={handleOpenMovie}
-        onPrefetch={prefetchMovieData}
-        onToggleFavorite={toggleFavorite}
-        onGenreSelect={handleGenreSelect}
-        onSortChange={handleSortChange}
-        onMinRatingChange={handleMinRatingChange}
-        onYearChange={handleYearChange}
-        onLanguageChange={handleLanguageChange}
-        onLoadMore={() => setDiscoverPage(p => p + 1)}
-      />
-    )
+    return <MovieBrowseSection />
   }
 
   return (

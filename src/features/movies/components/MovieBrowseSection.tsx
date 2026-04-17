@@ -1,5 +1,6 @@
-import type { SortOption } from '@/lib/config'
-import type { Movie } from '../types/movie'
+import { useMovieData } from '@/hooks/browse/useMovieData'
+import { useBrowseFilters } from '@/hooks/browse/useBrowseFilters'
+import { useBrowseHandlers } from '@/hooks/browse/useBrowseHandlers'
 import HeroSection from './HeroSection'
 import MovieCarousel from './MovieCarousel'
 import MovieGrid from './MovieGrid'
@@ -9,61 +10,27 @@ import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import ErrorAlert from '@/components/ui/ErrorAlert'
 import styles from '@/pages/BrowsePage.module.css'
 
-export interface MovieBrowseSectionProps {
-  trendingMovies: Movie[]
-  topRatedMovies: Movie[]
-  discoverMovies: Movie[]
-  movieTrendingLoading: boolean
-  movieTopRatedLoading: boolean
-  movieDiscoverLoading: boolean
-  movieDiscoverError: Error | null
-  hasNextMovieDiscover: boolean
-  favoriteIds: number[]
-  selectedGenre: number | null
-  sortBy: SortOption
-  minRating: number
-  selectedYear: number | undefined
-  selectedLanguage: string
-  onOpenMovie: (id: number) => void
-  onPrefetch: (id: number) => void
-  onToggleFavorite: (movie: Movie) => void
-  onGenreSelect: (id: number | null) => void
-  onSortChange: (value: SortOption) => void
-  onMinRatingChange: (value: number) => void
-  onYearChange: (value: number | undefined) => void
-  onLanguageChange: (value: string) => void
-  onLoadMore: () => void
-}
-
 /**
  * Movie discovery section: hero, trending + top-rated carousels, discover grid with filters.
+ * Owns its own filter/data state — no prop drilling from parent.
  */
-export default function MovieBrowseSection({
-  trendingMovies,
-  topRatedMovies,
-  discoverMovies,
-  movieTrendingLoading,
-  movieTopRatedLoading,
-  movieDiscoverLoading,
-  movieDiscoverError,
-  hasNextMovieDiscover,
-  favoriteIds,
-  selectedGenre,
-  sortBy,
-  minRating,
-  selectedYear,
-  selectedLanguage,
-  onOpenMovie,
-  onPrefetch,
-  onToggleFavorite,
-  onGenreSelect,
-  onSortChange,
-  onMinRatingChange,
-  onYearChange,
-  onLanguageChange,
-  onLoadMore,
-}: MovieBrowseSectionProps) {
-  const featuredMovie = trendingMovies.find(m => !!m.backdrop_path) ?? trendingMovies[0]
+export default function MovieBrowseSection() {
+  const { filters, onGenreSelect, onSortChange, onMinRatingChange, onYearChange, onLanguageChange, onLoadMore } =
+    useBrowseFilters()
+
+  const {
+    trendingMovies,
+    topRatedMovies,
+    discoverMovies,
+    featuredMovie,
+    movieTrendingLoading,
+    movieTopRatedLoading,
+    movieDiscoverLoading,
+    movieDiscoverError,
+    hasNextMovieDiscover,
+  } = useMovieData('movie', filters)
+
+  const { favoriteIds, onOpenMovie, onPrefetch, onToggleFavorite } = useBrowseHandlers()
 
   return (
     <div className={styles.page}>
@@ -99,15 +66,15 @@ export default function MovieBrowseSection({
             <h2 className={styles.sectionTitle} id="discover-title">
               Discover
             </h2>
-            <SortDropdown value={sortBy} onChange={onSortChange} />
+            <SortDropdown value={filters.sortBy} onChange={onSortChange} />
           </div>
-          <GenreFilter selectedGenreId={selectedGenre} onSelect={onGenreSelect} />
+          <GenreFilter selectedGenreId={filters.genre} onSelect={onGenreSelect} />
           <AdvancedFilters
-            minRating={minRating}
+            minRating={filters.minRating}
             onMinRatingChange={onMinRatingChange}
-            year={selectedYear}
+            year={filters.year}
             onYearChange={onYearChange}
-            language={selectedLanguage}
+            language={filters.language}
             onLanguageChange={onLanguageChange}
           />
           {movieDiscoverError && (

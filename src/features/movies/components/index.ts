@@ -12,7 +12,6 @@ export { default as MovieModal } from './MovieModal'
 
 // Browse section
 export { default as MovieBrowseSection } from './MovieBrowseSection'
-export type { MovieBrowseSectionProps } from './MovieBrowseSection'
 
 // Sortable card
 export { SortableMovieCard } from './SortableMovieCard'
