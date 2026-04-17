@@ -7,7 +7,7 @@ import iconBtnStyles from './IconButton.module.css'
 import IconButton from './IconButton'
 import CinescopeLogo from './CinescopeLogo'
 import { DEBOUNCE_DELAY } from '@/lib/config'
-import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/favorites/store'
+import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/search/searchHistoryStore'
 import { useAuth } from '@/features/auth/useAuth'
 
 /** Props for the Navbar component. */

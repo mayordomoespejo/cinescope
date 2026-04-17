@@ -1,55 +1,6 @@
 import type { Movie } from '@/features/movies/types/movie'
 import { edgeFunctionUrl, SUPABASE_FUNCTIONS } from '@/lib/supabaseFunctions'
 
-// ── Search history (localStorage — UX convenience only) ────────────
-
-const SEARCH_HISTORY_KEY = 'cinescope:search-history'
-const MAX_HISTORY = 8
-
-function readStorage<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? (JSON.parse(raw) as T) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function writeStorage<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch (err) {
-    if (err instanceof DOMException && err.name === 'QuotaExceededError') {
-      console.warn('localStorage quota exceeded — data may not be persisted')
-    }
-  }
-}
-
-/**
- * Returns the recent search history from localStorage.
- */
-export function getSearchHistory(): string[] {
-  return readStorage<string[]>(SEARCH_HISTORY_KEY, [])
-}
-
-/**
- * Adds a search query to the history, deduplicating and capping at MAX_HISTORY entries.
- * @param query - The search string to record.
- */
-export function addSearchQuery(query: string): void {
-  const trimmed = query.trim()
-  if (!trimmed) return
-  const history = getSearchHistory().filter(q => q !== trimmed)
-  writeStorage(SEARCH_HISTORY_KEY, [trimmed, ...history].slice(0, MAX_HISTORY))
-}
-
-/**
- * Clears all stored search history.
- */
-export function clearSearchHistory(): void {
-  writeStorage(SEARCH_HISTORY_KEY, [])
-}
-
 // ── Supabase sync via Edge Functions ────────────────────────────────
 
 /**
