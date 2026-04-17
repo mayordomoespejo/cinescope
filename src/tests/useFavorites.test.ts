@@ -84,7 +84,7 @@ describe('useFavorites', () => {
   describe('hydration on mount', () => {
     it('loads favorites from Supabase when user is authenticated', async () => {
       const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
       vi.mocked(hydrateFromSupabase).mockResolvedValue({
         favorites: [movieA],
         watchlist: [movieB],
@@ -102,7 +102,7 @@ describe('useFavorites', () => {
     })
 
     it('does not call hydrateFromSupabase when user is null', () => {
-      vi.mocked(useAuth).mockReturnValue({ user: null } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
 
       renderHook(() => useFavorites())
 
@@ -111,7 +111,7 @@ describe('useFavorites', () => {
 
     it('clears state when user logs out', async () => {
       const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
       vi.mocked(hydrateFromSupabase).mockResolvedValue({
         favorites: [movieA],
         watchlist: [],
@@ -121,7 +121,7 @@ describe('useFavorites', () => {
       await waitFor(() => expect(result.current.favorites).toEqual([movieA]))
 
       // Simulate logout
-      vi.mocked(useAuth).mockReturnValue({ user: null } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
       rerender()
 
       await waitFor(() => {
@@ -134,7 +134,7 @@ describe('useFavorites', () => {
   describe('toggleFavorite', () => {
     it('adds a movie optimistically when it is not in favorites', async () => {
       const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
 
       const { result } = renderHook(() => useFavorites())
       await waitFor(() => expect(result.current.isLoading).toBe(false))
@@ -149,7 +149,7 @@ describe('useFavorites', () => {
 
     it('removes a movie optimistically when it is already in favorites', async () => {
       const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
       vi.mocked(hydrateFromSupabase).mockResolvedValue({
         favorites: [movieA],
         watchlist: [],
@@ -168,7 +168,7 @@ describe('useFavorites', () => {
 
     it('rolls back favorites when Supabase sync fails', async () => {
       const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
       vi.mocked(hydrateFromSupabase).mockResolvedValue({
         favorites: [movieA],
         watchlist: [],
@@ -207,7 +207,7 @@ describe('useFavorites', () => {
     })
 
     it('does not sync to Supabase when user is not authenticated', async () => {
-      vi.mocked(useAuth).mockReturnValue({ user: null } as ReturnType<typeof useAuth>)
+      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
 
       const { result } = renderHook(() => useFavorites())
 

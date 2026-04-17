@@ -11,21 +11,26 @@ function isMovie(media: Movie | TVShow): media is Movie {
   return 'title' in media
 }
 
+/** Cast ListItem.media_data (stored as JSON column) to the typed union. */
+function asMedia(item: ListItem): Movie | TVShow {
+  return item.media_data as unknown as Movie | TVShow
+}
+
 /** Extract a display title from media_data (TMDB movie or tv shape). */
 function getMediaTitle(item: ListItem): string {
-  const d = item.media_data
+  const d = asMedia(item)
   return isMovie(d) ? d.title : d.name
 }
 
 /** Extract a release date string from media_data. */
 function getMediaDate(item: ListItem): string | null {
-  const d = item.media_data
+  const d = asMedia(item)
   return isMovie(d) ? (d.release_date || null) : (d.first_air_date || null)
 }
 
 /** Extract a poster_path string from media_data. */
 function getMediaPoster(item: ListItem): string | null {
-  return item.media_data.poster_path || null
+  return (item.media_data.poster_path as string | null | undefined) ?? null
 }
 
 // ── Types ─────────────────────────────────────────────────────────────

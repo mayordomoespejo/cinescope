@@ -7,7 +7,7 @@ export interface UseNavSearchReturn {
   query: string
   focused: boolean
   history: string[]
-  inputRef: React.RefObject<HTMLInputElement>
+  inputRef: React.RefObject<HTMLInputElement | null>
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSubmit: (e: React.FormEvent) => void
   handleFocus: () => void

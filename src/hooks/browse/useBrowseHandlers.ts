@@ -33,7 +33,7 @@ export function useBrowseHandlers(): BrowseHandlersState {
   const handleOpenShow = useCallback((id: number) => { navigate(`/tv/${id}`) }, [navigate])
 
   const handleToggleFavorite = useCallback(
-    (item: Movie | TVShow) => { void toggleFavorite(item) },
+    (item: Movie | TVShow) => { void toggleFavorite(item as Movie) },
     [toggleFavorite]
   )
 

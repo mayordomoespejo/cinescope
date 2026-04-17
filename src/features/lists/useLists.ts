@@ -16,6 +16,7 @@ import {
 interface UseListsReturn {
   lists: CinescopeList[]
   loading: boolean
+  error: Error | null
   createList: (name: string, description?: string) => Promise<CinescopeList>
   deleteList: (listId: string) => Promise<void>
   renameList: (listId: string, name: string) => Promise<void>
@@ -38,14 +39,16 @@ export function useLists(): UseListsReturn {
   const { user } = useAuth()
   const [lists, setLists] = useState<CinescopeList[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
 
   const loadLists = useCallback(async (userId: string) => {
     setLoading(true)
+    setError(null)
     try {
       const data = await fetchLists(userId)
       setLists(data)
-    } catch {
-      // Silently fail — lists will just be empty
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)))
     } finally {
       setLoading(false)
     }
@@ -114,6 +117,7 @@ export function useLists(): UseListsReturn {
   return {
     lists,
     loading,
+    error,
     createList: handleCreateList,
     deleteList: handleDeleteList,
     renameList: handleRenameList,

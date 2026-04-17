@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
+import type { NavigateFunction } from 'react-router-dom'
 import { useLoginForm } from '@/features/auth/components/useLoginForm'
 import { strings } from '@/lib/i18n'
 
@@ -35,11 +36,11 @@ function makeAuthMock(overrides: Partial<ReturnType<typeof useAuth>> = {}) {
 // ── Tests ─────────────────────────────────────────────────────────────
 
 describe('useLoginForm', () => {
-  let mockNavigate: ReturnType<typeof vi.fn>
+  let mockNavigate: NavigateFunction
   let mockAuth: ReturnType<typeof makeAuthMock>
 
   beforeEach(() => {
-    mockNavigate = vi.fn()
+    mockNavigate = vi.fn() as unknown as NavigateFunction
     mockAuth = makeAuthMock()
     vi.mocked(useNavigate).mockReturnValue(mockNavigate)
     vi.mocked(useAuth).mockReturnValue(mockAuth)
