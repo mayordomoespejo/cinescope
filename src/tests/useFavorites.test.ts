@@ -25,7 +25,7 @@ vi.mock('@/lib/retrySync', () => ({
   retrySync: vi.fn((fn: () => Promise<unknown>) => fn()),
 }))
 
-import { hydrateFromSupabase, syncFavoritesToSupabase } from '@/features/favorites/store'
+import { hydrateFromSupabase, syncFavoritesToSupabase, syncWatchlistToSupabase } from '@/features/favorites/store'
 import { useAuth } from '@/features/auth/useAuth'
 
 // ── Helpers ───────────────────────────────────────────────────────────
@@ -75,6 +75,7 @@ describe('useFavorites', () => {
   beforeEach(() => {
     vi.mocked(hydrateFromSupabase).mockResolvedValue({ favorites: [], watchlist: [] })
     vi.mocked(syncFavoritesToSupabase).mockResolvedValue(undefined)
+    vi.mocked(syncWatchlistToSupabase).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -220,6 +221,50 @@ describe('useFavorites', () => {
       // Optimistic state update still happens locally — but no remote sync is triggered
       expect(result.current.isFavorite(movieA.id)).toBe(true)
       expect(syncFavoritesToSupabase).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('toggleWatchlist', () => {
+    it('rolls back watchlist when Supabase sync fails', async () => {
+      const user = makeUser()
+      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
+      vi.mocked(hydrateFromSupabase).mockResolvedValue({
+        favorites: [],
+        watchlist: [movieA],
+      })
+
+      // Sync will reject — rollback should restore previous state.
+      // Use a deferred promise so we control when the failure arrives, allowing
+      // the test to observe the optimistic state before the rollback fires.
+      let rejectSync!: (err: Error) => void
+      vi.mocked(syncWatchlistToSupabase).mockReturnValue(
+        new Promise((_, reject) => {
+          rejectSync = reject
+        })
+      )
+
+      const { result } = renderHook(() => useFavorites())
+      await waitFor(() => expect(result.current.watchlist).toEqual([movieA]))
+
+      // Optimistic removal of movieA
+      await act(async () => {
+        await result.current.toggleWatchlist(movieA)
+      })
+
+      // Optimistic state: movieA removed
+      expect(result.current.isInWatchlist(movieA.id)).toBe(false)
+
+      // Trigger the sync failure — rollback should restore movieA
+      await act(async () => {
+        rejectSync(new Error('Network error'))
+        await Promise.resolve()
+        await Promise.resolve()
+      })
+
+      // State should be rolled back to include movieA again
+      await waitFor(() => {
+        expect(result.current.isInWatchlist(movieA.id)).toBe(true)
+      })
     })
   })
 })

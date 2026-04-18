@@ -92,11 +92,14 @@ export function useFavorites() {
       setWatchlist(prev => {
         const exists = prev.some(m => m.id === movie.id)
         const updated = exists ? prev.filter(m => m.id !== movie.id) : [movie, ...prev]
-        if (token)
+        if (token) {
           syncWatchlistToSupabase(token, updated).catch(err => {
             console.warn('[cinescope] Failed to sync watchlist:', err)
             setSyncError(err instanceof Error ? err : new Error(String(err)))
+            // Rollback to previous state on sync failure
+            setWatchlist(prev)
           })
+        }
         return updated
       })
     },
