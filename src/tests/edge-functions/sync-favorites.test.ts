@@ -10,7 +10,8 @@ interface SupabaseResult<T = unknown> {
 }
 
 interface SupabaseMock {
-  from: ReturnType<typeof vi.fn>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  from: (...args: any[]) => any
 }
 
 // ---------------------------------------------------------------------------
@@ -43,12 +44,11 @@ async function handleSyncFavorites(
 
   try {
     if (req.method === 'GET') {
-      const chain = supabase
+      const result: SupabaseResult<{ movies: unknown[] }> = await supabase
         .from('cinescope_favorites')
         .select('movies')
         .eq('user_id', userId)
-        .maybeSingle
-      const result: SupabaseResult<{ movies: unknown[] }> = await chain()
+        .maybeSingle()
 
       if (result.error) {
         return new Response(JSON.stringify({ error: 'Database error' }), {

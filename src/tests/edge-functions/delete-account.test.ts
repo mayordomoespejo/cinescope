@@ -195,7 +195,6 @@ describe('delete-account edge function', () => {
 
     const req = makeRequest('DELETE')
     const res = await handleDeleteAccount(req, authedUser, deps)
-    const body = await res.json()
 
     expect(res.status).toBe(200)
     expect(deps.deleteListItems).not.toHaveBeenCalled()
