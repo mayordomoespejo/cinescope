@@ -10,7 +10,19 @@ export const queryKeys = {
 
   topRated: (page: number = 1) => ['topRated', page] as const,
 
-  discover: (params: DiscoverParams) => ['discover', params] as const,
+  discover: (params: DiscoverParams) =>
+    [
+      'discover',
+      params.page,
+      params.with_genres,
+      params.sort_by,
+      params['vote_average.gte'],
+      params['vote_count.gte'],
+      params.year,
+      params.language,
+      params.primary_release_year,
+      params.with_original_language,
+    ] as const,
 
   search: (query: string, page: number = 1) => ['search', query, page] as const,
 
@@ -34,7 +46,19 @@ export const queryKeys = {
 
   tvTopRated: (page: number = 1) => ['tv', 'topRated', page] as const,
 
-  tvDiscover: (params: TVDiscoverParams) => ['tv', 'discover', params] as const,
+  tvDiscover: (params: TVDiscoverParams) =>
+    [
+      'tv',
+      'discover',
+      params.page,
+      params.with_genres,
+      params.sort_by,
+      params['vote_average.gte'],
+      params['vote_count.gte'],
+      params.first_air_date_year,
+      params.with_original_language,
+      params.language,
+    ] as const,
 
   tvSearch: (query: string, page: number = 1) => ['tv', 'search', query, page] as const,
 

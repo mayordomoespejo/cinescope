@@ -12,5 +12,6 @@ export function useTopRated(page: number = 1) {
     queryKey: queryKeys.topRated(page),
     queryFn: () => fetchTopRated(page),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
   })
 }

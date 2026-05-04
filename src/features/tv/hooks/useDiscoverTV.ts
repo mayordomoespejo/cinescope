@@ -9,6 +9,7 @@ export function useDiscoverTV(params: TVDiscoverParams, enabled: boolean = true)
     queryKey: queryKeys.tvDiscover(params),
     queryFn: () => fetchDiscoverTV(params),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
     enabled,
   })
 }

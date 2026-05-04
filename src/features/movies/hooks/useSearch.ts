@@ -12,6 +12,7 @@ export function useSearchMovies(query: string, page: number = 1) {
     queryKey: queryKeys.search(query, page),
     queryFn: () => fetchSearchMovies(query, page),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
     enabled: query.trim().length > 0,
   })
 }

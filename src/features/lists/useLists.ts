@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { useListsStore } from './store'
 import type { CinescopeList, ListItem } from './store'
 
@@ -26,14 +27,27 @@ interface UseListsReturn {
  * @returns Lists state and CRUD action callbacks.
  */
 export function useLists(): UseListsReturn {
-  const lists = useListsStore(s => s.lists)
-  const storeCreate = useListsStore(s => s.createList)
-  const storeDelete = useListsStore(s => s.deleteList)
-  const storeRename = useListsStore(s => s.renameList)
-  const storeAdd = useListsStore(s => s.addToList)
-  const storeRemove = useListsStore(s => s.removeFromList)
-  const storeIsInList = useListsStore(s => s.isInList)
-  const storeFetchItems = useListsStore(s => s.fetchListItems)
+  const {
+    lists,
+    storeCreate,
+    storeDelete,
+    storeRename,
+    storeAdd,
+    storeRemove,
+    storeIsInList,
+    storeFetchItems,
+  } = useListsStore(
+    useShallow(s => ({
+      lists: s.lists,
+      storeCreate: s.createList,
+      storeDelete: s.deleteList,
+      storeRename: s.renameList,
+      storeAdd: s.addToList,
+      storeRemove: s.removeFromList,
+      storeIsInList: s.isInList,
+      storeFetchItems: s.fetchListItems,
+    }))
+  )
 
   return {
     lists,

@@ -13,6 +13,7 @@ export function useDiscover(params: DiscoverParams, enabled: boolean = true) {
     queryKey: queryKeys.discover(params),
     queryFn: () => fetchDiscover(params),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
     enabled,
   })
 }

@@ -12,6 +12,7 @@ export function useGenres() {
     queryKey: queryKeys.genres(),
     queryFn: () => fetchGenres(),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
     select: data => data.genres,
   })
 }

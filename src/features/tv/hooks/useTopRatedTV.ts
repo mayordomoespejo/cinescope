@@ -8,5 +8,6 @@ export function useTopRatedTV(page: number = 1) {
     queryKey: queryKeys.tvTopRated(page),
     queryFn: () => fetchTopRatedTV(page),
     staleTime: STALE_TIME_LONG,
+    gcTime: 1000 * 60 * 30,
   })
 }

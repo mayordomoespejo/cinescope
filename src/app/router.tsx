@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/components/ui/Layout'
+import styles from './router.module.css'
 
 const Home = lazy(() => import('@/pages/Home'))
 const Favorites = lazy(() => import('@/pages/Favorites'))
@@ -14,7 +15,7 @@ const ListsPage = lazy(() => import('@/pages/ListsPage'))
 const WatchedPage = lazy(() => import('@/pages/WatchedPage'))
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'))
 
-const pageFallback = <div style={{ minHeight: '100vh' }} aria-busy="true" />
+const pageFallback = <div className={styles.pageFallback} aria-busy="true" />
 
 export const router = createBrowserRouter([
   {

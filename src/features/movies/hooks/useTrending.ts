@@ -12,5 +12,6 @@ export function useTrending(timeWindow: 'day' | 'week' = 'day', page: number = 1
     queryKey: [...queryKeys.trending(timeWindow), page],
     queryFn: () => fetchTrending(timeWindow, page),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
   })
 }

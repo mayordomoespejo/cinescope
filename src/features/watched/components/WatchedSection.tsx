@@ -34,8 +34,21 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
     onRemove(item)
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleCardClick()
+    }
+  }
+
   return (
-    <article className={`${styles.card} ${styles.cursorPointer}`} onClick={handleCardClick}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={`${styles.card} ${styles.cursorPointer}`}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className={styles.posterWrap}>
         <img
           src={getPosterUrl(posterPath, 'sm')}
@@ -71,7 +84,7 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
         <p className={styles.cardTitle}>{title}</p>
         <p className={`${styles.cardMeta} ${styles.metaAuto}`}>{formatDate(item.watched_at)}</p>
       </div>
-    </article>
+    </div>
   )
 }
 

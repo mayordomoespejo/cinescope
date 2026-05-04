@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { useFavoritesStore } from '../store'
 
 /**
@@ -6,14 +7,27 @@ import { useFavoritesStore } from '../store'
  * @returns Reactive state arrays and toggle/reorder action callbacks.
  */
 export function useFavorites() {
-  const favorites = useFavoritesStore(s => s.favorites)
-  const watchlist = useFavoritesStore(s => s.watchlist)
-  const toggleFavorite = useFavoritesStore(s => s.toggleFavorite)
-  const toggleWatchlist = useFavoritesStore(s => s.toggleWatchlist)
-  const isFavorite = useFavoritesStore(s => s.isFavorite)
-  const isInWatchlist = useFavoritesStore(s => s.isInWatchlist)
-  const reorderFavorites = useFavoritesStore(s => s.reorderFavorites)
-  const reorderWatchlist = useFavoritesStore(s => s.reorderWatchlist)
+  const {
+    favorites,
+    watchlist,
+    toggleFavorite,
+    toggleWatchlist,
+    isFavorite,
+    isInWatchlist,
+    reorderFavorites,
+    reorderWatchlist,
+  } = useFavoritesStore(
+    useShallow(s => ({
+      favorites: s.favorites,
+      watchlist: s.watchlist,
+      toggleFavorite: s.toggleFavorite,
+      toggleWatchlist: s.toggleWatchlist,
+      isFavorite: s.isFavorite,
+      isInWatchlist: s.isInWatchlist,
+      reorderFavorites: s.reorderFavorites,
+      reorderWatchlist: s.reorderWatchlist,
+    }))
+  )
 
   return {
     favorites,

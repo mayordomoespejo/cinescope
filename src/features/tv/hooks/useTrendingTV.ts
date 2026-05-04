@@ -8,5 +8,6 @@ export function useTrendingTV(timeWindow: 'day' | 'week' = 'day', page: number =
     queryKey: queryKeys.tvTrending(timeWindow, page),
     queryFn: () => fetchTrendingTV(timeWindow, page),
     staleTime: STALE_TIME_SHORT,
+    gcTime: 1000 * 60 * 30,
   })
 }
