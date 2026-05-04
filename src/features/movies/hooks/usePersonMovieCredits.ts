@@ -10,7 +10,7 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function usePersonMovieCredits(id: number | null) {
   return useQuery({
     queryKey: queryKeys.personMovieCredits(id ?? 0),
-    queryFn: () => fetchPersonMovieCredits(id!),
+    queryFn: () => fetchPersonMovieCredits(id as number),
     staleTime: STALE_TIME_LONG,
     enabled: id !== null && id > 0,
   })

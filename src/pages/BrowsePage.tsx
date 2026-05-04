@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useSearchQuery } from '@/hooks/useSearchQuery'
 import { useOutletContext } from '@/components/ui/LayoutContext'
 import { useSearchMovies } from '@/features/movies/hooks/useSearch'
 import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
@@ -9,7 +10,6 @@ import { addSearchQuery } from '@/features/search/searchHistoryStore'
 import MovieBrowseSection from '@/features/movies/components/MovieBrowseSection'
 import TVBrowseSection from '@/features/tv/components/TVBrowseSection'
 import SearchResults from '@/features/search/components/SearchResults'
-import { tvShowToMovie } from '@/features/tv/adapters'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import type { TVShow } from '@/features/tv/types/tv'
 
@@ -27,8 +27,7 @@ export interface BrowsePageProps {
 export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const searchQuery = searchParams.get('q') ?? ''
+  const searchQuery = useSearchQuery()
 
   // ── Shared ────────────────────────────────────────────────────────────────
   const { prefetchMovieData } = useMoviePrefetch()
@@ -53,7 +52,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   }, [searchQuery])
 
   // ── Derived values ────────────────────────────────────────────────────────
-  const favoriteIds = favorites.map(f => f.id)
+  const favoriteIds = useMemo(() => favorites.map(f => f.id), [favorites])
 
   const searchMovies = movieSearchData?.results ?? []
   const searchShows = tvSearchData?.results ?? []
@@ -68,7 +67,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   }
 
   const handleToggleFavoriteTV = (show: TVShow) => {
-    void toggleFavorite(tvShowToMovie(show))
+    void toggleFavorite(show)
   }
 
   // ── Search mode ───────────────────────────────────────────────────────────

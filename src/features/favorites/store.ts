@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Movie } from '@/features/movies/types/movie'
+import type { TVShow } from '@/features/tv/types/tv'
+import { tvShowToMovie } from '@/features/tv/adapters'
 
 // ── Search history (localStorage — UX convenience only) ────────────
 
@@ -23,6 +25,8 @@ function writeStorage<T>(key: string, value: T): void {
   } catch (err) {
     if (err instanceof DOMException && err.name === 'QuotaExceededError') {
       console.warn('localStorage quota exceeded — data may not be persisted')
+    } else {
+      console.error('[cinescope] Unexpected storage error:', err)
     }
   }
 }
@@ -57,7 +61,7 @@ export function clearSearchHistory(): void {
 interface FavoritesState {
   favorites: Movie[]
   watchlist: Movie[]
-  toggleFavorite: (movie: Movie) => void
+  toggleFavorite: (item: Movie | TVShow) => void
   toggleWatchlist: (movie: Movie) => void
   reorderFavorites: (newOrder: Movie[]) => void
   reorderWatchlist: (newOrder: Movie[]) => void
@@ -75,7 +79,8 @@ export const useFavoritesStore = create<FavoritesState>()(
       favorites: [],
       watchlist: [],
 
-      toggleFavorite: (movie: Movie) => {
+      toggleFavorite: (item: Movie | TVShow) => {
+        const movie = 'title' in item ? item : tvShowToMovie(item)
         set(state => {
           const exists = state.favorites.some(m => m.id === movie.id)
           return {

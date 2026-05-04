@@ -44,7 +44,7 @@ export function useBrowseHandlers(): BrowseHandlersState {
 
   const handleToggleFavorite = useCallback(
     (item: Movie | TVShow) => {
-      void toggleFavorite(item as Movie)
+      void toggleFavorite(item)
     },
     [toggleFavorite]
   )

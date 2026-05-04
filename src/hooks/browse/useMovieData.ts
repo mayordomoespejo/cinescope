@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useMemo } from 'react'
+import { useSearchQuery } from '@/hooks/useSearchQuery'
 import { useTrending } from '@/features/movies/hooks/useTrending'
 import { useTopRated } from '@/features/movies/hooks/useTopRated'
 import { useDiscover } from '@/features/movies/hooks/useDiscover'
 import { useSearchMovies } from '@/features/movies/hooks/useSearch'
-import { addSearchQuery } from '@/features/search/searchHistoryStore'
 import type { FilterState } from '@/features/filters/types'
 import type { Movie } from '@/features/movies/types/movie'
 
@@ -31,8 +30,7 @@ export interface MovieDataState {
  * `enabled` flags gate actual network requests to the active media type.
  */
 export function useMovieData(mediaType: 'movie' | 'tv', filters: FilterState): MovieDataState {
-  const [searchParams] = useSearchParams()
-  const searchQuery = searchParams.get('q') ?? ''
+  const searchQuery = useSearchQuery()
 
   const { data: movieTrendingData, isLoading: movieTrendingLoading } = useTrending('day')
   const { data: movieTopRatedData, isLoading: movieTopRatedLoading } = useTopRated()
@@ -56,10 +54,6 @@ export function useMovieData(mediaType: 'movie' | 'tv', filters: FilterState): M
     isLoading: movieSearchLoading,
     error: movieSearchError,
   } = useSearchMovies(mediaType === 'movie' ? searchQuery : '')
-
-  useEffect(() => {
-    if (searchQuery) addSearchQuery(searchQuery)
-  }, [searchQuery])
 
   const trendingMovies = useMemo(() => movieTrendingData?.results ?? [], [movieTrendingData])
   const topRatedMovies = useMemo(() => movieTopRatedData?.results ?? [], [movieTopRatedData])

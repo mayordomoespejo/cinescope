@@ -84,14 +84,12 @@ export default function TVDetailPage() {
     networks: show?.networks,
   }
 
-  // Recommendations slot: rendered as individual listitem divs
+  // Recommendations slot
   const recommendationsSlot =
     recommendedShows.length > 0 ? (
       <>
         {recommendedShows.map(rec => (
-          <div key={rec.id} role="listitem">
-            <TVCard show={rec} onOpen={recId => navigate(`/tv/${recId}`)} />
-          </div>
+          <TVCard key={rec.id} show={rec} onOpen={recId => navigate(`/tv/${recId}`)} />
         ))}
       </>
     ) : null

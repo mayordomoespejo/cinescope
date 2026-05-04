@@ -154,7 +154,7 @@ function ModalSkeleton() {
         <div className={styles.details}>
           <Skeleton height="2rem" width="70%" />
           <Skeleton height="0.9rem" width="45%" />
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+          <div className={styles.actionRow}>
             {[80, 70, 60].map(w => (
               <Skeleton
                 key={w}

@@ -253,6 +253,15 @@
   transform: scale(1.15);
 }
 
+/* ── WatchedSection utilities ────────────────────────────────────────────── */
+.cursorPointer {
+  cursor: pointer;
+}
+
+.metaAuto {
+  margin-top: auto;
+}
+
 /* ── Empty State ─────────────────────────────────────────────────────────── */
 .emptyState {
   padding: var(--space-16) 0;

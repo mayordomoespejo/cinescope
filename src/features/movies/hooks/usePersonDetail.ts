@@ -10,7 +10,7 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function usePersonDetail(id: number | null) {
   return useQuery({
     queryKey: queryKeys.personDetail(id ?? 0),
-    queryFn: () => fetchPersonDetail(id!),
+    queryFn: () => fetchPersonDetail(id as number),
     staleTime: STALE_TIME_LONG,
     enabled: id !== null && id > 0,
   })

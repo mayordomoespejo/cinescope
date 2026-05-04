@@ -11,7 +11,7 @@ import { STALE_TIME_SHORT } from '@/lib/config'
 export function useTVRecommendations(tvId: number | null, page: number = 1) {
   return useQuery({
     queryKey: queryKeys.tvRecommendations(tvId ?? 0, page),
-    queryFn: () => fetchTVRecommendations(tvId!, page),
+    queryFn: () => fetchTVRecommendations(tvId as number, page),
     staleTime: STALE_TIME_SHORT,
     gcTime: 1000 * 60 * 30,
     enabled: tvId !== null && tvId > 0,

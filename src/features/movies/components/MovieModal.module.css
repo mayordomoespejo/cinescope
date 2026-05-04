@@ -392,6 +392,13 @@
   transform: scale(1);
 }
 
+/* Skeleton action row */
+.actionRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
 /* Skeleton poster */
 .skeletonPoster {
   width: 180px;

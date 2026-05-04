@@ -11,7 +11,7 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function useMovieRecommendations(id: number | null, page: number = 1) {
   return useQuery({
     queryKey: queryKeys.movieRecommendations(id ?? 0, page),
-    queryFn: () => fetchMovieRecommendations(id!, page),
+    queryFn: () => fetchMovieRecommendations(id as number, page),
     staleTime: STALE_TIME_LONG,
     gcTime: 1000 * 60 * 30,
     enabled: id !== null && id > 0,

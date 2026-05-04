@@ -9,11 +9,7 @@ export interface MediaCardProps {
   posterPath: string | null
   rating?: number
   isFavorite: boolean
-  /** Reserved for future watchlist UI — not yet rendered. */
-  isInWatchlist?: boolean
   onToggleFavorite?: () => void
-  /** Reserved for future watchlist toggle — not yet rendered. */
-  onToggleWatchlist?: () => void
   onClick: () => void
   onPrefetch?: () => void
   ariaLabel?: string

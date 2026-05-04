@@ -35,7 +35,7 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
   }
 
   return (
-    <article className={styles.card} onClick={handleCardClick} style={{ cursor: 'pointer' }}>
+    <article className={`${styles.card} ${styles.cursorPointer}`} onClick={handleCardClick}>
       <div className={styles.posterWrap}>
         <img
           src={getPosterUrl(posterPath, 'sm')}
@@ -69,9 +69,7 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardTitle}>{title}</p>
-        <p className={styles.cardMeta} style={{ marginTop: 'auto' }}>
-          {formatDate(item.watched_at)}
-        </p>
+        <p className={`${styles.cardMeta} ${styles.metaAuto}`}>{formatDate(item.watched_at)}</p>
       </div>
     </article>
   )

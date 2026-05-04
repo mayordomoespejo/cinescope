@@ -10,7 +10,7 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function useTVCredits(tvId: number | null) {
   return useQuery({
     queryKey: queryKeys.tvCredits(tvId ?? 0),
-    queryFn: () => fetchTVCredits(tvId!),
+    queryFn: () => fetchTVCredits(tvId as number),
     staleTime: STALE_TIME_LONG,
     gcTime: 1000 * 60 * 30,
     enabled: tvId !== null && tvId > 0,

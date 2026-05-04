@@ -21,7 +21,7 @@ export function pickTrailer(videos: Video[]): Video | null {
 export function useTVVideos(id: number | null) {
   return useQuery({
     queryKey: queryKeys.tvVideos(id ?? 0),
-    queryFn: () => fetchTVVideosForQuery(id!),
+    queryFn: () => fetchTVVideosForQuery(id as number),
     staleTime: STALE_TIME_LONG,
     gcTime: 1000 * 60 * 30,
     enabled: id !== null && id > 0,

@@ -10,7 +10,7 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function useMovieDetail(id: number | null) {
   return useQuery({
     queryKey: queryKeys.movieDetail(id ?? 0),
-    queryFn: () => fetchMovieDetail(id!),
+    queryFn: () => fetchMovieDetail(id as number),
     staleTime: STALE_TIME_LONG,
     gcTime: 1000 * 60 * 30,
     enabled: id !== null && id > 0,
