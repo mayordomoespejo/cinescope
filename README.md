@@ -54,7 +54,7 @@ src/
 ├── components/
 │   └── ui/           # Shared UI components (Layout, Navbar, Button, Skeleton, etc.)
 ├── features/         # Domain-specific logic, co-located by feature
-│   ├── auth/         # Profile stats and data-clearing components
+│   ├── profile/      # Profile stats and data-clearing components
 │   ├── favorites/    # Favorites + watchlist Zustand store and components
 │   ├── filters/      # Filter/sort UI and logic
 │   ├── lists/        # Custom user lists with drag-and-drop
