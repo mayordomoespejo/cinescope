@@ -14,11 +14,14 @@ export const SUPABASE_FUNCTIONS = {
   deleteAccount: 'delete-account',
 } as const
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+if (!supabaseUrl) throw new Error('[cinescope] Missing required env var: VITE_SUPABASE_URL')
+
 /**
  * Builds the full invocation URL for a Supabase Edge Function.
  * @param name - The Edge Function name (use a value from SUPABASE_FUNCTIONS).
  * @returns The absolute URL for the function endpoint.
  */
 export function edgeFunctionUrl(name: string): string {
-  return `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${name}`
+  return `${supabaseUrl}/functions/v1/${name}`
 }

@@ -32,3 +32,9 @@ dist-ssr
 # Playwright
 /playwright-report
 /test-results
+
+# Claude Code
+.claude/
+.devflow/
+devflow/
+DEVFLOW.md

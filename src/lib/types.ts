@@ -5,6 +5,12 @@ import type { TVShow } from '@/features/tv/types/tv'
 export type MediaType = 'movie' | 'tv'
 
 /**
+ * Alias for Movie used in the favorites store context.
+ * Favorites are stored as TMDB movie objects.
+ */
+export type FavoriteItem = Movie
+
+/**
  * Generic media item wrapper with type discriminator.
  * Used to associate a TMDB ID with its media type and optional data payload.
  */

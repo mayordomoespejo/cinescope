@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { addSearchQuery, getSearchHistory, clearSearchHistory } from '@/features/favorites/store'
+import {
+  addSearchQuery,
+  getSearchHistory,
+  clearSearchHistory,
+} from '@/features/search/searchHistoryStore'
 
 beforeEach(() => {
   localStorage.clear()

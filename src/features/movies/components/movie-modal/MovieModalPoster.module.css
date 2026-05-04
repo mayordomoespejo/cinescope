@@ -1,0 +1,106 @@
+/* Poster */
+.posterCol {
+  flex-shrink: 0;
+}
+
+.poster {
+  width: 180px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+/* Poster — play wrapper (when trailer is available) */
+.posterPlayWrapper {
+  display: block;
+  position: relative;
+  width: 180px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.posterPlayWrapper .poster {
+  display: block;
+  transition: opacity var(--transition-base);
+}
+
+.posterPlayWrapper:hover .poster {
+  opacity: 0.55;
+}
+
+.posterPlayOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.posterPlayIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base);
+}
+
+.posterPlayWrapper:hover .posterPlayIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Skeleton poster */
+.skeletonPoster {
+  width: 180px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: skimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Skeleton genre chip row */
+.skeletonChips {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .posterCol {
+    display: none;
+  }
+}

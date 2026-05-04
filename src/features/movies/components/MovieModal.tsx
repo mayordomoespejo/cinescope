@@ -1,19 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useMovieDetail } from '../hooks/useMovieDetail'
-import { useMovieVideos } from '../hooks/useMovieVideos'
-import { useFavorites } from '@/features/favorites/hooks/useFavorites'
-import {
-  getPosterUrl,
-  getBackdropUrl,
-  formatRating,
-  formatDate,
-  formatRuntime,
-  formatMoney,
-  getYouTubeEmbedUrl,
-} from '@/lib/helpers'
+import { useMovieModalState } from './movie-modal/useMovieModalState'
+import MovieModalBackdrop from './movie-modal/MovieModalBackdrop'
+import MovieModalPoster from './movie-modal/MovieModalPoster'
+import MovieModalDetails from './movie-modal/MovieModalDetails'
+import TrailerLightbox from './movie-modal/TrailerLightbox'
 import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
 import styles from './MovieModal.module.css'
@@ -29,45 +22,23 @@ interface MovieModalProps {
  * @param props - Component props
  */
 export default function MovieModal({ movieId, onClose }: MovieModalProps) {
-  const { data: movie, isLoading: loadingDetail, error } = useMovieDetail(movieId)
-  const { data: videos, isLoading: loadingVideos } = useMovieVideos(movieId)
-  const { isFavorite, toggleFavorite, isInWatchlist, toggleWatchlist } = useFavorites()
+  const {
+    movie,
+    isLoading,
+    error,
+    trailer,
+    loadingVideos,
+    trailerPlaying,
+    isFavorite,
+    isInWatchlist,
+    handlePlay,
+    handleStopTrailer,
+    handlePlayWhenReady,
+    handleToggleFavorite,
+    handleToggleWatchlist,
+  } = useMovieModalState(movieId)
+
   const closeRef = useRef<HTMLButtonElement>(null)
-
-  // Escape key handler
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [onClose])
-
-  const [trailerPlaying, setTrailerPlaying] = useState(false)
-  const [playWhenReady, setPlayWhenReady] = useState(false)
-  const trailer = videos?.trailer
-  const isFav = movie ? isFavorite(movie.id) : false
-  const inWatchlist = movie ? isInWatchlist(movie.id) : false
-
-  // When user clicked play while videos were loading, start trailer once it's available.
-  // Defer setState to avoid synchronous setState in effect (react-hooks/set-state-in-effect).
-  useEffect(() => {
-    if (playWhenReady && trailer && !trailerPlaying) {
-      queueMicrotask(() => {
-        setTrailerPlaying(true)
-        setPlayWhenReady(false)
-      })
-    }
-    // Videos finished loading but no trailer found — reset play state to avoid a stuck spinner.
-    if (!loadingVideos && !videos?.results?.length) {
-      const t = setTimeout(() => {
-        setPlayWhenReady(false)
-        setTrailerPlaying(false)
-      }, 0)
-      return () => clearTimeout(t)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingVideos, videos])
 
   return (
     <Dialog.Root open onOpenChange={open => !open && onClose()}>
@@ -121,231 +92,44 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
                     Close
                   </Button>
                 </div>
-              ) : loadingDetail ? (
+              ) : isLoading ? (
                 <ModalSkeleton />
               ) : movie ? (
                 <>
-                  {/* Backdrop header */}
-                  <div className={styles.backdrop}>
-                    {movie.backdrop_path && (
-                      <img
-                        src={getBackdropUrl(movie.backdrop_path, 'lg')}
-                        alt=""
-                        className={styles.backdropImg}
-                        loading="eager"
-                      />
-                    )}
-                    <div className={styles.backdropGradient} aria-hidden="true" />
-                  </div>
+                  <MovieModalBackdrop backdropPath={movie.backdrop_path ?? null} />
 
-                  {/* Body */}
                   <div className={styles.body}>
-                    {/* Poster: clickable to play trailer when available or while videos load */}
-                    <div className={styles.posterCol}>
-                      {trailer && !trailerPlaying ? (
-                        <button
-                          type="button"
-                          className={styles.posterPlayWrapper}
-                          onClick={() => setTrailerPlaying(true)}
-                          aria-label="Play trailer"
-                        >
-                          <img
-                            src={getPosterUrl(movie.poster_path, 'lg')}
-                            alt={`${movie.title} poster`}
-                            className={styles.poster}
-                            loading="eager"
-                          />
-                          <div className={styles.posterPlayOverlay} aria-hidden="true">
-                            <span className={styles.posterPlayIcon}>▶</span>
-                          </div>
-                        </button>
-                      ) : loadingVideos ? (
-                        <button
-                          type="button"
-                          className={styles.posterPlayWrapper}
-                          onClick={() => setPlayWhenReady(true)}
-                          aria-label="Loading trailer…"
-                        >
-                          <img
-                            src={getPosterUrl(movie.poster_path, 'lg')}
-                            alt={`${movie.title} poster`}
-                            className={styles.poster}
-                            loading="eager"
-                          />
-                          <div className={styles.posterPlayOverlay} aria-hidden="true">
-                            <span className={styles.posterPlayIcon}>⋯</span>
-                          </div>
-                        </button>
-                      ) : (
-                        <img
-                          src={getPosterUrl(movie.poster_path, 'lg')}
-                          alt={`${movie.title} poster`}
-                          className={styles.poster}
-                          loading="eager"
-                        />
-                      )}
-                    </div>
+                    <MovieModalPoster
+                      posterPath={movie.poster_path ?? null}
+                      title={movie.title}
+                      trailer={trailer}
+                      trailerPlaying={trailerPlaying}
+                      loadingVideos={loadingVideos}
+                      onPlay={handlePlay}
+                      onPlayWhenReady={handlePlayWhenReady}
+                    />
 
-                    {/* Details */}
-                    <div className={styles.details}>
-                      {/* Title + tagline */}
-                      <div className={styles.titleGroup}>
-                        <h2 className={styles.title}>{movie.title}</h2>
-                        {movie.tagline && <p className={styles.tagline}>"{movie.tagline}"</p>}
-                      </div>
-
-                      {/* Stats row */}
-                      <div className={styles.stats}>
-                        <span
-                          className={styles.rating}
-                          aria-label={`Rating: ${formatRating(movie.vote_average)} out of 10`}
-                        >
-                          <span aria-hidden="true">★</span> {formatRating(movie.vote_average)}
-                          <span className={styles.voteCount}>
-                            ({movie.vote_count.toLocaleString()})
-                          </span>
-                        </span>
-                        <span className={styles.stat}>{formatDate(movie.release_date)}</span>
-                        {movie.runtime && (
-                          <span className={styles.stat}>{formatRuntime(movie.runtime)}</span>
-                        )}
-                        {movie.original_language && (
-                          <span className={styles.stat}>
-                            {movie.original_language.toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Genres */}
-                      {movie.genres.length > 0 && (
-                        <div className={styles.genres} aria-label="Genres">
-                          {movie.genres.map(g => (
-                            <span key={g.id} className={styles.genre}>
-                              {g.name}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Overview */}
-                      <p className={styles.overview} id={`movie-overview-${movieId}`}>
-                        {movie.overview || 'No overview available.'}
-                      </p>
-
-                      {/* Extra info */}
-                      {(movie.budget > 0 || movie.revenue > 0 || !!movie.status) && (
-                        <div className={styles.extraInfo}>
-                          {movie.budget > 0 && (
-                            <div className={styles.extraItem}>
-                              <span className={styles.extraLabel}>Budget</span>
-                              <span>{formatMoney(movie.budget)}</span>
-                            </div>
-                          )}
-                          {movie.revenue > 0 && (
-                            <div className={styles.extraItem}>
-                              <span className={styles.extraLabel}>Revenue</span>
-                              <span>{formatMoney(movie.revenue)}</span>
-                            </div>
-                          )}
-                          {movie.status && (
-                            <div className={styles.extraItem}>
-                              <span className={styles.extraLabel}>Status</span>
-                              <span>{movie.status}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Actions */}
-                      <div className={styles.actions}>
-                        {/* Favorite */}
-                        <Button
-                          variant={isFav ? 'danger' : 'secondary'}
-                          size="md"
-                          onClick={() =>
-                            toggleFavorite({ ...movie, genre_ids: movie.genres.map(g => g.id) })
-                          }
-                          aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                          aria-pressed={isFav}
-                        >
-                          <span style={{ display: 'inline-grid' }}>
-                            <span
-                              style={{ gridArea: '1/1', visibility: isFav ? 'visible' : 'hidden' }}
-                            >
-                              ❤️ Favorited
-                            </span>
-                            <span
-                              style={{ gridArea: '1/1', visibility: isFav ? 'hidden' : 'visible' }}
-                            >
-                              🤍 Favorite
-                            </span>
-                          </span>
-                        </Button>
-
-                        {/* Watchlist */}
-                        <Button
-                          variant="ghost"
-                          size="md"
-                          onClick={() =>
-                            toggleWatchlist({ ...movie, genre_ids: movie.genres.map(g => g.id) })
-                          }
-                          aria-label={inWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
-                          aria-pressed={inWatchlist}
-                        >
-                          {inWatchlist ? '✓ Watchlist' : '+ Watchlist'}
-                        </Button>
-
-                        {/* Trailer button — only visible on mobile (poster hidden) */}
-                        {(trailer || loadingVideos) && !trailerPlaying && (
-                          <div className={styles.trailerMobileBtn}>
-                            <Button
-                              variant="ghost"
-                              size="md"
-                              onClick={() =>
-                                trailer ? setTrailerPlaying(true) : setPlayWhenReady(true)
-                              }
-                              disabled={loadingVideos && !trailer}
-                              aria-label={trailer ? 'Watch trailer' : 'Loading trailer'}
-                            >
-                              {loadingVideos && !trailer ? '⋯ Trailer' : '▶ Trailer'}
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <MovieModalDetails
+                      movie={movie}
+                      isFav={isFavorite}
+                      inWatchlist={isInWatchlist}
+                      trailer={trailer}
+                      trailerPlaying={trailerPlaying}
+                      loadingVideos={loadingVideos}
+                      onToggleFavorite={handleToggleFavorite}
+                      onToggleWatchlist={handleToggleWatchlist}
+                      onPlayTrailer={handlePlay}
+                      onPlayWhenReady={handlePlayWhenReady}
+                    />
                   </div>
 
-                  {/* Trailer lightbox — overlays the whole modal */}
                   {trailerPlaying && trailer && (
-                    <div
-                      className={styles.trailerOverlay}
-                      onClick={() => setTrailerPlaying(false)}
-                      aria-modal="true"
-                      role="dialog"
-                      aria-label="Trailer"
-                    >
-                      <button
-                        type="button"
-                        className={styles.trailerOverlayClose}
-                        onClick={() => setTrailerPlaying(false)}
-                        aria-label="Close trailer"
-                      >
-                        ✕
-                      </button>
-                      <div
-                        className={styles.trailerOverlayContent}
-                        onClick={e => e.stopPropagation()}
-                      >
-                        <iframe
-                          key={`trailer-${movieId}-${trailer.key}`}
-                          src={getYouTubeEmbedUrl(trailer.key)}
-                          title={`${movie.title} — Official Trailer`}
-                          className={styles.trailerOverlayIframe}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      </div>
-                    </div>
+                    <TrailerLightbox
+                      trailer={trailer}
+                      movieTitle={movie.title}
+                      movieId={movieId}
+                      onClose={handleStopTrailer}
+                    />
                   )}
                 </>
               ) : null}

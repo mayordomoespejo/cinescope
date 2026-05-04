@@ -5,6 +5,8 @@ import styles from './ErrorBoundary.module.css'
 interface Props {
   children: ReactNode
   fallback?: ReactNode
+  /** When true, also catches unhandled promise rejections and shows the fallback UI. */
+  catchAsyncErrors?: boolean
 }
 
 interface State {
@@ -14,6 +16,7 @@ interface State {
 
 /**
  * @description React class component that catches uncaught errors in its subtree and renders a fallback UI.
+ * Optionally catches unhandled promise rejections when `catchAsyncErrors` is true.
  */
 export default class ErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
@@ -23,17 +26,34 @@ export default class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { hasError: false, error: null }
+    this.handleUnhandledRejection = this.handleUnhandledRejection.bind(this)
+  }
+
+  componentDidMount(): void {
+    if (this.props.catchAsyncErrors) {
+      window.addEventListener('unhandledrejection', this.handleUnhandledRejection)
+    }
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener('unhandledrejection', this.handleUnhandledRejection)
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
     console.error('[ErrorBoundary] Uncaught error:', error, info.componentStack)
   }
 
+  handleUnhandledRejection(event: PromiseRejectionEvent): void {
+    const reason = event.reason
+    const error = reason instanceof Error ? reason : new Error(String(reason))
+    this.setState({ hasError: true, error })
+  }
+
   render(): ReactNode {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className={styles.container}>
+          <div className={styles.container} role="alert">
             <div className={styles.icon} aria-hidden="true">
               ⚠
             </div>

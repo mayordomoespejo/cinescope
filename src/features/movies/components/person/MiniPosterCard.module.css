@@ -1,0 +1,85 @@
+/* ─── Mini Poster Card ───────────────────────────────────────────── */
+.miniCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  outline: none;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 120px;
+  transition: transform var(--transition-base);
+}
+
+.miniCard:hover {
+  transform: translateY(-3px);
+}
+
+.miniCard:focus-visible {
+  box-shadow: var(--shadow-accent);
+  border-radius: var(--radius-lg);
+}
+
+.miniPosterWrapper {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.miniPosterSkeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  /* @keyframes shimmer is defined once in global.css */
+}
+
+.miniPoster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.miniPosterLoaded {
+  opacity: 1;
+}
+
+.miniCardTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.miniCardSub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .miniCard {
+    width: 100px;
+  }
+}

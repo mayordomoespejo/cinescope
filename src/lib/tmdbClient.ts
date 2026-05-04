@@ -1,42 +1,46 @@
-import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from './config'
+import { edgeFunctionUrl } from './supabaseFunctions'
 
-interface FetchOptions extends Omit<RequestInit, 'headers'> {
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+
+interface FetchOptions {
   params?: Record<string, string | number | boolean | undefined>
 }
 
-function buildUrl(path: string, params?: FetchOptions['params']): string {
-  const url = new URL(`${TMDB_BASE_URL}${path}`)
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== '') {
-        url.searchParams.append(key, String(value))
-      }
-    })
-  }
-  return url.toString()
-}
-
 /**
- * @description Authenticated TMDB API fetch wrapper. Appends query params, sets the Bearer token header, and throws on non-2xx responses.
+ * @description Authenticated TMDB API fetch wrapper. Routes all requests through the
+ * Supabase Edge Function tmdb-proxy so the TMDB token is never exposed in the browser.
  * @returns Parsed JSON response typed as T.
  */
 export async function tmdbFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { params, ...rest } = options
+  const { params } = options
 
-  const url = buildUrl(path, params)
+  // Normalise params to Record<string, string> for the proxy body
+  const normalizedParams: Record<string, string> = {}
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        normalizedParams[key] = String(value)
+      }
+    })
+  }
 
-  const response = await fetch(url, {
-    ...rest,
+  const response = await fetch(edgeFunctionUrl('tmdb-proxy'), {
+    method: 'POST',
     headers: {
-      Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
     },
+    body: JSON.stringify({ path, params: normalizedParams }),
   })
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}))
-    const msg = (data as { status_message?: string }).status_message ?? 'Unknown error'
-    throw new Error(`TMDB [${response.status}]: ${msg}`)
+    const msg =
+      (data as { status_message?: string; error?: string }).status_message ??
+      (data as { error?: string }).error ??
+      'Unknown error'
+    throw new Error(`TMDB proxy [${response.status}]: ${msg}`)
   }
 
   return response.json() as Promise<T>

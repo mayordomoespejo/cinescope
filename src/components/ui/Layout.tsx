@@ -1,8 +1,9 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
-import Navbar from './Navbar'
+import Navbar from './navbar/Navbar'
 import BottomNav from './BottomNav'
 import ScrollToTop from './ScrollToTop'
+import { STORAGE_KEYS } from '@/lib/constants'
 import styles from './Layout.module.css'
 
 /**
@@ -12,13 +13,13 @@ export default function Layout() {
   const navigate = useNavigate()
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    const stored = localStorage.getItem('cinescope:theme')
+    const stored = localStorage.getItem(STORAGE_KEYS.THEME)
     if (stored === 'dark' || stored === 'light') return stored
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
 
   // Track whether the user has manually overridden the theme
-  const manualOverride = useRef(localStorage.getItem('cinescope:theme') !== null)
+  const manualOverride = useRef(localStorage.getItem(STORAGE_KEYS.THEME) !== null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -41,7 +42,7 @@ export default function Layout() {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark'
       manualOverride.current = true
-      localStorage.setItem('cinescope:theme', next)
+      localStorage.setItem(STORAGE_KEYS.THEME, next)
       return next
     })
   }
