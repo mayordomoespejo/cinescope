@@ -2,15 +2,13 @@ import type { ButtonHTMLAttributes, Ref } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import styles from './IconButton.module.css'
 
-/** Square icon-only button with size, active, success, and glass variants. Supports `asChild` via Radix Slot. */
+/** Square icon-only button. `state` controls visual indicator: 'active' = accent, 'success' = green. Supports `asChild` via Radix Slot. */
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: Ref<HTMLButtonElement>
   /** 'xs' = 30px (card), 'sm' = 36px (navbar), 'md' = 42px (detail). Default: 'md' */
   size?: 'xs' | 'sm' | 'md'
-  /** Accent color active state (heart/bookmark) */
-  active?: boolean
-  /** Green success active state (watched) */
-  success?: boolean
+  /** Visual state: 'active' = accent color, 'success' = green */
+  state?: 'active' | 'success'
   /** Glass variant: semi-transparent dark bg + backdrop-filter (for use over images) */
   glass?: boolean
   /** Render as child element (e.g. NavLink) using Radix Slot */
@@ -20,8 +18,7 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 function IconButton({
   ref,
   size = 'md',
-  active = false,
-  success = false,
+  state,
   glass = false,
   asChild = false,
   className,
@@ -32,8 +29,8 @@ function IconButton({
   const classes = [
     styles.iconBtn,
     size === 'xs' ? styles.iconBtnXs : size === 'sm' ? styles.iconBtnSm : styles.iconBtnMd,
-    active ? styles.iconBtnActive : '',
-    success ? styles.iconBtnSuccess : '',
+    state === 'active' ? styles.iconBtnActive : '',
+    state === 'success' ? styles.iconBtnSuccess : '',
     glass ? styles.iconBtnGlass : '',
     className ?? '',
   ]

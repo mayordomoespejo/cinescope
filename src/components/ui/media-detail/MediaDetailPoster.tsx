@@ -51,7 +51,7 @@ export default function MediaDetailPoster({
               <Tooltip.Trigger asChild>
                 <IconButton
                   size="md"
-                  active={isFavorite}
+                  state={isFavorite ? 'active' : undefined}
                   onClick={onToggleFavorite}
                   aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   aria-pressed={isFavorite}
@@ -80,7 +80,7 @@ export default function MediaDetailPoster({
               <Tooltip.Trigger asChild>
                 <IconButton
                   size="md"
-                  active={isInWatchlist}
+                  state={isInWatchlist ? 'active' : undefined}
                   onClick={onToggleWatchlist}
                   aria-label={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
                   aria-pressed={isInWatchlist}
@@ -109,7 +109,7 @@ export default function MediaDetailPoster({
               <Tooltip.Trigger asChild>
                 <IconButton
                   size="md"
-                  success={isWatched}
+                  state={isWatched ? 'success' : undefined}
                   onClick={onToggleWatched}
                   aria-label={isWatched ? 'Mark as unwatched' : 'Mark as watched'}
                   aria-pressed={isWatched}
