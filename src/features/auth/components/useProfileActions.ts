@@ -1,34 +1,20 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/features/auth/useAuth'
-import { deleteAccount } from '@/features/auth/authService'
-
 export interface UseProfileActionsReturn {
-  isDeleting: boolean
-  deleteError: string | null
-  handleDeleteAccount: () => Promise<void>
+  isClearing: boolean
+  handleClearData: () => void
 }
 
+/**
+ * useProfileActions — provides a handler to clear all cinescope localStorage keys.
+ * Clears: cinescope-favorites, cinescope-watched, cinescope-lists.
+ */
 export function useProfileActions(): UseProfileActionsReturn {
-  const navigate = useNavigate()
-  const { user } = useAuth()
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState<string | null>(null)
-
-  async function handleDeleteAccount() {
-    if (!user) return
-    setIsDeleting(true)
-    setDeleteError(null)
-    try {
-      const token = await user.getIdToken()
-      await deleteAccount(token)
-      navigate('/')
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Something went wrong'
-      setDeleteError(message)
-      setIsDeleting(false)
-    }
+  function handleClearData() {
+    localStorage.removeItem('cinescope-favorites')
+    localStorage.removeItem('cinescope-watched')
+    localStorage.removeItem('cinescope-lists')
+    // Reload the page so Zustand stores reinitialise from the (now empty) localStorage
+    window.location.reload()
   }
 
-  return { isDeleting, deleteError, handleDeleteAccount }
+  return { isClearing: false, handleClearData }
 }

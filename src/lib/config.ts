@@ -7,12 +7,6 @@ export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 // content negotiation for image format. There is no way to request WebP
 // via the API; all poster/backdrop URLs return JPEG regardless of Accept
 // headers.
-//
-// Offline support: The app has no service worker and no offline queue.
-// Sync operations (favorites, watchlist, watched) use a fire-and-forget
-// pattern with visible error feedback on failure. Adding a background
-// sync queue would require IndexedDB bookkeeping and was deliberately
-// out of scope for this project.
 
 export const IMAGE_SIZES = {
   poster: {

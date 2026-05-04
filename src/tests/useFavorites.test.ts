@@ -1,45 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
+import { useFavoritesStore } from '@/features/favorites/store'
 import type { Movie } from '@/features/movies/types/movie'
-
-// ── Module mocks ─────────────────────────────────────────────────────
-
-vi.mock('@/features/favorites/store', () => ({
-  hydrateFromSupabase: vi.fn(),
-  syncFavoritesToSupabase: vi.fn(),
-  syncWatchlistToSupabase: vi.fn(),
-}))
-
-vi.mock('@/features/auth/useAuth', () => ({
-  useAuth: vi.fn(),
-}))
-
-vi.mock('@/components/ui/Toast', () => ({
-  useToast: vi.fn(() => vi.fn()),
-}))
-
-// Mock retrySync to call fn() once with no delays — tests verify the rollback
-// logic, not the retry/backoff behaviour (covered by retrySync.test.ts).
-vi.mock('@/lib/retrySync', () => ({
-  retrySync: vi.fn((fn: () => Promise<unknown>) => fn()),
-}))
-
-import {
-  hydrateFromSupabase,
-  syncFavoritesToSupabase,
-  syncWatchlistToSupabase,
-} from '@/features/favorites/store'
-import { useAuth } from '@/features/auth/useAuth'
-
-// ── Helpers ───────────────────────────────────────────────────────────
-
-function makeUser(uid = 'user-1') {
-  return {
-    uid,
-    getIdToken: vi.fn().mockResolvedValue('mock-token'),
-  }
-}
 
 const movieA: Movie = {
   id: 1,
@@ -73,202 +36,94 @@ const movieB: Movie = {
   original_title: 'Movie B',
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────
+beforeEach(() => {
+  // Reset Zustand store between tests
+  useFavoritesStore.setState({ favorites: [], watchlist: [] })
+  localStorage.clear()
+})
 
 describe('useFavorites', () => {
-  beforeEach(() => {
-    vi.mocked(hydrateFromSupabase).mockResolvedValue({ favorites: [], watchlist: [] })
-    vi.mocked(syncFavoritesToSupabase).mockResolvedValue(undefined)
-    vi.mocked(syncWatchlistToSupabase).mockResolvedValue(undefined)
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
-  describe('hydration on mount', () => {
-    it('loads favorites from Supabase when user is authenticated', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-      vi.mocked(hydrateFromSupabase).mockResolvedValue({
-        favorites: [movieA],
-        watchlist: [movieB],
-      })
-
+  describe('initial state', () => {
+    it('starts with empty favorites and watchlist', () => {
       const { result } = renderHook(() => useFavorites())
-
-      await waitFor(() => {
-        expect(result.current.favorites).toEqual([movieA])
-        expect(result.current.watchlist).toEqual([movieB])
-        expect(result.current.isLoading).toBe(false)
-      })
-
-      expect(hydrateFromSupabase).toHaveBeenCalledWith('mock-token', expect.any(AbortSignal))
-    })
-
-    it('does not call hydrateFromSupabase when user is null', () => {
-      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
-
-      renderHook(() => useFavorites())
-
-      expect(hydrateFromSupabase).not.toHaveBeenCalled()
-    })
-
-    it('clears state when user logs out', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-      vi.mocked(hydrateFromSupabase).mockResolvedValue({
-        favorites: [movieA],
-        watchlist: [],
-      })
-
-      const { result, rerender } = renderHook(() => useFavorites())
-      await waitFor(() => expect(result.current.favorites).toEqual([movieA]))
-
-      // Simulate logout
-      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
-      rerender()
-
-      await waitFor(() => {
-        expect(result.current.favorites).toEqual([])
-        expect(result.current.watchlist).toEqual([])
-      })
+      expect(result.current.favorites).toEqual([])
+      expect(result.current.watchlist).toEqual([])
+      expect(result.current.isLoading).toBe(false)
     })
   })
 
   describe('toggleFavorite', () => {
-    it('adds a movie optimistically when it is not in favorites', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-
+    it('adds a movie when it is not in favorites', () => {
       const { result } = renderHook(() => useFavorites())
-      await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-      await act(async () => {
-        await result.current.toggleFavorite(movieA)
+      act(() => {
+        result.current.toggleFavorite(movieA)
       })
 
       expect(result.current.favorites).toContainEqual(movieA)
       expect(result.current.isFavorite(movieA.id)).toBe(true)
     })
 
-    it('removes a movie optimistically when it is already in favorites', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-      vi.mocked(hydrateFromSupabase).mockResolvedValue({
-        favorites: [movieA],
-        watchlist: [],
-      })
-
+    it('removes a movie when it is already in favorites', () => {
+      useFavoritesStore.setState({ favorites: [movieA] })
       const { result } = renderHook(() => useFavorites())
-      await waitFor(() => expect(result.current.favorites).toEqual([movieA]))
 
-      await act(async () => {
-        await result.current.toggleFavorite(movieA)
+      act(() => {
+        result.current.toggleFavorite(movieA)
       })
 
       expect(result.current.favorites).not.toContainEqual(movieA)
       expect(result.current.isFavorite(movieA.id)).toBe(false)
     })
-
-    it('rolls back favorites when Supabase sync fails', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-      vi.mocked(hydrateFromSupabase).mockResolvedValue({
-        favorites: [movieA],
-        watchlist: [],
-      })
-
-      // Sync will reject — rollback should restore previous state.
-      // Use a deferred promise so we control when the failure arrives, allowing
-      // the test to observe the optimistic state before the rollback fires.
-      let rejectSync!: (err: Error) => void
-      vi.mocked(syncFavoritesToSupabase).mockReturnValue(
-        new Promise((_, reject) => {
-          rejectSync = reject
-        })
-      )
-
-      const { result } = renderHook(() => useFavorites())
-      await waitFor(() => expect(result.current.favorites).toEqual([movieA]))
-
-      // Optimistic removal of movieA
-      await act(async () => {
-        await result.current.toggleFavorite(movieA)
-      })
-
-      // Optimistic state: movieA removed
-      expect(result.current.isFavorite(movieA.id)).toBe(false)
-
-      // Trigger the sync failure — rollback should restore movieA
-      await act(async () => {
-        rejectSync(new Error('Network error'))
-        await Promise.resolve()
-        await Promise.resolve()
-      })
-
-      // State should be rolled back to include movieA again
-      await waitFor(() => {
-        expect(result.current.isFavorite(movieA.id)).toBe(true)
-      })
-    })
-
-    it('does not sync to Supabase when user is not authenticated', async () => {
-      vi.mocked(useAuth).mockReturnValue({ user: null } as unknown as ReturnType<typeof useAuth>)
-
-      const { result } = renderHook(() => useFavorites())
-
-      await act(async () => {
-        await result.current.toggleFavorite(movieA)
-      })
-
-      // Optimistic state update still happens locally — but no remote sync is triggered
-      expect(result.current.isFavorite(movieA.id)).toBe(true)
-      expect(syncFavoritesToSupabase).not.toHaveBeenCalled()
-    })
   })
 
   describe('toggleWatchlist', () => {
-    it('rolls back watchlist when Supabase sync fails', async () => {
-      const user = makeUser()
-      vi.mocked(useAuth).mockReturnValue({ user } as unknown as ReturnType<typeof useAuth>)
-      vi.mocked(hydrateFromSupabase).mockResolvedValue({
-        favorites: [],
-        watchlist: [movieA],
-      })
-
-      // Sync will reject — rollback should restore previous state.
-      // Use a deferred promise so we control when the failure arrives, allowing
-      // the test to observe the optimistic state before the rollback fires.
-      let rejectSync!: (err: Error) => void
-      vi.mocked(syncWatchlistToSupabase).mockReturnValue(
-        new Promise((_, reject) => {
-          rejectSync = reject
-        })
-      )
-
+    it('adds a movie when it is not in the watchlist', () => {
       const { result } = renderHook(() => useFavorites())
-      await waitFor(() => expect(result.current.watchlist).toEqual([movieA]))
 
-      // Optimistic removal of movieA
-      await act(async () => {
-        await result.current.toggleWatchlist(movieA)
+      act(() => {
+        result.current.toggleWatchlist(movieB)
       })
 
-      // Optimistic state: movieA removed
-      expect(result.current.isInWatchlist(movieA.id)).toBe(false)
+      expect(result.current.watchlist).toContainEqual(movieB)
+      expect(result.current.isInWatchlist(movieB.id)).toBe(true)
+    })
 
-      // Trigger the sync failure — rollback should restore movieA
-      await act(async () => {
-        rejectSync(new Error('Network error'))
-        await Promise.resolve()
-        await Promise.resolve()
+    it('removes a movie when it is already in the watchlist', () => {
+      useFavoritesStore.setState({ watchlist: [movieB] })
+      const { result } = renderHook(() => useFavorites())
+
+      act(() => {
+        result.current.toggleWatchlist(movieB)
       })
 
-      // State should be rolled back to include movieA again
-      await waitFor(() => {
-        expect(result.current.isInWatchlist(movieA.id)).toBe(true)
+      expect(result.current.watchlist).not.toContainEqual(movieB)
+      expect(result.current.isInWatchlist(movieB.id)).toBe(false)
+    })
+  })
+
+  describe('reorder', () => {
+    it('reorderFavorites updates the order', () => {
+      useFavoritesStore.setState({ favorites: [movieA, movieB] })
+      const { result } = renderHook(() => useFavorites())
+
+      act(() => {
+        result.current.reorderFavorites([movieB, movieA])
       })
+
+      expect(result.current.favorites[0]).toEqual(movieB)
+      expect(result.current.favorites[1]).toEqual(movieA)
+    })
+
+    it('reorderWatchlist updates the order', () => {
+      useFavoritesStore.setState({ watchlist: [movieA, movieB] })
+      const { result } = renderHook(() => useFavorites())
+
+      act(() => {
+        result.current.reorderWatchlist([movieB, movieA])
+      })
+
+      expect(result.current.watchlist[0]).toEqual(movieB)
     })
   })
 })

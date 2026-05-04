@@ -1,5 +1,4 @@
-import { useNavigate, Navigate } from 'react-router-dom'
-import { useAuth } from '@/features/auth/useAuth'
+import { useNavigate } from 'react-router-dom'
 import styles from './WelcomePage.module.css'
 
 /** Number of film-strip frames rendered in each horizontal strip. */
@@ -9,17 +8,12 @@ const FRAME_COUNT = 14
 const FRAMES = Array.from({ length: FRAME_COUNT }, (_, i) => i)
 
 /**
- * WelcomePage — cinematic splash screen shown to unauthenticated users.
+ * WelcomePage — cinematic splash screen shown before entering the app.
  *
- * Redirects immediately to `/` when the user is already authenticated.
- * While Firebase auth state is resolving, renders nothing to avoid flash.
+ * Clicking the CTA navigates directly to the home page.
  */
 export default function WelcomePage() {
-  const { loading, isAuthenticated } = useAuth()
   const navigate = useNavigate()
-
-  if (loading) return null
-  if (isAuthenticated) return <Navigate to="/" replace />
 
   return (
     <main className={styles.page} aria-label="Bienvenida a Cinescope">
@@ -43,7 +37,7 @@ export default function WelcomePage() {
 
         {/* CTA */}
         <div className={styles.cta}>
-          <button type="button" className={styles.ctaBtn} onClick={() => navigate('/login')}>
+          <button type="button" className={styles.ctaBtn} onClick={() => navigate('/')}>
             Entrar
           </button>
         </div>
