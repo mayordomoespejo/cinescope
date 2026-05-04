@@ -1,5 +1,6 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { Movie } from '@/features/movies/types/movie'
-import { edgeFunctionUrl, SUPABASE_FUNCTIONS } from '@/lib/supabaseFunctions'
 
 // ── Search history (localStorage — UX convenience only) ────────────
 
@@ -51,88 +52,65 @@ export function clearSearchHistory(): void {
   writeStorage(SEARCH_HISTORY_KEY, [])
 }
 
-// ── Supabase sync via Edge Functions ────────────────────────────────
+// ── Favorites + Watchlist store (persisted to localStorage) ─────────
 
-/**
- * Syncs the favorites list to Supabase via Edge Function.
- * @param token - Firebase ID token of the authenticated user.
- * @param movies - Current list of favorite movies to persist.
- */
-export async function syncFavoritesToSupabase(token: string, movies: Movie[]): Promise<void> {
-  const response = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ movies }),
-  })
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}))
-    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
-  }
+interface FavoritesState {
+  favorites: Movie[]
+  watchlist: Movie[]
+  toggleFavorite: (movie: Movie) => void
+  toggleWatchlist: (movie: Movie) => void
+  reorderFavorites: (newOrder: Movie[]) => void
+  reorderWatchlist: (newOrder: Movie[]) => void
+  isFavorite: (id: number) => boolean
+  isInWatchlist: (id: number) => boolean
 }
 
 /**
- * Syncs the watchlist to Supabase via Edge Function.
- * @param token - Firebase ID token of the authenticated user.
- * @param movies - Current watchlist movies to persist.
+ * Zustand store for favorites and watchlist, persisted to localStorage
+ * under the key `cinescope-favorites`.
  */
-export async function syncWatchlistToSupabase(token: string, movies: Movie[]): Promise<void> {
-  const response = await fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ movies }),
-  })
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}))
-    throw new Error((body as { error?: string }).error ?? `Sync failed: ${response.status}`)
-  }
-}
+export const useFavoritesStore = create<FavoritesState>()(
+  persist(
+    (set, get) => ({
+      favorites: [],
+      watchlist: [],
 
-/**
- * Fetches favorites and watchlist from Supabase via Edge Functions.
- * Returns both arrays so the hook can set React state directly.
- * Should be called once after the user authenticates.
- * @param token - Firebase ID token of the authenticated user.
- * @param signal - Optional AbortSignal to cancel the request.
- */
-export async function hydrateFromSupabase(
-  token: string,
-  signal?: AbortSignal
-): Promise<{ favorites: Movie[]; watchlist: Movie[] }> {
-  const [favRes, watchRes] = await Promise.all([
-    fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncFavorites), {
-      headers: { Authorization: `Bearer ${token}` },
-      signal,
+      toggleFavorite: (movie: Movie) => {
+        set(state => {
+          const exists = state.favorites.some(m => m.id === movie.id)
+          return {
+            favorites: exists
+              ? state.favorites.filter(m => m.id !== movie.id)
+              : [movie, ...state.favorites],
+          }
+        })
+      },
+
+      toggleWatchlist: (movie: Movie) => {
+        set(state => {
+          const exists = state.watchlist.some(m => m.id === movie.id)
+          return {
+            watchlist: exists
+              ? state.watchlist.filter(m => m.id !== movie.id)
+              : [movie, ...state.watchlist],
+          }
+        })
+      },
+
+      reorderFavorites: (newOrder: Movie[]) => {
+        set({ favorites: newOrder })
+      },
+
+      reorderWatchlist: (newOrder: Movie[]) => {
+        set({ watchlist: newOrder })
+      },
+
+      isFavorite: (id: number) => get().favorites.some(m => m.id === id),
+
+      isInWatchlist: (id: number) => get().watchlist.some(m => m.id === id),
     }),
-    fetch(edgeFunctionUrl(SUPABASE_FUNCTIONS.syncWatchlist), {
-      headers: { Authorization: `Bearer ${token}` },
-      signal,
-    }),
-  ])
-
-  const [favData, watchData] = await Promise.all([
-    favRes.ok ? (favRes.json() as Promise<unknown>) : Promise.resolve({ movies: [] }),
-    watchRes.ok ? (watchRes.json() as Promise<unknown>) : Promise.resolve({ movies: [] }),
-  ])
-
-  if (!Array.isArray((favData as { movies?: unknown })?.movies)) {
-    console.warn('[cinescope] Unexpected favorites response shape:', favData)
-  }
-  if (!Array.isArray((watchData as { movies?: unknown })?.movies)) {
-    console.warn('[cinescope] Unexpected watchlist response shape:', watchData)
-  }
-
-  return {
-    favorites: Array.isArray((favData as { movies?: Movie[] })?.movies)
-      ? (favData as { movies: Movie[] }).movies
-      : [],
-    watchlist: Array.isArray((watchData as { movies?: Movie[] })?.movies)
-      ? (watchData as { movies: Movie[] }).movies
-      : [],
-  }
-}
+    {
+      name: 'cinescope-favorites',
+    }
+  )
+)

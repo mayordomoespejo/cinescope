@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/components/ui/Layout'
-import AuthGuard from '@/features/auth/AuthGuard'
 
 const Home = lazy(() => import('@/pages/Home'))
 const Favorites = lazy(() => import('@/pages/Favorites'))
@@ -14,7 +13,6 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const ListsPage = lazy(() => import('@/pages/ListsPage'))
 const WatchedPage = lazy(() => import('@/pages/WatchedPage'))
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'))
-const LoginPage = lazy(() => import('@/pages/LoginPage'))
 
 const pageFallback = <div style={{ minHeight: '100vh' }} aria-busy="true" />
 
@@ -28,105 +26,79 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/login',
-    element: (
-      <Suspense fallback={pageFallback}>
-        <LoginPage />
-      </Suspense>
-    ),
-  },
-  {
     path: '/',
     element: <Layout />,
     children: [
       {
         index: true,
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <Home />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <Home />
+          </Suspense>
         ),
       },
       {
         path: 'favorites',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <Favorites />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <Favorites />
+          </Suspense>
         ),
       },
       {
         path: 'movie/:id',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <MovieDetailPage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <MovieDetailPage />
+          </Suspense>
         ),
       },
       {
         path: 'tv',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <TVBrowsePage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <TVBrowsePage />
+          </Suspense>
         ),
       },
       {
         path: 'tv/:id',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <TVDetailPage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <TVDetailPage />
+          </Suspense>
         ),
       },
       {
         path: 'person/:id',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <PersonPage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <PersonPage />
+          </Suspense>
         ),
       },
       {
         path: 'profile',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <ProfilePage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <ProfilePage />
+          </Suspense>
         ),
       },
       {
         path: 'lists',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <ListsPage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <ListsPage />
+          </Suspense>
         ),
       },
       {
         path: 'watched',
         element: (
-          <AuthGuard>
-            <Suspense fallback={pageFallback}>
-              <WatchedPage />
-            </Suspense>
-          </AuthGuard>
+          <Suspense fallback={pageFallback}>
+            <WatchedPage />
+          </Suspense>
         ),
       },
       {

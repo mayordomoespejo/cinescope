@@ -1,6 +1,6 @@
 // Hook
 export { useWatched } from './useWatched'
 
-// Store types + API
+// Store types
 export type { WatchedItem, MediaType } from './store'
-export { upsertToSupabase, deleteFromSupabase, hydrateWatched } from './store'
+export { useWatchedStore } from './store'

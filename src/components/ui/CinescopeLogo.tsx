@@ -14,7 +14,7 @@ const FRAME_COUNTS = { navbar: 6, hero: 14 } as const
 /**
  * Shared CinescopeLogo component.
  *
- * - `variant="navbar"` — compact (6 frames, 8×5 px each), used in Navbar and LoginPage.
+ * - `variant="navbar"` — compact (6 frames, 8×5 px each), used in Navbar.
  * - `variant="hero"` — large (14 frames, 20×32 px each), used in WelcomePage-style contexts.
  */
 export default function CinescopeLogo({ variant = 'navbar', className }: CinescopeLogoProps) {
