@@ -427,3 +427,9 @@
   font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
+}

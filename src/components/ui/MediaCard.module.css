@@ -173,3 +173,12 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .favActive {
+    animation: none;
+  }
+  .skeleton {
+    animation: none;
+  }
+}

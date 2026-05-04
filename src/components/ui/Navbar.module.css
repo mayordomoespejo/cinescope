@@ -350,7 +350,8 @@
 }
 
 .dropdownItem:hover,
-.dropdownItem[data-highlighted] {
+.dropdownItem[data-highlighted],
+.dropdownItem:focus-visible {
   background: var(--color-surface-overlay);
   color: var(--color-text-primary);
 }

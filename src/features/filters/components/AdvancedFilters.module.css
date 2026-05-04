@@ -106,7 +106,7 @@
 .trigger:focus,
 .trigger:focus-visible {
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
   border-radius: var(--radius-md);
 }
 
@@ -172,7 +172,8 @@
 .selectItem:focus,
 .selectItem:focus-visible {
   outline: none;
-  border-radius: 0;
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
 }
 
 .selectItem:hover,
@@ -206,5 +207,11 @@
   .filterItem {
     min-width: unset;
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selectContent {
+    animation: none;
   }
 }
