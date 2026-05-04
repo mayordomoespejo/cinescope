@@ -62,6 +62,7 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const handleOpenMovie = (id: number) => {
     onOpenMovie(id)
   }
+
   const handleOpenShow = (id: number) => {
     navigate(`/tv/${id}`)
   }
