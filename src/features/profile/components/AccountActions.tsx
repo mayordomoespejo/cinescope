@@ -31,7 +31,7 @@ export function AccountActions({ isClearing, onClearData }: AccountActionsProps)
   return (
     <>
       <div className={styles.dangerZone}>
-        <button type="button" className={styles.deleteAccountBtn} onClick={openModal}>
+        <button type="button" className={styles.clearDataBtn} onClick={openModal}>
           Clear all local data
         </button>
       </div>
@@ -60,7 +60,7 @@ export function AccountActions({ isClearing, onClearData }: AccountActionsProps)
               </Button>
               <Button
                 variant="ghost"
-                className={styles.deleteDangerBtn}
+                className={styles.clearDangerBtn}
                 onClick={handleConfirmClear}
                 disabled={isClearing}
               >
