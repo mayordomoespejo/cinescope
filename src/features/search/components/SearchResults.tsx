@@ -6,6 +6,12 @@ import ErrorAlert from '@/components/ui/ErrorAlert'
 import PageContent from '@/components/ui/PageContent'
 import styles from '@/pages/BrowsePage.module.css'
 
+/**
+ * Renders movie or TV search results depending on `mediaType`.
+ * Both sets of props (movie + TV) are declared together so BrowsePage can pass
+ * the full state object without conditional destructuring. `mediaType` acts as
+ * the discriminant — only the relevant subset is rendered.
+ */
 export interface SearchResultsProps {
   mediaType: 'movie' | 'tv'
   searchQuery: string

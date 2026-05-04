@@ -15,6 +15,13 @@ interface PersonCredits {
   crew: PersonCrewCredit[]
 }
 
+/**
+ * Derives filmography data from raw person credits.
+ * Manages the active tab state and auto-selects 'directing' when the person
+ * has no acting credits (e.g. directors with no on-screen roles).
+ *
+ * @param credits - Cast and crew credits from the TMDB person credits endpoint
+ */
 export function usePersonFilmography(credits: PersonCredits | undefined) {
   const [activeTab, setActiveTab] = useState<FilmographyTab>(FilmographyTab.ACTING)
 

@@ -79,6 +79,9 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
   --shadow-accent: 0 0 0 2px var(--color-accent);
+  --shadow-accent-xs: 0 4px 12px rgba(232, 168, 56, 0.35);
+  --shadow-accent-sm: 0 4px 16px rgba(232, 168, 56, 0.4);
+  --shadow-accent-md: 0 6px 20px rgba(232, 168, 56, 0.5);
 
   /* Transitions */
   --transition-fast: 120ms ease;
