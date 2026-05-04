@@ -239,13 +239,11 @@ describe('useLoginForm', () => {
     })
 
     it('sets serverError when signInWithGoogle rejects', async () => {
-      mockAuth.signInWithGoogle = vi
-        .fn()
-        .mockRejectedValue(
-          Object.assign(new Error('auth/popup-closed-by-user'), {
-            code: 'auth/popup-closed-by-user',
-          })
-        )
+      mockAuth.signInWithGoogle = vi.fn().mockRejectedValue(
+        Object.assign(new Error('auth/popup-closed-by-user'), {
+          code: 'auth/popup-closed-by-user',
+        })
+      )
       vi.mocked(useAuth).mockReturnValue(mockAuth)
 
       const { result } = renderHook(() => useLoginForm())

@@ -32,7 +32,7 @@ test.describe('TV Browse', () => {
         expect(url).toContain('/tv')
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -52,7 +52,7 @@ test.describe('TV Browse', () => {
           await expect(page.getByText('CineScope')).toBeVisible()
         }
       }
-    },
+    }
   )
 
   test(
@@ -65,7 +65,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -82,7 +82,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -105,7 +105,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -124,7 +124,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -145,7 +145,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -164,7 +164,7 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -186,6 +186,6 @@ test.describe('TV Browse', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 })

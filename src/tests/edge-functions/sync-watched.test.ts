@@ -159,7 +159,9 @@ function makeSuccessDeps(items: unknown[] = []): WatchedDeps {
 }
 
 const authedUser = async () => 'user-123'
-const unauthenticated = async (): Promise<string> => { throw new Error('Unauthorized') }
+const unauthenticated = async (): Promise<string> => {
+  throw new Error('Unauthorized')
+}
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -312,7 +314,10 @@ describe('sync-watched edge function', () => {
 
   it('POST returns 500 on database error', async () => {
     const deps = makeSuccessDeps()
-    vi.mocked(deps.upsertWatched).mockResolvedValue({ data: null, error: { message: 'db failure' } })
+    vi.mocked(deps.upsertWatched).mockResolvedValue({
+      data: null,
+      error: { message: 'db failure' },
+    })
 
     const req = makeRequest('POST', { media_id: 550, media_type: 'movie' })
     const res = await handleSyncWatched(req, authedUser, deps)
@@ -324,7 +329,10 @@ describe('sync-watched edge function', () => {
 
   it('DELETE returns 500 on database error', async () => {
     const deps = makeSuccessDeps()
-    vi.mocked(deps.deleteWatched).mockResolvedValue({ data: null, error: { message: 'db failure' } })
+    vi.mocked(deps.deleteWatched).mockResolvedValue({
+      data: null,
+      error: { message: 'db failure' },
+    })
 
     const req = makeRequest('DELETE', undefined, 'media_id=550&media_type=movie')
     const res = await handleSyncWatched(req, authedUser, deps)

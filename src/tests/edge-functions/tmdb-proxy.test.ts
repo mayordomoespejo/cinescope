@@ -129,9 +129,7 @@ describe('tmdb-proxy edge function', () => {
 
   it('proxies a valid POST to TMDB and returns its JSON response', async () => {
     const tmdbPayload = { results: [{ id: 1, title: 'Interstellar' }] }
-    mockFetch.mockResolvedValue(
-      new Response(JSON.stringify(tmdbPayload), { status: 200 })
-    )
+    mockFetch.mockResolvedValue(new Response(JSON.stringify(tmdbPayload), { status: 200 }))
 
     const req = makeRequest('POST', { path: '/movie/popular' })
     const res = await handleTmdbProxy(req, env, mockFetch)

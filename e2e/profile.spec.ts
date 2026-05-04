@@ -31,7 +31,7 @@ test.describe('Profile Page', () => {
         expect(url).toContain('/profile')
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -48,7 +48,7 @@ test.describe('Profile Page', () => {
         // Unauthenticated
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -61,7 +61,7 @@ test.describe('Profile Page', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -78,7 +78,7 @@ test.describe('Profile Page', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -92,7 +92,7 @@ test.describe('Profile Page', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -112,7 +112,7 @@ test.describe('Profile Page', () => {
           await expect(page.getByText('CineScope')).toBeVisible()
         }
       }
-    },
+    }
   )
 
   test(
@@ -125,7 +125,7 @@ test.describe('Profile Page', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -139,6 +139,6 @@ test.describe('Profile Page', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 })

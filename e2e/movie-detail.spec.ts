@@ -19,7 +19,10 @@ test.describe('Movie Detail Modal', () => {
     { tag: ['@movie-detail', '@critical', '@MOVIE-E2E-001'] },
     async ({ page }) => {
       // Movie cards render with role="button" — pick the first one in the grid
-      const firstCard = page.getByRole('button').filter({ hasNot: page.getByRole('banner') }).first()
+      const firstCard = page
+        .getByRole('button')
+        .filter({ hasNot: page.getByRole('banner') })
+        .first()
 
       if (await firstCard.isVisible()) {
         await firstCard.click()
@@ -29,7 +32,7 @@ test.describe('Movie Detail Modal', () => {
         // Unauthenticated — verify welcome page loaded
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -60,7 +63,7 @@ test.describe('Movie Detail Modal', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -79,7 +82,7 @@ test.describe('Movie Detail Modal', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -101,6 +104,6 @@ test.describe('Movie Detail Modal', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 })

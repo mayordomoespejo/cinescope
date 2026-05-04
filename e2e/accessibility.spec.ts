@@ -17,7 +17,7 @@ test.describe('Accessibility', () => {
       await page.waitForLoadState('networkidle')
       // Navbar renders <header role="banner"> — always present in the layout
       await expect(page.getByRole('banner')).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -29,7 +29,7 @@ test.describe('Accessibility', () => {
       // LoginPage renders <main aria-label="Inicio de sesión">
       const main = page.getByRole('main', { name: /Inicio de sesión/i })
       await expect(main).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -46,7 +46,7 @@ test.describe('Accessibility', () => {
         // Unauthenticated — welcome page, no full Navbar present
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -65,7 +65,7 @@ test.describe('Accessibility', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -87,7 +87,7 @@ test.describe('Accessibility', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -110,7 +110,7 @@ test.describe('Accessibility', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -120,7 +120,9 @@ test.describe('Accessibility', () => {
       await page.goto('/')
       await page.waitForLoadState('networkidle')
       // MediaCard renders favorite button with aria-pressed={isFavorite}
-      const favButtons = page.getByRole('button', { name: /Add to favorites|Remove from favorites/i })
+      const favButtons = page.getByRole('button', {
+        name: /Add to favorites|Remove from favorites/i,
+      })
       const count = await favButtons.count()
       if (count > 0) {
         const firstFav = favButtons.first()
@@ -130,7 +132,7 @@ test.describe('Accessibility', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -150,6 +152,6 @@ test.describe('Accessibility', () => {
       // Error message should be in the DOM with role="alert"
       const emailError = page.locator('#email-error')
       await expect(emailError).toBeVisible({ timeout: 3000 })
-    },
+    }
   )
 })

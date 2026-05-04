@@ -34,7 +34,7 @@ test.describe('Lists Management', () => {
         expect(url).toContain('/lists')
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -51,7 +51,7 @@ test.describe('Lists Management', () => {
         // Unauthenticated — welcome page
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -64,7 +64,7 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -81,7 +81,7 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -101,7 +101,7 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -121,7 +121,7 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -141,7 +141,7 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -155,6 +155,6 @@ test.describe('Lists Management', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 })

@@ -16,7 +16,7 @@ test.describe('Navigation', () => {
       // Either the app renders the home layout or redirects to /welcome — both
       // show the CineScope brand.
       await expect(page.getByText('CineScope')).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -28,7 +28,7 @@ test.describe('Navigation', () => {
       // Navbar has role="banner" (set via <header role="banner">)
       const navbar = page.getByRole('banner')
       await expect(navbar).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -45,7 +45,7 @@ test.describe('Navigation', () => {
         // Unauthenticated — welcome page shown, TV nav not present
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -62,7 +62,7 @@ test.describe('Navigation', () => {
         // Not authenticated — welcome page
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -77,7 +77,7 @@ test.describe('Navigation', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -86,7 +86,7 @@ test.describe('Navigation', () => {
     async ({ page }) => {
       await page.goto('/welcome')
       await expect(page.getByText('CineScope')).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -95,7 +95,7 @@ test.describe('Navigation', () => {
     async ({ page }) => {
       await page.goto('/login')
       await expect(page.getByText('Bienvenido')).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -107,6 +107,6 @@ test.describe('Navigation', () => {
       await expect(logoLink).toBeVisible()
       await logoLink.click()
       await expect(page).toHaveURL('/welcome')
-    },
+    }
   )
 })

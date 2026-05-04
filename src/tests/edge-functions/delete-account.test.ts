@@ -65,7 +65,7 @@ async function handleDeleteAccount(
 
     // 2. Delete list items (only if lists exist)
     if (userLists && userLists.length > 0) {
-      const listIds = userLists.map((l) => l.id)
+      const listIds = userLists.map(l => l.id)
       const { error: listItemsError } = await deps.deleteListItems(listIds)
       if (listItemsError) {
         return new Response(JSON.stringify({ error: 'Internal server error' }), {
@@ -146,7 +146,9 @@ function makeSuccessDeps(): DeleteAccountDeps {
 }
 
 const authedUser = async () => 'user-123'
-const unauthenticated = async (): Promise<string> => { throw new Error('Unauthorized') }
+const unauthenticated = async (): Promise<string> => {
+  throw new Error('Unauthorized')
+}
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -248,7 +250,10 @@ describe('delete-account edge function', () => {
 
   it('returns 500 when deleteListItems fails', async () => {
     const deps = makeSuccessDeps()
-    vi.mocked(deps.deleteListItems).mockResolvedValue({ data: null, error: { message: 'db error' } })
+    vi.mocked(deps.deleteListItems).mockResolvedValue({
+      data: null,
+      error: { message: 'db error' },
+    })
 
     const req = makeRequest('DELETE')
     const res = await handleDeleteAccount(req, authedUser, deps)
@@ -258,7 +263,10 @@ describe('delete-account edge function', () => {
 
   it('returns 500 when deleteFavorites fails', async () => {
     const deps = makeSuccessDeps()
-    vi.mocked(deps.deleteFavorites).mockResolvedValue({ data: null, error: { message: 'db error' } })
+    vi.mocked(deps.deleteFavorites).mockResolvedValue({
+      data: null,
+      error: { message: 'db error' },
+    })
 
     const req = makeRequest('DELETE')
     const res = await handleDeleteAccount(req, authedUser, deps)
@@ -268,7 +276,10 @@ describe('delete-account edge function', () => {
 
   it('returns 500 when deleteWatchlist fails', async () => {
     const deps = makeSuccessDeps()
-    vi.mocked(deps.deleteWatchlist).mockResolvedValue({ data: null, error: { message: 'db error' } })
+    vi.mocked(deps.deleteWatchlist).mockResolvedValue({
+      data: null,
+      error: { message: 'db error' },
+    })
 
     const req = makeRequest('DELETE')
     const res = await handleDeleteAccount(req, authedUser, deps)

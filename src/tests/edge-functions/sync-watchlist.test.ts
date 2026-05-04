@@ -129,7 +129,9 @@ function makeSupabaseMock(result: SupabaseResult): SupabaseMock {
 }
 
 const authedUser = async () => 'user-123'
-const unauthenticated = async (): Promise<string> => { throw new Error('Unauthorized') }
+const unauthenticated = async (): Promise<string> => {
+  throw new Error('Unauthorized')
+}
 
 // ---------------------------------------------------------------------------
 // Tests

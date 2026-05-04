@@ -25,7 +25,11 @@ vi.mock('@/lib/retrySync', () => ({
   retrySync: vi.fn((fn: () => Promise<unknown>) => fn()),
 }))
 
-import { hydrateFromSupabase, syncFavoritesToSupabase, syncWatchlistToSupabase } from '@/features/favorites/store'
+import {
+  hydrateFromSupabase,
+  syncFavoritesToSupabase,
+  syncWatchlistToSupabase,
+} from '@/features/favorites/store'
 import { useAuth } from '@/features/auth/useAuth'
 
 // ── Helpers ───────────────────────────────────────────────────────────

@@ -24,7 +24,7 @@ test.describe('Search', () => {
         // Unauthenticated — verify welcome page loaded instead
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -37,7 +37,7 @@ test.describe('Search', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -52,7 +52,7 @@ test.describe('Search', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -76,7 +76,7 @@ test.describe('Search', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 
   test(
@@ -95,6 +95,6 @@ test.describe('Search', () => {
       } else {
         await expect(page.getByText('CineScope')).toBeVisible()
       }
-    },
+    }
   )
 })

@@ -26,7 +26,7 @@ test.describe('Auth — Login Page', () => {
       await expect(page.getByLabel('Email')).toBeVisible()
       await expect(page.getByLabel('Contraseña')).toBeVisible()
       await expect(page.getByRole('button', { name: 'Continuar' })).toBeVisible()
-    },
+    }
   )
 
   test(
@@ -43,7 +43,7 @@ test.describe('Auth — Login Page', () => {
       // Email validation error appears as role="alert"
       const emailError = page.getByRole('alert').filter({ hasText: /.+/ }).first()
       await expect(emailError).toBeVisible({ timeout: 3000 })
-    },
+    }
   )
 
   test(
@@ -61,7 +61,7 @@ test.describe('Auth — Login Page', () => {
       // Password error renders with id="password-error" and role="alert"
       const passwordError = page.locator('#password-error')
       await expect(passwordError).toBeVisible({ timeout: 3000 })
-    },
+    }
   )
 
   test(
@@ -70,18 +70,14 @@ test.describe('Auth — Login Page', () => {
     async ({ page }) => {
       const googleButton = page.getByRole('button', { name: /Continuar con Google/i })
       await expect(googleButton).toBeVisible()
-    },
+    }
   )
 
-  test(
-    'Email input accepts text input',
-    { tag: ['@auth', '@AUTH-E2E-005'] },
-    async ({ page }) => {
-      const emailInput = page.getByLabel('Email')
-      await emailInput.fill('user@example.com')
-      await expect(emailInput).toHaveValue('user@example.com')
-    },
-  )
+  test('Email input accepts text input', { tag: ['@auth', '@AUTH-E2E-005'] }, async ({ page }) => {
+    const emailInput = page.getByLabel('Email')
+    await emailInput.fill('user@example.com')
+    await expect(emailInput).toHaveValue('user@example.com')
+  })
 
   test(
     'Password field is of type password by default (masked)',
@@ -90,7 +86,7 @@ test.describe('Auth — Login Page', () => {
       const passwordInput = page.getByLabel('Contraseña')
       // Before interaction, the readOnly trick is active — type is still password
       await expect(passwordInput).toHaveAttribute('type', 'password')
-    },
+    }
   )
 
   test(
@@ -108,6 +104,6 @@ test.describe('Auth — Login Page', () => {
       await toggleBtn.click()
 
       await expect(passwordInput).toHaveAttribute('type', 'text')
-    },
+    }
   )
 })

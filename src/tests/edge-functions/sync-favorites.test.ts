@@ -76,7 +76,10 @@ async function handleSyncFavorites(
 
       const upsertResult: SupabaseResult = await supabase
         .from('cinescope_favorites')
-        .upsert({ user_id: userId, movies, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+        .upsert(
+          { user_id: userId, movies, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        )
 
       if (upsertResult.error) {
         return new Response(JSON.stringify({ error: 'Database error' }), {
@@ -126,7 +129,9 @@ function makeSupabaseMock(result: SupabaseResult): SupabaseMock {
 }
 
 const authedUser = async () => 'user-123'
-const unauthenticated = async (): Promise<string> => { throw new Error('Unauthorized') }
+const unauthenticated = async (): Promise<string> => {
+  throw new Error('Unauthorized')
+}
 
 // ---------------------------------------------------------------------------
 // Tests
