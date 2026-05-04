@@ -33,5 +33,11 @@ export default defineConfig({
     css: true,
     include: ['src/tests/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['e2e/**', 'node_modules/**'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/tests/**', 'src/**/*.d.ts', 'src/main.tsx'],
+      reporter: ['text', 'lcov'],
+    },
   },
 })
