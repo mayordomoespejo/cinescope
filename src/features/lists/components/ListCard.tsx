@@ -12,12 +12,12 @@ function isMovie(media: Movie | TVShow): media is Movie {
 }
 
 /**
- * Cast ListItem.media_data (stored as JSON column) to the typed union.
+ * Cast ListItem.media_data to the typed union.
  *
  * The double cast (`as unknown as Movie | TVShow`) is intentional:
- * Supabase returns JSON columns as `Record<string, unknown>`, so TypeScript
- * won't allow a direct cast to the narrower type. The intermediate `unknown`
- * step is the standard escape hatch. Safety is provided by the `isMovie`
+ * media_data is persisted as JSON in localStorage, so at runtime it is
+ * `unknown` after deserialization. The intermediate `unknown` step is the
+ * standard TypeScript escape hatch. Safety is provided by the `isMovie`
  * type guard called immediately after every use of this helper.
  */
 function asMedia(item: ListItem): Movie | TVShow {
