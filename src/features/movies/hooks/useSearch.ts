@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchSearchMovies } from '../api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_SHORT } from '@/lib/config'
+import { STALE_TIME_SHORT, GC_TIME } from '@/lib/config'
 
 /**
  * @description Searches TMDB for movies matching the given query string. Skips the query when the string is empty.
@@ -12,7 +12,7 @@ export function useSearchMovies(query: string, page: number = 1) {
     queryKey: queryKeys.search(query, page),
     queryFn: () => fetchSearchMovies(query, page),
     staleTime: STALE_TIME_SHORT,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: query.trim().length > 0,
   })
 }

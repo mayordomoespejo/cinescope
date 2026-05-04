@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTVVideos } from '../api/tvApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 import type { Video } from '../types/tv'
 
 export function pickTrailer(videos: Video[]): Video | null {
@@ -23,7 +23,7 @@ export function useTVVideos(id: number | null) {
     queryKey: queryKeys.tvVideos(id ?? 0),
     queryFn: () => fetchTVVideosForQuery(id as number),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: id !== null && id > 0,
   })
 }

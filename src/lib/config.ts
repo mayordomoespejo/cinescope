@@ -36,6 +36,7 @@ export const DEFAULT_PAGE_SIZE = 20
 export const DEBOUNCE_DELAY = 400
 export const STALE_TIME_SHORT = 1000 * 60 * 5 // 5 min
 export const STALE_TIME_LONG = 1000 * 60 * 60 // 1 hour
+export const GC_TIME = 1000 * 60 * 30 // 30 min
 
 export const SORT_OPTIONS = [
   { value: 'popularity.desc', label: 'Most Popular' },

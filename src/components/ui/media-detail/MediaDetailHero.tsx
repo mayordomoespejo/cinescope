@@ -1,4 +1,5 @@
 import Skeleton from '@/components/ui/Skeleton'
+import { TMDB_IMAGE_BASE, IMAGE_SIZES } from '@/lib/config'
 import styles from './MediaDetailHero.module.css'
 
 interface MediaDetailHeroProps {
@@ -13,9 +14,9 @@ export default function MediaDetailHero({
   posterPath,
 }: MediaDetailHeroProps) {
   const heroSrc = backdropPath
-    ? `https://image.tmdb.org/t/p/original${backdropPath}`
+    ? `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.original}${backdropPath}`
     : posterPath
-      ? `https://image.tmdb.org/t/p/w780${posterPath}`
+      ? `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.md}${posterPath}`
       : null
   const isPosterFallback = !backdropPath && !!posterPath
 

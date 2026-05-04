@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchGenres } from '@/features/movies/api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 
 /**
  * @description Fetches the list of TMDB movie genres. Returns only the genres array via TanStack Query `select`.
@@ -12,7 +12,7 @@ export function useGenres() {
     queryKey: queryKeys.genres(),
     queryFn: () => fetchGenres(),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     select: data => data.genres,
   })
 }

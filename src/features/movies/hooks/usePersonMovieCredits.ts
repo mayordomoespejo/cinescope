@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchPersonMovieCredits } from '../api/personApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 
 /**
  * React Query hook that fetches all movies a person appeared in or contributed to.
@@ -12,7 +12,7 @@ export function usePersonMovieCredits(id: number | null) {
     queryKey: queryKeys.personMovieCredits(id ?? 0),
     queryFn: () => fetchPersonMovieCredits(id as number),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: id !== null && id > 0,
   })
 }

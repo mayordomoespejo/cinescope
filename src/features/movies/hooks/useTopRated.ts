@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTopRated } from '../api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 
 /**
  * @description Fetches the top-rated movies from TMDB for the given page.
@@ -12,6 +12,6 @@ export function useTopRated(page: number = 1) {
     queryKey: queryKeys.topRated(page),
     queryFn: () => fetchTopRated(page),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
   })
 }

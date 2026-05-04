@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchMovieRecommendations } from '../api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 
 /**
  * React Query hook that fetches movie recommendations based on a given movie.
@@ -13,7 +13,7 @@ export function useMovieRecommendations(id: number | null, page: number = 1) {
     queryKey: queryKeys.movieRecommendations(id ?? 0, page),
     queryFn: () => fetchMovieRecommendations(id as number, page),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: id !== null && id > 0,
   })
 }

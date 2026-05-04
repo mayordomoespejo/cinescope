@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTrending } from '../api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_SHORT } from '@/lib/config'
+import { STALE_TIME_SHORT, GC_TIME } from '@/lib/config'
 
 /**
  * @description Fetches trending movies for a given time window from TMDB.
@@ -12,6 +12,6 @@ export function useTrending(timeWindow: 'day' | 'week' = 'day', page: number = 1
     queryKey: [...queryKeys.trending(timeWindow), page],
     queryFn: () => fetchTrending(timeWindow, page),
     staleTime: STALE_TIME_SHORT,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
   })
 }
