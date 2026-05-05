@@ -17,7 +17,11 @@
     "test:e2e": "playwright test",
     "prepare": "husky",
     "stylelint": "stylelint 'src/**/*.css'",
-    "stylelint:fix": "stylelint 'src/**/*.css' --fix"
+    "stylelint:fix": "stylelint 'src/**/*.css' --fix",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

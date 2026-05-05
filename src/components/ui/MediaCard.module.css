@@ -67,12 +67,12 @@
 }
 
 .favBtn:hover {
-  opacity: 1 !important;
+  opacity: 1;
   transform: scale(1.15);
 }
 
 .favActive {
-  opacity: 1 !important;
+  opacity: 1;
   color: var(--color-accent);
   animation: favPulse 0.35s ease-out;
 }

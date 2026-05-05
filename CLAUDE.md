@@ -42,7 +42,7 @@ e2e/               # Playwright E2E tests
 
 - No auth — app is fully public, no login required
 - Persistence via `localStorage` only (Zustand `persist`): keys `cinescope-favorites`, `cinescope-watched`, `cinescope-lists`
-- TMDB API via `src/lib/tmdbClient.ts` with Bearer token (`VITE_TMDB_API_KEY`)
+- TMDB API via `src/lib/tmdbClient.ts` with Bearer token (`VITE_TMDB_ACCESS_TOKEN`)
 - Alias `@/` → `src/`
 - Lazy-loaded pages via `React.lazy` + `Suspense`
 - Intro screen at `/welcome` → navigates to `/` directly
@@ -52,5 +52,5 @@ e2e/               # Playwright E2E tests
 ## Env Vars
 
 ```
-VITE_TMDB_API_KEY=   # TMDB Bearer token (required)
+VITE_TMDB_ACCESS_TOKEN=   # TMDB v4 Bearer token (required)
 ```
