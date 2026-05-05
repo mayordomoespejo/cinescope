@@ -1,4 +1,4 @@
-import { getYouTubeEmbedUrl } from '@/lib/helpers'
+import { getYouTubeEmbedUrl } from '@/lib/videoUtils'
 import type { Video } from '../../types/movie'
 import styles from './TrailerLightbox.module.css'
 

@@ -24,7 +24,19 @@
   --color-overlay: rgba(0, 0, 0, 0.75);
   --color-overlay-strong: rgba(0, 0, 0, 0.92);
 
-  --color-star: #f5c518;
+  --color-star: #eab308;
+
+  /* Status badge palette (media status indicators) */
+  --color-status-active: #22c55e;
+  --color-status-active-bg: rgba(34, 197, 94, 0.15);
+  --color-status-active-border: rgba(34, 197, 94, 0.3);
+  --color-status-neutral: #94a3b8;
+  --color-status-neutral-bg: rgba(148, 163, 184, 0.15);
+  --color-status-neutral-border: rgba(148, 163, 184, 0.3);
+  --color-status-error-bg: rgba(239, 68, 68, 0.15);
+  --color-status-error-border: rgba(239, 68, 68, 0.3);
+  --color-star-bg: rgba(234, 179, 8, 0.15);
+  --color-star-border: rgba(234, 179, 8, 0.3);
 
   /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
