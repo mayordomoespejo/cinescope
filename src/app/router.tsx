@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/components/ui/Layout'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import styles from './router.module.css'
 
 const Home = lazy(() => import('@/pages/Home'))
@@ -21,9 +22,11 @@ export const router = createBrowserRouter([
   {
     path: '/welcome',
     element: (
-      <Suspense fallback={pageFallback}>
-        <WelcomePage />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={pageFallback}>
+          <WelcomePage />
+        </Suspense>
+      </ErrorBoundary>
     ),
   },
   {
@@ -33,81 +36,101 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <Suspense fallback={pageFallback}>
-            <Home />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <Home />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'favorites',
         element: (
-          <Suspense fallback={pageFallback}>
-            <Favorites />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <Favorites />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'movie/:id',
         element: (
-          <Suspense fallback={pageFallback}>
-            <MovieDetailPage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <MovieDetailPage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'tv',
         element: (
-          <Suspense fallback={pageFallback}>
-            <TVBrowsePage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <TVBrowsePage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'tv/:id',
         element: (
-          <Suspense fallback={pageFallback}>
-            <TVDetailPage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <TVDetailPage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'person/:id',
         element: (
-          <Suspense fallback={pageFallback}>
-            <PersonPage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <PersonPage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'profile',
         element: (
-          <Suspense fallback={pageFallback}>
-            <ProfilePage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <ProfilePage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'lists',
         element: (
-          <Suspense fallback={pageFallback}>
-            <ListsPage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <ListsPage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'watched',
         element: (
-          <Suspense fallback={pageFallback}>
-            <WatchedPage />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <WatchedPage />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
       {
         path: '*',
         element: (
-          <Suspense fallback={pageFallback}>
-            <NotFound />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <NotFound />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
     ],

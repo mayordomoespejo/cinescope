@@ -189,7 +189,7 @@
 
 .checkmark {
   color: var(--color-accent);
-  font-size: 0.75rem;
+  font-size: var(--font-size-2xs);
   width: 14px;
   flex-shrink: 0;
 }

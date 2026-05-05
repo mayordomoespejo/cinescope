@@ -97,7 +97,7 @@
   bottom: 0;
   width: 60px;
   pointer-events: none;
-  z-index: 20;
+  z-index: var(--z-raised);
 }
 
 .fadeLeft {

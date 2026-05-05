@@ -58,11 +58,6 @@ export function formatRating(rating: number): string {
   return rating.toFixed(1)
 }
 
-/** Capitalize first letter */
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 /** Format large numbers (e.g. revenue) as currency — alias: formatCurrency */
 export function formatMoney(amount: number): string {
   if (amount === 0) return 'N/A'
