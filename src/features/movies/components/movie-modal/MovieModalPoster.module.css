@@ -48,8 +48,8 @@
   height: 52px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.92);
-  color: #111;
-  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
   display: flex;
   align-items: center;
   justify-content: center;

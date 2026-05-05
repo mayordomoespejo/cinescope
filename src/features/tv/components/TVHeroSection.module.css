@@ -100,7 +100,7 @@
 
 .badge {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-text-inverse);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   padding: 2px 8px;

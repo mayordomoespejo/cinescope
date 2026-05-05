@@ -10,11 +10,11 @@
 }
 
 .emoji {
-  font-size: 4rem;
+  font-size: var(--font-size-7xl);
 }
 
 .title {
-  font-size: 6rem;
+  font-size: var(--font-size-display);
   font-weight: var(--font-weight-extrabold);
   color: var(--color-accent);
   line-height: 1;

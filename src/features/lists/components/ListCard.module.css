@@ -36,7 +36,7 @@
   border: none;
   border-radius: var(--radius-full);
   color: var(--color-text-inverse);
-  font-size: 0.875rem;
+  font-size: var(--font-size-icon-sm);
   cursor: pointer;
   display: flex;
   align-items: center;

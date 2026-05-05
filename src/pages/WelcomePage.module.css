@@ -192,7 +192,7 @@
   gap: var(--space-2);
   padding: var(--space-4) var(--space-12);
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-text-inverse);
   border: none;
   border-radius: var(--radius-full);
   font-size: clamp(var(--font-size-base), 2vw, var(--font-size-xl));

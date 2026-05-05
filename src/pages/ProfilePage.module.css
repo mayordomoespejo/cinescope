@@ -279,7 +279,7 @@
 
 .clearDangerBtn:hover:not(:disabled) {
   background: var(--color-error);
-  color: #fff;
+  color: var(--color-text-inverse);
   opacity: 1;
 }
 

@@ -107,7 +107,7 @@
 }
 
 .emptyIcon {
-  font-size: 3rem;
+  font-size: var(--font-size-6xl);
 }
 
 .emptyText {
