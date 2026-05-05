@@ -32,7 +32,6 @@ export const IMAGE_SIZES = {
 export const FALLBACK_POSTER = 'https://placehold.co/500x750/1a1a1a/444?text=No+Poster'
 export const FALLBACK_BACKDROP = 'https://placehold.co/1280x720/0f0f0f/333?text=No+Image'
 
-export const DEFAULT_PAGE_SIZE = 20
 export const DEBOUNCE_DELAY = 400
 export const STALE_TIME_SHORT = 1000 * 60 * 5 // 5 min
 export const STALE_TIME_LONG = 1000 * 60 * 60 // 1 hour

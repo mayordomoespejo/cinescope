@@ -18,7 +18,8 @@
     "prepare": "husky",
     "stylelint": "stylelint 'src/**/*.css'",
     "stylelint:fix": "stylelint 'src/**/*.css' --fix",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "knip": "knip"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -52,8 +53,11 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.58.2",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -68,8 +72,10 @@
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
+    "knip": "^6.11.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
+    "secretlint": "^13.0.0",
     "stylelint": "^17.10.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-declaration-strict-value": "^1.11.1",

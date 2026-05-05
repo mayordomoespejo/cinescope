@@ -38,6 +38,12 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/tests/**', 'src/**/*.d.ts', 'src/main.tsx'],
       reporter: ['text', 'lcov'],
+      thresholds: {
+        lines: 14,
+        functions: 16,
+        branches: 8,
+        statements: 14,
+      },
     },
   },
 })

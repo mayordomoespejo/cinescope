@@ -58,7 +58,7 @@ export function formatRating(rating: number): string {
   return rating.toFixed(1)
 }
 
-/** Format large numbers (e.g. revenue) as currency — alias: formatCurrency */
+/** Format large numbers (e.g. revenue) as currency */
 export function formatMoney(amount: number): string {
   if (amount === 0) return 'N/A'
   return new Intl.NumberFormat('en-US', {
@@ -68,6 +68,3 @@ export function formatMoney(amount: number): string {
     notation: amount >= 1_000_000 ? 'compact' : 'standard',
   }).format(amount)
 }
-
-/** Alias for formatMoney — formats a monetary amount as USD currency */
-export const formatCurrency = formatMoney
