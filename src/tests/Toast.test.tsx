@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act, fireEvent } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 import { ToastProvider, useToast } from '@/components/ui/Toast'
 
 beforeEach(() => {
@@ -92,17 +93,10 @@ describe('useToast', () => {
   })
 
   it('returns a function', () => {
-    const result: { fn: unknown } = { fn: undefined }
-    function Capture() {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      result.fn = useToast()
-      return null
-    }
-    render(
-      <ToastProvider>
-        <Capture />
-      </ToastProvider>
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <ToastProvider>{children}</ToastProvider>
     )
-    expect(typeof result.fn).toBe('function')
+    const { result } = renderHook(() => useToast(), { wrapper })
+    expect(typeof result.current).toBe('function')
   })
 })
