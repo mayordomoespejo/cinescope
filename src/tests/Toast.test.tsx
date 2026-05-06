@@ -92,9 +92,10 @@ describe('useToast', () => {
   })
 
   it('returns a function', () => {
-    let toastFn: unknown
+    const result: { fn: unknown } = { fn: undefined }
     function Capture() {
-      toastFn = useToast()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      result.fn = useToast()
       return null
     }
     render(
@@ -102,6 +103,6 @@ describe('useToast', () => {
         <Capture />
       </ToastProvider>
     )
-    expect(typeof toastFn).toBe('function')
+    expect(typeof result.fn).toBe('function')
   })
 })
