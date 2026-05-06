@@ -37,16 +37,25 @@ export function AccountActions({ isClearing, onClearData }: AccountActionsProps)
       </div>
 
       {showModal && (
+        // Backdrop — click outside to dismiss
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
           className={styles.modalOverlay}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="clear-modal-title"
           onClick={e => {
             if (e.target === e.currentTarget) closeModal()
           }}
         >
-          <div className={styles.modalCard}>
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="clear-modal-title"
+            tabIndex={-1}
+            className={styles.modalCard}
+            onKeyDown={e => {
+              if (e.key === 'Escape') closeModal()
+            }}
+          >
             <h2 className={styles.modalTitle} id="clear-modal-title">
               Clear all local data
             </h2>

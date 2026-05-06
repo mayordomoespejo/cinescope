@@ -19,8 +19,22 @@
     "stylelint": "stylelint 'src/**/*.css'",
     "stylelint:fix": "stylelint 'src/**/*.css' --fix",
     "typecheck": "tsc -b --noEmit",
-    "knip": "knip"
+    "knip": "knip",
+    "check:circular": "madge --circular --extensions ts,tsx src/",
+    "size": "size-limit"
   },
+  "size-limit": [
+    {
+      "path": "dist/assets/*.js",
+      "limit": "500 kB",
+      "gzip": true
+    },
+    {
+      "path": "dist/assets/*.css",
+      "limit": "50 kB",
+      "gzip": true
+    }
+  ],
   "engines": {
     "node": ">=20.0.0"
   },
@@ -58,6 +72,7 @@
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.58.2",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.0",
+    "@size-limit/file": "^12.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -67,15 +82,19 @@
     "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^9.39.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-sonarjs": "^4.0.3",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "knip": "^6.11.0",
     "lint-staged": "^16.2.7",
+    "madge": "^8.0.0",
     "prettier": "^3.8.1",
     "secretlint": "^13.0.0",
+    "size-limit": "^12.1.0",
     "stylelint": "^17.10.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-declaration-strict-value": "^1.11.1",

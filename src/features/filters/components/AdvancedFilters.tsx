@@ -95,9 +95,9 @@ export default function AdvancedFilters({
 
       {/* Year select */}
       <div className={styles.filterItem}>
-        <label className={styles.label} id="year-select-label">
+        <span className={styles.label} id="year-select-label">
           Year
-        </label>
+        </span>
         <Select.Root
           value={yearValue}
           onValueChange={val => onYearChange(val === '__all__' ? undefined : Number(val))}
@@ -134,9 +134,9 @@ export default function AdvancedFilters({
 
       {/* Language select */}
       <div className={styles.filterItem}>
-        <label className={styles.label} id="language-select-label">
+        <span className={styles.label} id="language-select-label">
           Language
-        </label>
+        </span>
         <Select.Root
           value={languageValue}
           onValueChange={val => onLanguageChange(val === '__all__' ? '' : val)}

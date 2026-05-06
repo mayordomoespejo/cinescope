@@ -37,6 +37,9 @@ jobs:
       - name: Dead code check
         run: npm run knip
 
+      - name: Circular dependency check
+        run: npm run check:circular
+
       - name: Dependency audit
         run: npm audit --audit-level=high
 
@@ -78,6 +81,9 @@ jobs:
         run: npm run build
         env:
           VITE_TMDB_ACCESS_TOKEN: ${{ secrets.VITE_TMDB_ACCESS_TOKEN }}
+
+      - name: Bundle size check
+        run: npm run size
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

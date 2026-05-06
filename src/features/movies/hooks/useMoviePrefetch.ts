@@ -13,11 +13,11 @@ export function useMoviePrefetch() {
 
   const prefetchMovieData = useCallback(
     (id: number) => {
-      void queryClient.prefetchQuery({
+      queryClient.prefetchQuery({
         queryKey: queryKeys.movieDetail(id),
         queryFn: () => fetchMovieDetail(id),
       })
-      void queryClient.prefetchQuery({
+      queryClient.prefetchQuery({
         queryKey: queryKeys.movieVideos(id),
         queryFn: () => fetchMovieVideosForQuery(id),
       })

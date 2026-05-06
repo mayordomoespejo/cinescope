@@ -52,7 +52,7 @@ export default function MediaCard({
     ariaLabel ?? `${title}, ${year}${rating != null ? `, rating ${formatRating(rating)}` : ''}`
 
   return (
-    <article
+    <div
       className={styles.card}
       onClick={onClick}
       onMouseEnter={onPrefetch}
@@ -117,6 +117,6 @@ export default function MediaCard({
         <p className={styles.title}>{title}</p>
         <p className={styles.year}>{year}</p>
       </div>
-    </article>
+    </div>
   )
 }
