@@ -1,4 +1,5 @@
 import * as Tooltip from '@radix-ui/react-tooltip'
+import { ACTION_LABELS } from '@/lib/constants'
 import { getPosterUrl } from '@/lib/helpers'
 import IconButton from '@/components/ui/IconButton'
 import Skeleton from '@/components/ui/Skeleton'
@@ -89,8 +90,12 @@ export default function MediaDetailPoster({
             <ActionButton
               isActive={isFavorite}
               activeState="active"
-              ariaLabel={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              tooltipText={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              ariaLabel={
+                isFavorite ? ACTION_LABELS.REMOVE_FROM_FAVORITES : ACTION_LABELS.ADD_TO_FAVORITES
+              }
+              tooltipText={
+                isFavorite ? ACTION_LABELS.REMOVE_FROM_FAVORITES : ACTION_LABELS.ADD_TO_FAVORITES
+              }
               onClick={onToggleFavorite}
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -108,8 +113,12 @@ export default function MediaDetailPoster({
             <ActionButton
               isActive={isInWatchlist}
               activeState="active"
-              ariaLabel={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
-              tooltipText={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+              ariaLabel={
+                isInWatchlist ? ACTION_LABELS.REMOVE_FROM_WATCHLIST : ACTION_LABELS.ADD_TO_WATCHLIST
+              }
+              tooltipText={
+                isInWatchlist ? ACTION_LABELS.REMOVE_FROM_WATCHLIST : ACTION_LABELS.ADD_TO_WATCHLIST
+              }
               onClick={onToggleWatchlist}
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -127,8 +136,12 @@ export default function MediaDetailPoster({
             <ActionButton
               isActive={isWatched}
               activeState="success"
-              ariaLabel={isWatched ? 'Mark as unwatched' : 'Mark as watched'}
-              tooltipText={isWatched ? 'Mark as unwatched' : 'Mark as watched'}
+              ariaLabel={
+                isWatched ? ACTION_LABELS.MARK_AS_UNWATCHED : ACTION_LABELS.MARK_AS_WATCHED
+              }
+              tooltipText={
+                isWatched ? ACTION_LABELS.MARK_AS_UNWATCHED : ACTION_LABELS.MARK_AS_WATCHED
+              }
               onClick={onToggleWatched}
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">

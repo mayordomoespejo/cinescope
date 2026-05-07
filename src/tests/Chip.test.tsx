@@ -55,20 +55,19 @@ describe('Chip', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
-  it('calls onRemove on Enter key on remove button', () => {
+  it('calls onRemove when remove button is clicked', () => {
     const onRemove = vi.fn()
     render(<Chip label="Action" onRemove={onRemove} />)
     const removeBtn = screen.getByRole('button', { name: /Remove Action/i })
-    fireEvent.keyDown(removeBtn, { key: 'Enter' })
+    fireEvent.click(removeBtn)
     expect(onRemove).toHaveBeenCalledOnce()
   })
 
-  it('calls onRemove on Space key on remove button', () => {
+  it('remove button is a native button (keyboard accessible by default)', () => {
     const onRemove = vi.fn()
     render(<Chip label="Action" onRemove={onRemove} />)
     const removeBtn = screen.getByRole('button', { name: /Remove Action/i })
-    fireEvent.keyDown(removeBtn, { key: ' ' })
-    expect(onRemove).toHaveBeenCalledOnce()
+    expect(removeBtn.tagName).toBe('BUTTON')
   })
 
   it('does not call onRemove on other keys', () => {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ACTION_LABELS } from '@/lib/constants'
 import { getPosterUrl, formatRating } from '@/lib/helpers'
 import styles from './MediaCard.module.css'
 
@@ -78,7 +79,9 @@ export default function MediaCard({
           type="button"
           className={`${styles.favBtn} ${isFavorite ? styles.favActive : ''}`}
           onClick={handleFavClick}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={
+            isFavorite ? ACTION_LABELS.REMOVE_FROM_FAVORITES : ACTION_LABELS.ADD_TO_FAVORITES
+          }
           aria-pressed={isFavorite}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">

@@ -33,24 +33,17 @@ export default function Chip({
     >
       {label}
       {onRemove ? (
-        <span
+        <button
+          type="button"
           className={styles.remove}
+          aria-label={`Remove ${label}`}
           onClick={e => {
             e.stopPropagation()
             onRemove()
           }}
-          role="button"
-          aria-label={`Remove ${label}`}
-          tabIndex={0}
-          onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.stopPropagation()
-              onRemove()
-            }
-          }}
         >
           ✕
-        </span>
+        </button>
       ) : null}
     </button>
   )

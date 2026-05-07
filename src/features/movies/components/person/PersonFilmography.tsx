@@ -18,6 +18,22 @@ export interface PersonFilmographyProps {
   onMovieClick: (id: number) => void
 }
 
+/** Returns the credit count for the given filmography tab. */
+function tabCount(
+  tab: FilmographyTabType,
+  acting: number,
+  directing: number,
+  writing: number
+): number {
+  return (
+    {
+      [FilmographyTab.ACTING]: acting,
+      [FilmographyTab.DIRECTING]: directing,
+      [FilmographyTab.WRITING]: writing,
+    }[tab] ?? 0
+  )
+}
+
 /** Known For carousel + tabbed filmography (Acting / Directing / Writing) */
 export function PersonFilmography({
   knownFor,
@@ -68,12 +84,14 @@ export function PersonFilmography({
               FilmographyTab.WRITING,
             ] as FilmographyTabType[]
           )
-            .filter(tab =>
-              tab === FilmographyTab.ACTING
-                ? actingCredits.length > 0
-                : tab === FilmographyTab.DIRECTING
-                  ? directingCredits.length > 0
-                  : writingCredits.length > 0
+            .filter(
+              tab =>
+                tabCount(
+                  tab,
+                  actingCredits.length,
+                  directingCredits.length,
+                  writingCredits.length
+                ) > 0
             )
             .map(tab => (
               <button
@@ -88,11 +106,12 @@ export function PersonFilmography({
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 <span className={styles.tabCount}>
-                  {tab === FilmographyTab.ACTING
-                    ? actingCredits.length
-                    : tab === FilmographyTab.DIRECTING
-                      ? directingCredits.length
-                      : writingCredits.length}
+                  {tabCount(
+                    tab,
+                    actingCredits.length,
+                    directingCredits.length,
+                    writingCredits.length
+                  )}
                 </span>
               </button>
             ))}

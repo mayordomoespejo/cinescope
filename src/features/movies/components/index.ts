@@ -13,10 +13,6 @@ export { default as MovieModal } from './MovieModal'
 // Browse section
 export { default as MovieBrowseSection } from './MovieBrowseSection'
 
-// Sortable card
-export { SortableMovieCard } from './SortableMovieCard'
-export type { SortableCardProps } from './SortableMovieCard'
-
 // Skeleton re-export
 export { default as SkeletonCard, SkeletonGrid } from './SkeletonCard'
 
