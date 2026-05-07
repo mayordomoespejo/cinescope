@@ -32,6 +32,8 @@ function makeMockLists(lists = [makeList('list-1', 'My List')]) {
     removeFromList,
     addToList: vi.fn(),
     isInList: vi.fn(),
+    error: null,
+    refresh: vi.fn().mockResolvedValue(undefined),
   } as ReturnType<typeof useLists>)
 
   return { createList, deleteList, renameList, fetchListItems, removeFromList }

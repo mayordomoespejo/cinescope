@@ -14,7 +14,7 @@ function mockMatchMedia(matches: boolean) {
     addEventListener: vi.fn((event: string, cb: Listener) => {
       if (event === 'change') listeners.push(cb)
     }),
-    removeEventListener: vi.fn((event: string, cb: Listener) => {
+    removeEventListener: vi.fn((_event: string, cb: Listener) => {
       const idx = listeners.indexOf(cb)
       if (idx !== -1) listeners.splice(idx, 1)
     }),

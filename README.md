@@ -142,19 +142,26 @@ Favorites, watchlist, watched history, and custom lists are stored entirely in *
 
 ## Available Scripts
 
-| Command                 | Description                          |
-| ----------------------- | ------------------------------------ |
-| `npm run dev`           | Start the Vite development server    |
-| `npm run build`         | Type-check and build for production  |
-| `npm run preview`       | Preview the production build locally |
-| `npm run lint`          | Run ESLint                           |
-| `npm run lint:fix`      | Run ESLint with auto-fix             |
-| `npm run format`        | Format all files with Prettier       |
-| `npm run format:check`  | Check formatting without writing     |
-| `npm run test`          | Run unit tests with Vitest           |
-| `npm run test:watch`    | Run unit tests in watch mode         |
-| `npm run test:coverage` | Generate test coverage report        |
-| `npm run test:e2e`      | Run Playwright end-to-end tests      |
+| Command                  | Description                          |
+| ------------------------ | ------------------------------------ |
+| `npm run dev`            | Start the Vite development server    |
+| `npm run build`          | Type-check and build for production  |
+| `npm run preview`        | Preview the production build locally |
+| `npm run lint`           | Run ESLint                           |
+| `npm run lint:fix`       | Run ESLint with auto-fix             |
+| `npm run format`         | Format all files with Prettier       |
+| `npm run format:check`   | Check formatting without writing     |
+| `npm run test`           | Run unit tests with Vitest           |
+| `npm run test:watch`     | Run unit tests in watch mode         |
+| `npm run test:coverage`  | Generate test coverage report        |
+| `npm run test:e2e`       | Run Playwright end-to-end tests      |
+| `npm run typecheck`      | TypeScript type check (no emit)      |
+| `npm run stylelint`      | CSS design token enforcement         |
+| `npm run stylelint:fix`  | Auto-fix CSS token violations        |
+| `npm run knip`           | Detect dead exports and unused files |
+| `npm run check:circular` | Detect circular dependencies         |
+| `npm run size`           | Check bundle size against budget     |
+| `npm run check`          | Run all quality checks at once       |
 
 ---
 

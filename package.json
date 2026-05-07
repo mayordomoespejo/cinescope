@@ -21,7 +21,8 @@
     "typecheck": "tsc -b --noEmit",
     "knip": "knip",
     "check:circular": "madge --circular --extensions ts,tsx src/",
-    "size": "size-limit"
+    "size": "size-limit",
+    "check": "npm run typecheck && npm run lint && npm run stylelint && npm run knip && npm run check:circular"
   },
   "size-limit": [
     {

@@ -10,7 +10,12 @@ import { MemoryRouter } from 'react-router-dom'
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => <div {...props}>{children}</div>,
+    div: ({
+      children,
+      ...props
+    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
+      <div {...props}>{children}</div>
+    ),
   },
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
@@ -25,8 +30,18 @@ vi.mock('react-router-dom', async () => {
 })
 
 vi.mock('@/components/ui/Button', () => ({
-  default: ({ children, onClick, disabled }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean }) => (
-    <button onClick={onClick} disabled={disabled}>{children}</button>
+  default: ({
+    children,
+    onClick,
+    disabled,
+  }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+  }) => (
+    <button onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
   ),
 }))
 
@@ -73,9 +88,7 @@ vi.mock('@/features/watched/useWatched', () => ({
 
 vi.mock('@/features/watched/components/WatchedSection', () => ({
   WatchedSection: ({ items, loading }: { items: unknown[]; loading: boolean }) => (
-    <div>
-      {loading ? 'Loading...' : `${items.length} items`}
-    </div>
+    <div>{loading ? 'Loading...' : `${items.length} items`}</div>
   ),
 }))
 
@@ -97,7 +110,7 @@ vi.mock('@/features/profile/components/useProfileActions', () => ({
 // Mocks for BrowsePage (for Home)
 vi.mock('./BrowsePage', () => ({
   default: () => <div>BrowsePage</div>,
-}), { virtual: true })
+}))
 
 // ── NotFound ──────────────────────────────────────────────────────────
 
@@ -217,7 +230,7 @@ describe('Favorites page', () => {
         <Favorites />
       </MemoryRouter>
     )
-    expect(screen.getByText("No favorites yet — save movies you love!")).toBeInTheDocument()
+    expect(screen.getByText('No favorites yet — save movies you love!')).toBeInTheDocument()
   })
 })
 

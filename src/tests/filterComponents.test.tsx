@@ -23,11 +23,7 @@ vi.mock('@/components/ui/Chip', () => ({
     active?: boolean
     onClick?: () => void
   }) => (
-    <button
-      onClick={onClick}
-      aria-pressed={active ?? false}
-      data-testid={`chip-${label}`}
-    >
+    <button onClick={onClick} aria-pressed={active ?? false} data-testid={`chip-${label}`}>
       {label}
     </button>
   ),
@@ -74,18 +70,20 @@ beforeEach(() => {
 describe('GenreFilter', () => {
   it('shows skeleton while loading', async () => {
     const { useGenres } = await import('@/features/filters/hooks/useGenres')
-    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: true } as ReturnType<typeof useGenres>)
+    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: true } as unknown as ReturnType<
+      typeof useGenres
+    >)
 
-    const { container } = render(
-      <GenreFilter selectedGenreId={null} onSelect={vi.fn()} />
-    )
+    const { container } = render(<GenreFilter selectedGenreId={null} onSelect={vi.fn()} />)
     // Skeleton rendered with aria-hidden
     expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
   })
 
   it('renders "All" chip when not loading', async () => {
     const { useGenres } = await import('@/features/filters/hooks/useGenres')
-    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as ReturnType<typeof useGenres>)
+    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as unknown as ReturnType<
+      typeof useGenres
+    >)
 
     render(<GenreFilter selectedGenreId={null} onSelect={vi.fn()} />)
     expect(screen.getByTestId('chip-All')).toBeInTheDocument()
@@ -94,7 +92,10 @@ describe('GenreFilter', () => {
   it('renders genre chips', async () => {
     const { useGenres } = await import('@/features/filters/hooks/useGenres')
     vi.mocked(useGenres).mockReturnValue({
-      data: [{ id: 28, name: 'Action' }, { id: 12, name: 'Adventure' }],
+      data: [
+        { id: 28, name: 'Action' },
+        { id: 12, name: 'Adventure' },
+      ],
       isLoading: false,
     } as ReturnType<typeof useGenres>)
 
@@ -105,7 +106,9 @@ describe('GenreFilter', () => {
 
   it('"All" chip is active when selectedGenreId is null', async () => {
     const { useGenres } = await import('@/features/filters/hooks/useGenres')
-    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as ReturnType<typeof useGenres>)
+    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as unknown as ReturnType<
+      typeof useGenres
+    >)
 
     render(<GenreFilter selectedGenreId={null} onSelect={vi.fn()} />)
     expect(screen.getByTestId('chip-All')).toHaveAttribute('aria-pressed', 'true')
@@ -113,7 +116,9 @@ describe('GenreFilter', () => {
 
   it('calls onSelect with null when "All" clicked', async () => {
     const { useGenres } = await import('@/features/filters/hooks/useGenres')
-    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as ReturnType<typeof useGenres>)
+    vi.mocked(useGenres).mockReturnValue({ data: [], isLoading: false } as unknown as ReturnType<
+      typeof useGenres
+    >)
 
     const onSelect = vi.fn()
     render(<GenreFilter selectedGenreId={null} onSelect={onSelect} />)
@@ -179,6 +184,8 @@ describe('SortDropdown', () => {
 
   it('shows "Highest Rated" as current when selected', () => {
     render(<SortDropdown value={'vote_average.desc' as SortOption} onChange={vi.fn()} />)
-    expect(screen.getByRole('button', { name: 'Sort movies by' })).toHaveTextContent('Highest Rated')
+    expect(screen.getByRole('button', { name: 'Sort movies by' })).toHaveTextContent(
+      'Highest Rated'
+    )
   })
 })

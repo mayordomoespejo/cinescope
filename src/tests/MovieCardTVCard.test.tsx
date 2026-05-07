@@ -12,7 +12,12 @@ import type { TVShow } from '@/features/tv/types/tv'
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => <div {...props}>{children}</div>,
+    div: ({
+      children,
+      ...props
+    }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
+      <div {...props}>{children}</div>
+    ),
   },
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
@@ -95,7 +100,9 @@ describe('MovieCard', () => {
   })
 
   it('shows "Remove from favorites" when isFavorite is true', () => {
-    render(<MovieCard movie={movie} onOpen={vi.fn()} onToggleFavorite={vi.fn()} isFavorite={true} />)
+    render(
+      <MovieCard movie={movie} onOpen={vi.fn()} onToggleFavorite={vi.fn()} isFavorite={true} />
+    )
     expect(screen.getByLabelText('Remove from favorites')).toBeInTheDocument()
   })
 
@@ -156,16 +163,12 @@ describe('TVCard', () => {
 
 describe('MovieGrid', () => {
   it('renders skeleton while loading', () => {
-    render(
-      <MovieGrid movies={[]} isLoading={true} onOpenMovie={vi.fn()} skeletonCount={3} />
-    )
+    render(<MovieGrid movies={[]} isLoading={true} onOpenMovie={vi.fn()} />)
     expect(screen.getAllByTestId('skeleton-card').length).toBeGreaterThanOrEqual(1)
   })
 
   it('shows empty message when no movies', () => {
-    render(
-      <MovieGrid movies={[]} isLoading={false} onOpenMovie={vi.fn()} />
-    )
+    render(<MovieGrid movies={[]} isLoading={false} onOpenMovie={vi.fn()} />)
     expect(screen.getByText('No movies found.')).toBeInTheDocument()
   })
 
@@ -177,9 +180,7 @@ describe('MovieGrid', () => {
   })
 
   it('renders movie cards', () => {
-    render(
-      <MovieGrid movies={[movie]} isLoading={false} onOpenMovie={vi.fn()} />
-    )
+    render(<MovieGrid movies={[movie]} isLoading={false} onOpenMovie={vi.fn()} />)
     expect(screen.getByText('Inception')).toBeInTheDocument()
   })
 
@@ -213,30 +214,22 @@ describe('MovieGrid', () => {
 
 describe('TVGrid', () => {
   it('shows empty message when no shows', () => {
-    render(
-      <TVGrid shows={[]} isLoading={false} onOpenShow={vi.fn()} />
-    )
+    render(<TVGrid shows={[]} isLoading={false} onOpenShow={vi.fn()} />)
     expect(screen.getByText('No TV shows found.')).toBeInTheDocument()
   })
 
   it('shows custom empty message', () => {
-    render(
-      <TVGrid shows={[]} isLoading={false} onOpenShow={vi.fn()} emptyMessage="No series" />
-    )
+    render(<TVGrid shows={[]} isLoading={false} onOpenShow={vi.fn()} emptyMessage="No series" />)
     expect(screen.getByText('No series')).toBeInTheDocument()
   })
 
   it('renders TV show cards', () => {
-    render(
-      <TVGrid shows={[tvShow]} isLoading={false} onOpenShow={vi.fn()} />
-    )
+    render(<TVGrid shows={[tvShow]} isLoading={false} onOpenShow={vi.fn()} />)
     expect(screen.getByText('Breaking Bad')).toBeInTheDocument()
   })
 
   it('renders skeleton while loading', () => {
-    render(
-      <TVGrid shows={[]} isLoading={true} onOpenShow={vi.fn()} />
-    )
+    render(<TVGrid shows={[]} isLoading={true} onOpenShow={vi.fn()} />)
     expect(screen.getAllByTestId('skeleton-card').length).toBeGreaterThanOrEqual(1)
   })
 
@@ -254,14 +247,7 @@ describe('TVGrid', () => {
   })
 
   it('renders error state', () => {
-    render(
-      <TVGrid
-        shows={[]}
-        isLoading={false}
-        onOpenShow={vi.fn()}
-        error={new Error('Failed')}
-      />
-    )
+    render(<TVGrid shows={[]} isLoading={false} onOpenShow={vi.fn()} error={new Error('Failed')} />)
     expect(screen.getByRole('alert')).toBeInTheDocument()
   })
 })

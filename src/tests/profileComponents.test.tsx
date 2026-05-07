@@ -185,30 +185,23 @@ const makeWatchedItem = (overrides: Partial<WatchedItem> = {}): WatchedItem => (
     original_language: 'en',
     vote_count: 100,
     adult: false,
-    video: false,
   },
   ...overrides,
 })
 
 describe('WatchedSection', () => {
   it('renders Watch History heading', () => {
-    render(
-      <WatchedSection items={[]} loading={false} onRemove={vi.fn()} onNavigate={vi.fn()} />
-    )
+    render(<WatchedSection items={[]} loading={false} onRemove={vi.fn()} onNavigate={vi.fn()} />)
     expect(screen.getByRole('heading', { name: 'Watch History' })).toBeInTheDocument()
   })
 
   it('shows skeleton when loading', () => {
-    render(
-      <WatchedSection items={[]} loading={true} onRemove={vi.fn()} onNavigate={vi.fn()} />
-    )
+    render(<WatchedSection items={[]} loading={true} onRemove={vi.fn()} onNavigate={vi.fn()} />)
     expect(screen.getByTestId('skeleton-grid')).toBeInTheDocument()
   })
 
   it('shows empty state when no items', () => {
-    render(
-      <WatchedSection items={[]} loading={false} onRemove={vi.fn()} onNavigate={vi.fn()} />
-    )
+    render(<WatchedSection items={[]} loading={false} onRemove={vi.fn()} onNavigate={vi.fn()} />)
     expect(screen.getByText('Nothing watched yet. Start exploring!')).toBeInTheDocument()
   })
 
