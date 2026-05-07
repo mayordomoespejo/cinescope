@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { pickTrailer } from '@/lib/videoUtils'
+import { getYouTubeEmbedUrl, pickTrailer } from '@/lib/videoUtils'
 import type { Video } from '@/features/movies/types/movie'
 
 // ── Fixtures ──────────────────────────────────────────────────────────
 
-function makeVideo(overrides: Partial<Video>): Video {
+function makeVideo(overrides: Partial<Video> = {}): Video {
   return {
     id: 'v1',
     key: 'abc123',
@@ -20,63 +20,77 @@ function makeVideo(overrides: Partial<Video>): Video {
   }
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────
+// ── getYouTubeEmbedUrl ────────────────────────────────────────────────
+
+describe('getYouTubeEmbedUrl', () => {
+  it('returns a valid embed URL for a valid key', () => {
+    const url = getYouTubeEmbedUrl('dQw4w9WgXcQ')
+    expect(url).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0&modestbranding=1')
+  })
+
+  it('accepts keys with underscores and hyphens', () => {
+    const url = getYouTubeEmbedUrl('abc-123_XYZ')
+    expect(url).toContain('abc-123_XYZ')
+  })
+
+  it('throws for key with spaces', () => {
+    expect(() => getYouTubeEmbedUrl('invalid key')).toThrow('Invalid YouTube key')
+  })
+
+  it('throws for key with special characters', () => {
+    expect(() => getYouTubeEmbedUrl('abc!@#')).toThrow('Invalid YouTube key')
+  })
+
+  it('throws for empty string', () => {
+    expect(() => getYouTubeEmbedUrl('')).toThrow('Invalid YouTube key')
+  })
+})
+
+// ── pickTrailer ───────────────────────────────────────────────────────
 
 describe('pickTrailer', () => {
-  it('returns the official YouTube Trailer when available', () => {
+  it('returns null for empty array', () => {
+    expect(pickTrailer([])).toBeNull()
+  })
+
+  it('returns null when no YouTube videos present', () => {
+    const vimeo = makeVideo({ site: 'Vimeo', official: true })
+    expect(pickTrailer([vimeo])).toBeNull()
+  })
+
+  it('returns null when only non-Trailer non-Teaser YouTube videos exist', () => {
+    const featurette = makeVideo({ type: 'Featurette' })
+    const clip = makeVideo({ type: 'Clip' })
+    expect(pickTrailer([featurette, clip])).toBeNull()
+  })
+
+  it('returns the official YouTube trailer', () => {
     const official = makeVideo({ id: 'official', official: true, type: 'Trailer' })
     const unofficial = makeVideo({ id: 'unofficial', official: false, type: 'Trailer' })
     const teaser = makeVideo({ id: 'teaser', type: 'Teaser', official: false })
 
-    const result = pickTrailer([teaser, unofficial, official])
-
-    expect(result).toBe(official)
+    expect(pickTrailer([teaser, unofficial, official])).toBe(official)
   })
 
   it('prefers official over unofficial trailer', () => {
     const unofficial = makeVideo({ id: 'unofficial', official: false })
     const official = makeVideo({ id: 'official', official: true })
-
     expect(pickTrailer([unofficial, official])).toBe(official)
   })
 
-  it('falls back to unofficial YouTube Trailer when no official exists', () => {
+  it('falls back to unofficial YouTube trailer when no official exists', () => {
     const unofficial = makeVideo({ id: 'unofficial', official: false, type: 'Trailer' })
     const teaser = makeVideo({ id: 'teaser', type: 'Teaser', official: false })
-
-    const result = pickTrailer([teaser, unofficial])
-
-    expect(result).toBe(unofficial)
+    expect(pickTrailer([teaser, unofficial])).toBe(unofficial)
   })
 
-  it('falls back to YouTube Teaser when no Trailer exists', () => {
+  it('falls back to YouTube teaser when no trailer exists', () => {
     const teaser = makeVideo({ id: 'teaser', type: 'Teaser', official: false })
-
-    const result = pickTrailer([teaser])
-
-    expect(result).toBe(teaser)
+    expect(pickTrailer([teaser])).toBe(teaser)
   })
 
-  it('returns null for an empty array', () => {
-    expect(pickTrailer([])).toBeNull()
-  })
-
-  it('returns null when no YouTube videos are present', () => {
-    const vimeo = makeVideo({ site: 'Vimeo', type: 'Trailer', official: true })
-
-    expect(pickTrailer([vimeo])).toBeNull()
-  })
-
-  it('returns null when only non-Trailer non-Teaser YouTube videos are present', () => {
-    const featurette = makeVideo({ type: 'Featurette' })
-    const clip = makeVideo({ type: 'Clip' })
-
-    expect(pickTrailer([featurette, clip])).toBeNull()
-  })
-
-  it('does not return a Vimeo teaser as fallback', () => {
+  it('does not return Vimeo teaser as fallback', () => {
     const vimeoTeaser = makeVideo({ site: 'Vimeo', type: 'Teaser' })
-
     expect(pickTrailer([vimeoTeaser])).toBeNull()
   })
 })
