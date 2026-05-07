@@ -13,12 +13,16 @@ export default function MediaDetailHero({
   backdropPath,
   posterPath,
 }: MediaDetailHeroProps) {
-  const heroSrc = backdropPath
-    ? `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.original}${backdropPath}`
-    : posterPath
-      ? `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.md}${posterPath}`
-      : null
+  let heroSrc: string | null = null
+  if (backdropPath) {
+    heroSrc = `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.original}${backdropPath}`
+  } else if (posterPath) {
+    heroSrc = `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.md}${posterPath}`
+  }
   const isPosterFallback = !backdropPath && !!posterPath
+  const heroImgClass = isPosterFallback
+    ? `${styles.heroImg} ${styles.heroImgPoster}`
+    : styles.heroImg
 
   return (
     <div className={styles.hero} aria-hidden="true">
@@ -26,13 +30,7 @@ export default function MediaDetailHero({
         <Skeleton width="100%" height="100%" />
       ) : (
         heroSrc && (
-          <img
-            src={heroSrc}
-            alt=""
-            className={`${styles.heroImg}${isPosterFallback ? ` ${styles.heroImgPoster}` : ''}`}
-            loading="eager"
-            decoding="async"
-          />
+          <img src={heroSrc} alt="" className={heroImgClass} loading="eager" decoding="async" />
         )
       )}
       <div className={styles.heroGradient} />

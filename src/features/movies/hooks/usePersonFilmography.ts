@@ -64,15 +64,14 @@ export function usePersonFilmography(credits: PersonCredits | undefined) {
   // Auto-select first available tab when credits load
   useEffect(() => {
     if (!credits) return
+    const tabHasCredits = (tab: FilmographyTab): boolean => {
+      if (tab === FilmographyTab.ACTING) return actingCredits.length > 0
+      if (tab === FilmographyTab.DIRECTING) return directingCredits.length > 0
+      return writingCredits.length > 0
+    }
     const available = (
       [FilmographyTab.ACTING, FilmographyTab.DIRECTING, FilmographyTab.WRITING] as FilmographyTab[]
-    ).filter(tab =>
-      tab === FilmographyTab.ACTING
-        ? actingCredits.length > 0
-        : tab === FilmographyTab.DIRECTING
-          ? directingCredits.length > 0
-          : writingCredits.length > 0
-    )
+    ).filter(tabHasCredits)
     const t = setTimeout(() => {
       setActiveTab(prev => (available.includes(prev) ? prev : (available[0] ?? prev)))
     }, 0)

@@ -49,8 +49,8 @@ export default function MediaCard({
     }
   }
 
-  const label =
-    ariaLabel ?? `${title}, ${year}${rating != null ? `, rating ${formatRating(rating)}` : ''}`
+  const ratingLabel = rating != null ? `, rating ${formatRating(rating)}` : ''
+  const label = ariaLabel ?? `${title}, ${year}${ratingLabel}`
 
   return (
     <div

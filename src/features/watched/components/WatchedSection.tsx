@@ -88,6 +88,30 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
   )
 }
 
+interface WatchedContentProps {
+  items: WatchedItem[]
+  onRemove: (item: WatchedItem) => void
+  onNavigate: (mediaType: string, mediaId: number) => void
+}
+
+function WatchedContent({ items, onRemove, onNavigate }: WatchedContentProps) {
+  if (items.length === 0) {
+    return <p className={styles.emptyState}>Nothing watched yet. Start exploring!</p>
+  }
+  return (
+    <div className={styles.grid}>
+      {items.map(item => (
+        <WatchedCard
+          key={`${item.media_type}-${item.media_id}`}
+          item={item}
+          onRemove={onRemove}
+          onNavigate={onNavigate}
+        />
+      ))}
+    </div>
+  )
+}
+
 interface WatchedSectionProps {
   items: WatchedItem[]
   loading: boolean
@@ -103,19 +127,8 @@ export function WatchedSection({ items, loading, onRemove, onNavigate }: Watched
       </h2>
       {loading ? (
         <SkeletonCardGrid count={6} />
-      ) : items.length === 0 ? (
-        <p className={styles.emptyState}>Nothing watched yet. Start exploring!</p>
       ) : (
-        <div className={styles.grid}>
-          {items.map(item => (
-            <WatchedCard
-              key={`${item.media_type}-${item.media_id}`}
-              item={item}
-              onRemove={onRemove}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </div>
+        <WatchedContent items={items} onRemove={onRemove} onNavigate={onNavigate} />
       )}
     </section>
   )

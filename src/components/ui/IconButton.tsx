@@ -26,9 +26,12 @@ function IconButton({
 }: IconButtonProps) {
   const Comp = asChild ? Slot : 'button'
 
+  const sizeClassMap = { xs: styles.iconBtnXs, sm: styles.iconBtnSm, md: styles.iconBtnMd }
+  const sizeClass = sizeClassMap[size]
+
   const classes = [
     styles.iconBtn,
-    size === 'xs' ? styles.iconBtnXs : size === 'sm' ? styles.iconBtnSm : styles.iconBtnMd,
+    sizeClass,
     state === 'active' ? styles.iconBtnActive : '',
     state === 'success' ? styles.iconBtnSuccess : '',
     glass ? styles.iconBtnGlass : '',

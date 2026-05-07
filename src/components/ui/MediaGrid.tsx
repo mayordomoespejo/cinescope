@@ -61,6 +61,7 @@ export default function MediaGrid({
   error,
 }: MediaGridProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const gridClass = className ? `${styles.grid} ${className}` : styles.grid
 
   if (error) {
     return (
@@ -77,11 +78,7 @@ export default function MediaGrid({
 
   if (isLoading) {
     return (
-      <div
-        className={`${styles.grid}${className ? ` ${className}` : ''}`}
-        aria-busy="true"
-        aria-label={`Loading ${ariaLabel}`}
-      >
+      <div className={gridClass} aria-busy="true" aria-label={`Loading ${ariaLabel}`}>
         {Array.from({ length: skeletonCount }, (_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -110,7 +107,7 @@ export default function MediaGrid({
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
       <motion.div
-        className={`${styles.grid}${className ? ` ${className}` : ''}`}
+        className={gridClass}
         variants={mediaGridContainer}
         initial="hidden"
         animate="show"

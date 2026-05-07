@@ -21,17 +21,21 @@ export function FilmographyGrid<
 
   return (
     <div className={styles.filmographyGrid}>
-      {credits.map((credit, idx) => (
-        <MiniPosterCard
-          key={`${credit.id}-${idx}`}
-          id={credit.id}
-          title={credit.title}
-          posterPath={credit.poster_path}
-          releaseDate={credit.release_date}
-          subtitle={`${subtitle(credit)}${credit.release_date ? ` · ${getReleaseYear(credit.release_date)}` : ''}`}
-          onClick={onMovieClick}
-        />
-      ))}
+      {credits.map((credit, idx) => {
+        const yearSuffix = credit.release_date ? ` · ${getReleaseYear(credit.release_date)}` : ''
+        const cardSubtitle = `${subtitle(credit)}${yearSuffix}`
+        return (
+          <MiniPosterCard
+            key={`${credit.id}-${idx}`}
+            id={credit.id}
+            title={credit.title}
+            posterPath={credit.poster_path}
+            releaseDate={credit.release_date}
+            subtitle={cardSubtitle}
+            onClick={onMovieClick}
+          />
+        )
+      })}
     </div>
   )
 }

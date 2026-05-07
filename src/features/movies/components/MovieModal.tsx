@@ -9,7 +9,85 @@ import MovieModalDetails from './movie-modal/MovieModalDetails'
 import TrailerLightbox from './movie-modal/TrailerLightbox'
 import Button from '@/components/ui/Button'
 import Skeleton from '@/components/ui/Skeleton'
+import type { MovieDetail, Video } from '../types/movie'
 import styles from './MovieModal.module.css'
+
+// ── MovieModalContent ─────────────────────────────────────────────────
+
+interface MovieModalContentProps {
+  isLoading: boolean
+  movie: MovieDetail | undefined
+  movieId: number
+  trailer: Video | null | undefined
+  trailerPlaying: boolean
+  loadingVideos: boolean
+  isFavorite: boolean
+  isInWatchlist: boolean
+  onPlay: () => void
+  onPlayWhenReady: () => void
+  onStopTrailer: () => void
+  onToggleFavorite: () => void
+  onToggleWatchlist: () => void
+}
+
+function MovieModalContent({
+  isLoading,
+  movie,
+  movieId,
+  trailer,
+  trailerPlaying,
+  loadingVideos,
+  isFavorite,
+  isInWatchlist,
+  onPlay,
+  onPlayWhenReady,
+  onStopTrailer,
+  onToggleFavorite,
+  onToggleWatchlist,
+}: MovieModalContentProps) {
+  if (isLoading) return <ModalSkeleton />
+  if (!movie) return null
+
+  return (
+    <>
+      <MovieModalBackdrop backdropPath={movie.backdrop_path ?? null} />
+
+      <div className={styles.body}>
+        <MovieModalPoster
+          posterPath={movie.poster_path ?? null}
+          title={movie.title}
+          trailer={trailer}
+          trailerPlaying={trailerPlaying}
+          loadingVideos={loadingVideos}
+          onPlay={onPlay}
+          onPlayWhenReady={onPlayWhenReady}
+        />
+
+        <MovieModalDetails
+          movie={movie}
+          isFav={isFavorite}
+          inWatchlist={isInWatchlist}
+          trailer={trailer}
+          trailerPlaying={trailerPlaying}
+          loadingVideos={loadingVideos}
+          onToggleFavorite={onToggleFavorite}
+          onToggleWatchlist={onToggleWatchlist}
+          onPlayTrailer={onPlay}
+          onPlayWhenReady={onPlayWhenReady}
+        />
+      </div>
+
+      {trailerPlaying && trailer && (
+        <TrailerLightbox
+          trailer={trailer}
+          movieTitle={movie.title}
+          movieId={movieId}
+          onClose={onStopTrailer}
+        />
+      )}
+    </>
+  )
+}
 
 /** Props for the MovieModal component. */
 interface MovieModalProps {
@@ -92,47 +170,23 @@ export default function MovieModal({ movieId, onClose }: MovieModalProps) {
                     Close
                   </Button>
                 </div>
-              ) : isLoading ? (
-                <ModalSkeleton />
-              ) : movie ? (
-                <>
-                  <MovieModalBackdrop backdropPath={movie.backdrop_path ?? null} />
-
-                  <div className={styles.body}>
-                    <MovieModalPoster
-                      posterPath={movie.poster_path ?? null}
-                      title={movie.title}
-                      trailer={trailer}
-                      trailerPlaying={trailerPlaying}
-                      loadingVideos={loadingVideos}
-                      onPlay={handlePlay}
-                      onPlayWhenReady={handlePlayWhenReady}
-                    />
-
-                    <MovieModalDetails
-                      movie={movie}
-                      isFav={isFavorite}
-                      inWatchlist={isInWatchlist}
-                      trailer={trailer}
-                      trailerPlaying={trailerPlaying}
-                      loadingVideos={loadingVideos}
-                      onToggleFavorite={handleToggleFavorite}
-                      onToggleWatchlist={handleToggleWatchlist}
-                      onPlayTrailer={handlePlay}
-                      onPlayWhenReady={handlePlayWhenReady}
-                    />
-                  </div>
-
-                  {trailerPlaying && trailer && (
-                    <TrailerLightbox
-                      trailer={trailer}
-                      movieTitle={movie.title}
-                      movieId={movieId}
-                      onClose={handleStopTrailer}
-                    />
-                  )}
-                </>
-              ) : null}
+              ) : (
+                <MovieModalContent
+                  isLoading={isLoading}
+                  movie={movie}
+                  movieId={movieId}
+                  trailer={trailer}
+                  trailerPlaying={trailerPlaying}
+                  loadingVideos={loadingVideos}
+                  isFavorite={isFavorite}
+                  isInWatchlist={isInWatchlist}
+                  onPlay={handlePlay}
+                  onPlayWhenReady={handlePlayWhenReady}
+                  onStopTrailer={handleStopTrailer}
+                  onToggleFavorite={handleToggleFavorite}
+                  onToggleWatchlist={handleToggleWatchlist}
+                />
+              )}
             </motion.div>
           </Dialog.Content>
         </AnimatePresence>
