@@ -30,6 +30,14 @@ let nextId = 0
 const DISPLAY_DURATION = 2000
 const EXIT_DURATION = 220
 
+function makeExitingUpdater(id: number) {
+  return (prev: ToastItem[]) => prev.map(t => (t.id === id ? { ...t, exiting: true } : t))
+}
+
+function makeRemoveFilter(id: number) {
+  return (prev: ToastItem[]) => prev.filter(t => t.id !== id)
+}
+
 // ── Provider ─────────────────────────────────────────────────────────
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -38,10 +46,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const removeToast = useCallback((id: number) => {
     // Start exit animation first
-    setToasts(prev => prev.map(t => (t.id === id ? { ...t, exiting: true } : t)))
+    setToasts(makeExitingUpdater(id))
     // Remove from DOM after animation
     const removeTimer = setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id))
+      setToasts(makeRemoveFilter(id))
       timers.current.delete(id)
     }, EXIT_DURATION)
     timers.current.set(id, removeTimer)

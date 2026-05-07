@@ -139,7 +139,7 @@
   }
   .trailerMobileBtn button {
     background: var(--color-accent);
-    color: #fff;
+    color: var(--color-text-inverse);
   }
   .trailerMobileBtn button:hover:not(:disabled) {
     background: var(--color-accent-hover);

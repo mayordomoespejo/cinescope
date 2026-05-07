@@ -33,11 +33,11 @@
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
   border-color: transparent;
-  color: #fff;
+  color: var(--color-text-inverse);
 }
 .iconBtnGlass:hover {
   background: rgba(40, 40, 40, 0.85);
-  color: #fff;
+  color: var(--color-text-inverse);
   border-color: transparent;
 }
 .iconBtnGlass.iconBtnActive {
@@ -65,8 +65,8 @@
 }
 
 .iconBtnSuccess {
-  color: #22c55e;
-  border-color: #22c55e;
+  color: var(--color-status-active);
+  border-color: var(--color-status-active);
   background: var(--color-surface);
 }
 .iconBtnSuccess:hover {

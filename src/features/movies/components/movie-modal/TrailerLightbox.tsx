@@ -1,4 +1,4 @@
-import { getYouTubeEmbedUrl } from '@/lib/helpers'
+import { getYouTubeEmbedUrl } from '@/lib/videoUtils'
 import type { Video } from '../../types/movie'
 import styles from './TrailerLightbox.module.css'
 
@@ -29,22 +29,30 @@ export default function TrailerLightbox({
   onClose,
 }: TrailerLightboxProps) {
   return (
-    <div
-      className={styles.trailerOverlay}
-      onClick={onClose}
-      aria-modal="true"
-      role="dialog"
-      aria-label="Trailer"
-    >
-      <button
-        type="button"
-        className={styles.trailerOverlayClose}
-        onClick={onClose}
-        aria-label="Close trailer"
+    // Backdrop — click outside to close (keyboard dismiss via inner dialog)
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div className={styles.trailerOverlay} onClick={onClose}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Trailer"
+        tabIndex={-1}
+        className={styles.trailerOverlayContent}
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => {
+          e.stopPropagation()
+          if (e.key === 'Escape') onClose()
+        }}
       >
-        ✕
-      </button>
-      <div className={styles.trailerOverlayContent} onClick={e => e.stopPropagation()}>
+        <button
+          type="button"
+          className={styles.trailerOverlayClose}
+          onClick={onClose}
+          aria-label="Close trailer"
+        >
+          ✕
+        </button>
         <iframe
           key={`trailer-${movieId}-${trailer.key}`}
           src={getYouTubeEmbedUrl(trailer.key)}

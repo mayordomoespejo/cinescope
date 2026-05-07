@@ -1,7 +1,8 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@/components/ui/Layout'
-import AuthGuard from '@/features/auth/AuthGuard'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import styles from './router.module.css'
 
 const Home = lazy(() => import('@/pages/Home'))
 const Favorites = lazy(() => import('@/pages/Favorites'))
@@ -14,25 +15,18 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const ListsPage = lazy(() => import('@/pages/ListsPage'))
 const WatchedPage = lazy(() => import('@/pages/WatchedPage'))
 const WelcomePage = lazy(() => import('@/pages/WelcomePage'))
-const LoginPage = lazy(() => import('@/pages/LoginPage'))
 
-const pageFallback = <div style={{ minHeight: '100vh' }} aria-busy="true" />
+const pageFallback = <div className={styles.pageFallback} aria-busy="true" />
 
 export const router = createBrowserRouter([
   {
     path: '/welcome',
     element: (
-      <Suspense fallback={pageFallback}>
-        <WelcomePage />
-      </Suspense>
-    ),
-  },
-  {
-    path: '/login',
-    element: (
-      <Suspense fallback={pageFallback}>
-        <LoginPage />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={pageFallback}>
+          <WelcomePage />
+        </Suspense>
+      </ErrorBoundary>
     ),
   },
   {
@@ -42,99 +36,101 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <Home />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'favorites',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <Favorites />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'movie/:id',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <MovieDetailPage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'tv',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <TVBrowsePage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'tv/:id',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <TVDetailPage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'person/:id',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <PersonPage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'profile',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <ProfilePage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'lists',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <ListsPage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: 'watched',
         element: (
-          <AuthGuard>
+          <ErrorBoundary>
             <Suspense fallback={pageFallback}>
               <WatchedPage />
             </Suspense>
-          </AuthGuard>
+          </ErrorBoundary>
         ),
       },
       {
         path: '*',
         element: (
-          <Suspense fallback={pageFallback}>
-            <NotFound />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={pageFallback}>
+              <NotFound />
+            </Suspense>
+          </ErrorBoundary>
         ),
       },
     ],

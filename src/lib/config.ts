@@ -7,12 +7,6 @@ export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 // content negotiation for image format. There is no way to request WebP
 // via the API; all poster/backdrop URLs return JPEG regardless of Accept
 // headers.
-//
-// Offline support: The app has no service worker and no offline queue.
-// Sync operations (favorites, watchlist, watched) use a fire-and-forget
-// pattern with visible error feedback on failure. Adding a background
-// sync queue would require IndexedDB bookkeeping and was deliberately
-// out of scope for this project.
 
 export const IMAGE_SIZES = {
   poster: {
@@ -38,10 +32,10 @@ export const IMAGE_SIZES = {
 export const FALLBACK_POSTER = 'https://placehold.co/500x750/1a1a1a/444?text=No+Poster'
 export const FALLBACK_BACKDROP = 'https://placehold.co/1280x720/0f0f0f/333?text=No+Image'
 
-export const DEFAULT_PAGE_SIZE = 20
 export const DEBOUNCE_DELAY = 400
 export const STALE_TIME_SHORT = 1000 * 60 * 5 // 5 min
 export const STALE_TIME_LONG = 1000 * 60 * 60 // 1 hour
+export const GC_TIME = 1000 * 60 * 30 // 30 min
 
 export const SORT_OPTIONS = [
   { value: 'popularity.desc', label: 'Most Popular' },

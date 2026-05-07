@@ -1,30 +1,16 @@
-import { useEffect } from 'react'
 import { useOutletContext } from '@/components/ui/LayoutContext'
 import { useFavorites } from '@/features/favorites/hooks/useFavorites'
 import { useMoviePrefetch } from '@/features/movies/hooks/useMoviePrefetch'
 import SortableMovieGrid from '@/features/movies/components/SortableMovieGrid'
 import { SkeletonCardGrid } from '@/components/ui/SkeletonCard'
-import { useToast } from '@/components/ui/Toast'
 import type { LayoutContext } from '@/components/ui/LayoutContext'
 import PageContent from '@/components/ui/PageContent'
 import styles from './Favorites.module.css'
 
 export default function Favorites() {
   const { onOpenMovie } = useOutletContext<LayoutContext>()
-  const {
-    favorites,
-    watchlist,
-    isLoading,
-    syncError,
-    toggleFavorite,
-    reorderFavorites,
-    reorderWatchlist,
-  } = useFavorites()
-  const showToast = useToast()
-
-  useEffect(() => {
-    if (syncError) showToast('Sync failed — changes saved locally only.')
-  }, [syncError, showToast])
+  const { favorites, watchlist, isLoading, toggleFavorite, reorderFavorites, reorderWatchlist } =
+    useFavorites()
   const { prefetchMovieData } = useMoviePrefetch()
 
   const favoriteIds = favorites.map(f => f.id)

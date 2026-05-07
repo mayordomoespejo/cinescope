@@ -1,174 +1,132 @@
-import { supabase } from '@/lib/supabaseClient'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { MediaType } from '@/lib/types'
 
 // ── Types ────────────────────────────────────────────────────────────
 
-/** A user-created custom list stored in cinescope_lists. */
+/** A user-created custom list stored locally. */
 export interface CinescopeList {
   id: string
-  user_id: string
   name: string
   description: string | null
   created_at: string
 }
 
-/** A media item stored inside a list (cinescope_list_items). */
+/** A media item stored inside a list. */
 export interface ListItem {
   list_id: string
   media_id: number
   media_type: MediaType
-  /** Full TMDB object serialised as JSON column. */
+  /** Full TMDB object serialised as JSON. */
   media_data: Record<string, unknown>
   added_at: string
 }
 
-// ── List CRUD ────────────────────────────────────────────────────────
+// ── Store ────────────────────────────────────────────────────────────
 
-/**
- * Fetches all custom lists that belong to a given user.
- * @param userId - Firebase UID of the authenticated user.
- * @returns Array of CinescopeList sorted by creation date (newest first).
- */
-export async function fetchLists(userId: string): Promise<CinescopeList[]> {
-  const { data, error } = await supabase
-    .from('cinescope_lists')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-
-  if (error) throw error
-  return (data ?? []) as CinescopeList[]
+interface ListsState {
+  lists: CinescopeList[]
+  items: ListItem[]
+  createList: (name: string, description?: string) => CinescopeList
+  deleteList: (listId: string) => void
+  renameList: (listId: string, name: string) => CinescopeList
+  addToList: (
+    listId: string,
+    item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
+  ) => void
+  removeFromList: (listId: string, mediaId: number, mediaType: MediaType) => void
+  isInList: (listId: string, mediaId: number, mediaType: MediaType) => boolean
+  fetchListItems: (listId: string) => ListItem[]
 }
 
 /**
- * Creates a new custom list for the user.
- * @param userId - Firebase UID of the authenticated user.
- * @param name - Display name for the list.
- * @param description - Optional description.
- * @returns The newly created CinescopeList record.
+ * Zustand store for custom lists and their items, persisted to localStorage
+ * under the key `cinescope-lists`.
+ *
+ * List IDs are generated with `crypto.randomUUID()`.
  */
-export async function createList(
-  userId: string,
-  name: string,
-  description?: string
-): Promise<CinescopeList> {
-  const { data, error } = await supabase
-    .from('cinescope_lists')
-    .insert({ user_id: userId, name: name.trim(), description: description?.trim() ?? null })
-    .select()
-    .single()
+export const useListsStore = create<ListsState>()(
+  persist(
+    (set, get) => ({
+      lists: [],
+      items: [],
 
-  if (error) throw error
-  return data as CinescopeList
-}
+      createList: (name: string, description?: string): CinescopeList => {
+        const newList: CinescopeList = {
+          id: crypto.randomUUID(),
+          name: name.trim(),
+          description: description?.trim() ?? null,
+          created_at: new Date().toISOString(),
+        }
+        set(state => ({ lists: [newList, ...state.lists] }))
+        return newList
+      },
 
-/**
- * Deletes a list and all its items (cascade handled by Supabase FK).
- * @param listId - UUID of the list to delete.
- */
-export async function deleteList(listId: string): Promise<void> {
-  const { error } = await supabase.from('cinescope_lists').delete().eq('id', listId)
-  if (error) throw error
-}
+      deleteList: (listId: string) => {
+        set(state => ({
+          lists: state.lists.filter(l => l.id !== listId),
+          items: state.items.filter(i => i.list_id !== listId),
+        }))
+      },
 
-/**
- * Renames an existing list.
- * @param listId - UUID of the list to rename.
- * @param name - New name for the list.
- * @returns The updated CinescopeList record.
- */
-export async function renameList(listId: string, name: string): Promise<CinescopeList> {
-  const { data, error } = await supabase
-    .from('cinescope_lists')
-    .update({ name: name.trim() })
-    .eq('id', listId)
-    .select()
-    .single()
+      renameList: (listId: string, name: string): CinescopeList => {
+        let updated!: CinescopeList
+        set(state => {
+          const lists = state.lists.map(l => {
+            if (l.id !== listId) return l
+            updated = { ...l, name: name.trim() }
+            return updated
+          })
+          return { lists }
+        })
+        return updated
+      },
 
-  if (error) throw error
-  return data as CinescopeList
-}
+      addToList: (
+        listId: string,
+        item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
+      ) => {
+        set(state => {
+          const alreadyIn = state.items.some(
+            i =>
+              i.list_id === listId &&
+              i.media_id === item.media_id &&
+              i.media_type === item.media_type
+          )
+          if (alreadyIn) return {}
+          const newItem: ListItem = {
+            list_id: listId,
+            media_id: item.media_id,
+            media_type: item.media_type,
+            media_data: item.media_data,
+            added_at: new Date().toISOString(),
+          }
+          return { items: [newItem, ...state.items] }
+        })
+      },
 
-// ── List items ───────────────────────────────────────────────────────
+      removeFromList: (listId: string, mediaId: number, mediaType: MediaType) => {
+        set(state => ({
+          items: state.items.filter(
+            i => !(i.list_id === listId && i.media_id === mediaId && i.media_type === mediaType)
+          ),
+        }))
+      },
 
-/**
- * Fetches all items in a given list.
- * @param listId - UUID of the list to fetch items for.
- * @returns Array of ListItem sorted by date added (newest first).
- */
-export async function fetchListItems(listId: string): Promise<ListItem[]> {
-  const { data, error } = await supabase
-    .from('cinescope_list_items')
-    .select('*')
-    .eq('list_id', listId)
-    .order('added_at', { ascending: false })
+      isInList: (listId: string, mediaId: number, mediaType: MediaType): boolean => {
+        return get().items.some(
+          i => i.list_id === listId && i.media_id === mediaId && i.media_type === mediaType
+        )
+      },
 
-  if (error) throw error
-  return (data ?? []) as ListItem[]
-}
-
-/**
- * Adds a media item to a list. No-op if already present.
- * @param listId - UUID of the target list.
- * @param item - Partial ListItem without list_id and added_at.
- */
-export async function addToList(
-  listId: string,
-  item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
-): Promise<void> {
-  const { error } = await supabase.from('cinescope_list_items').upsert(
+      fetchListItems: (listId: string): ListItem[] => {
+        return get()
+          .items.filter(i => i.list_id === listId)
+          .sort((a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime())
+      },
+    }),
     {
-      list_id: listId,
-      media_id: item.media_id,
-      media_type: item.media_type,
-      media_data: item.media_data,
-    },
-    { onConflict: 'list_id,media_id,media_type' }
+      name: 'cinescope-lists',
+    }
   )
-  if (error) throw error
-}
-
-/**
- * Removes a media item from a list.
- * @param listId - UUID of the target list.
- * @param mediaId - TMDB ID of the media item.
- * @param mediaType - 'movie' or 'tv'.
- */
-export async function removeFromList(
-  listId: string,
-  mediaId: number,
-  mediaType: MediaType
-): Promise<void> {
-  const { error } = await supabase
-    .from('cinescope_list_items')
-    .delete()
-    .eq('list_id', listId)
-    .eq('media_id', mediaId)
-    .eq('media_type', mediaType)
-
-  if (error) throw error
-}
-
-/**
- * Checks if a specific media item is already in a given list.
- * @param listId - UUID of the list to check.
- * @param mediaId - TMDB ID of the media item.
- * @param mediaType - 'movie' or 'tv'.
- * @returns True if the item exists in the list.
- */
-export async function isInList(
-  listId: string,
-  mediaId: number,
-  mediaType: MediaType
-): Promise<boolean> {
-  const { data, error } = await supabase
-    .from('cinescope_list_items')
-    .select('media_id')
-    .eq('list_id', listId)
-    .eq('media_id', mediaId)
-    .eq('media_type', mediaType)
-    .maybeSingle()
-
-  if (error) throw error
-  return data !== null
-}
+)

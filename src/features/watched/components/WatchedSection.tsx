@@ -34,8 +34,21 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
     onRemove(item)
   }
 
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      handleCardClick()
+    }
+  }
+
   return (
-    <article className={styles.card} onClick={handleCardClick} style={{ cursor: 'pointer' }}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={`${styles.card} ${styles.cursorPointer}`}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className={styles.posterWrap}>
         <img
           src={getPosterUrl(posterPath, 'sm')}
@@ -69,11 +82,33 @@ function WatchedCard({ item, onRemove, onNavigate }: WatchedCardProps) {
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardTitle}>{title}</p>
-        <p className={styles.cardMeta} style={{ marginTop: 'auto' }}>
-          {formatDate(item.watched_at)}
-        </p>
+        <p className={`${styles.cardMeta} ${styles.metaAuto}`}>{formatDate(item.watched_at)}</p>
       </div>
-    </article>
+    </div>
+  )
+}
+
+interface WatchedContentProps {
+  items: WatchedItem[]
+  onRemove: (item: WatchedItem) => void
+  onNavigate: (mediaType: string, mediaId: number) => void
+}
+
+function WatchedContent({ items, onRemove, onNavigate }: WatchedContentProps) {
+  if (items.length === 0) {
+    return <p className={styles.emptyState}>Nothing watched yet. Start exploring!</p>
+  }
+  return (
+    <div className={styles.grid}>
+      {items.map(item => (
+        <WatchedCard
+          key={`${item.media_type}-${item.media_id}`}
+          item={item}
+          onRemove={onRemove}
+          onNavigate={onNavigate}
+        />
+      ))}
+    </div>
   )
 }
 
@@ -92,19 +127,8 @@ export function WatchedSection({ items, loading, onRemove, onNavigate }: Watched
       </h2>
       {loading ? (
         <SkeletonCardGrid count={6} />
-      ) : items.length === 0 ? (
-        <p className={styles.emptyState}>Nothing watched yet. Start exploring!</p>
       ) : (
-        <div className={styles.grid}>
-          {items.map(item => (
-            <WatchedCard
-              key={`${item.media_type}-${item.media_id}`}
-              item={item}
-              onRemove={onRemove}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </div>
+        <WatchedContent items={items} onRemove={onRemove} onNavigate={onNavigate} />
       )}
     </section>
   )

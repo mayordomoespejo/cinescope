@@ -192,7 +192,7 @@
   gap: var(--space-2);
   padding: var(--space-4) var(--space-12);
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-text-inverse);
   border: none;
   border-radius: var(--radius-full);
   font-size: clamp(var(--font-size-base), 2vw, var(--font-size-xl));
@@ -200,7 +200,7 @@
   font-family: var(--font-family);
   letter-spacing: 0.05em;
   cursor: pointer;
-  box-shadow: 0 4px 24px rgba(232, 168, 56, 0.35);
+  box-shadow: var(--shadow-accent-xs);
   transition:
     background var(--transition-base),
     box-shadow var(--transition-base),
@@ -209,7 +209,7 @@
 
 .ctaBtn:hover {
   background: var(--color-accent-hover);
-  box-shadow: 0 8px 32px rgba(232, 168, 56, 0.5);
+  box-shadow: var(--shadow-accent-md);
   transform: translateY(-2px);
 }
 

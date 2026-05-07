@@ -33,9 +33,17 @@ export default defineConfig({
     css: true,
     include: ['src/tests/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['e2e/**', 'node_modules/**'],
-    env: {
-      VITE_SUPABASE_URL: 'https://test.supabase.co',
-      VITE_SUPABASE_ANON_KEY: 'test-anon-key',
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/tests/**', 'src/**/*.d.ts', 'src/main.tsx'],
+      reporter: ['text', 'lcov'],
+      thresholds: {
+        lines: 58,
+        functions: 61,
+        branches: 52,
+        statements: 58,
+      },
     },
   },
 })

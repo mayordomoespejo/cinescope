@@ -48,8 +48,8 @@
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-size: 0.875rem;
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-icon-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -128,7 +128,7 @@
   }
   .trailerMobileBtn button {
     background: var(--color-accent);
-    color: #fff;
+    color: var(--color-text-inverse);
   }
   .trailerMobileBtn button:hover:not(:disabled) {
     background: var(--color-accent-hover);
@@ -297,7 +297,7 @@
   aspect-ratio: 16 / 9;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #000;
+  background: var(--color-bg);
   cursor: default;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
 }
@@ -314,15 +314,15 @@
   position: absolute;
   top: var(--space-4);
   right: var(--space-4);
-  z-index: 6;
+  z-index: var(--z-raised);
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-size: 0.875rem;
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-icon-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -373,8 +373,8 @@
   height: 52px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.92);
-  color: #111;
-  font-size: 1.25rem;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -390,6 +390,13 @@
 .posterPlayWrapper:hover .posterPlayIcon {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Skeleton action row */
+.actionRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 /* Skeleton poster */
@@ -426,4 +433,10 @@
   text-align: center;
   font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
 }

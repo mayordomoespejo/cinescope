@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTVCredits } from '../api/tvApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_LONG } from '@/lib/config'
+import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
 
 /**
  * Fetches cast and crew credits for a TV show from TMDB.
@@ -10,9 +10,9 @@ import { STALE_TIME_LONG } from '@/lib/config'
 export function useTVCredits(tvId: number | null) {
   return useQuery({
     queryKey: queryKeys.tvCredits(tvId ?? 0),
-    queryFn: () => fetchTVCredits(tvId!),
+    queryFn: () => fetchTVCredits(tvId as number),
     staleTime: STALE_TIME_LONG,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: tvId !== null && tvId > 0,
   })
 }

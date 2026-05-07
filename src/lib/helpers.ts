@@ -58,34 +58,7 @@ export function formatRating(rating: number): string {
   return rating.toFixed(1)
 }
 
-/** Capitalize first letter */
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-/** Simple debounce for input handlers */
-export function debounce<T extends (...args: Parameters<T>) => void>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout>
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => fn(...args), delay)
-  }
-}
-
-/** Clamp a number between min and max */
-export function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max)
-}
-
-/** Get the YouTube embed URL for a video key */
-export function getYouTubeEmbedUrl(key: string): string {
-  return `https://www.youtube.com/embed/${key}?autoplay=1&rel=0&modestbranding=1`
-}
-
-/** Format large numbers (e.g. revenue) as currency — alias: formatCurrency */
+/** Format large numbers (e.g. revenue) as currency */
 export function formatMoney(amount: number): string {
   if (amount === 0) return 'N/A'
   return new Intl.NumberFormat('en-US', {
@@ -95,6 +68,3 @@ export function formatMoney(amount: number): string {
     notation: amount >= 1_000_000 ? 'compact' : 'standard',
   }).format(amount)
 }
-
-/** Alias for formatMoney — formats a monetary amount as USD currency */
-export const formatCurrency = formatMoney

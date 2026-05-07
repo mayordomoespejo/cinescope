@@ -51,7 +51,12 @@ export default function NavSearchBar() {
           onBlur={handleBlur}
           placeholder={isMobile ? 'Search movies…' : 'Search movies… ("/" to focus)'}
           className={styles.searchInput}
+          role="combobox"
           aria-label="Search movies"
+          aria-expanded={focused}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          aria-controls="search-history-listbox"
           autoComplete="off"
         />
         {query && (

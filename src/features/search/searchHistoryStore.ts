@@ -18,6 +18,8 @@ function writeStorage<T>(key: string, value: T): void {
   } catch (err) {
     if (err instanceof DOMException && err.name === 'QuotaExceededError') {
       console.warn('localStorage quota exceeded — data may not be persisted')
+    } else {
+      console.error('[cinescope] Unexpected storage error:', err)
     }
   }
 }

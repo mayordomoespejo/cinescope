@@ -34,7 +34,7 @@
 }
 
 .star {
-  font-size: 0.65rem;
+  font-size: var(--font-size-3xs);
 }
 
 /* Fav button */
@@ -67,12 +67,12 @@
 }
 
 .favBtn:hover {
-  opacity: 1 !important;
+  opacity: 1;
   transform: scale(1.15);
 }
 
 .favActive {
-  opacity: 1 !important;
+  opacity: 1;
   color: var(--color-accent);
   animation: favPulse 0.35s ease-out;
 }
@@ -172,4 +172,13 @@
 .year {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favActive {
+    animation: none;
+  }
+  .skeleton {
+    animation: none;
+  }
 }

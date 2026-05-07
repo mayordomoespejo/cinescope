@@ -31,7 +31,7 @@
 .trigger:focus,
 .trigger:focus-visible {
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
   border-radius: var(--radius-md);
 }
 
@@ -49,7 +49,7 @@
 
 .chevron {
   margin-left: auto;
-  font-size: 0.75rem;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
 }
 
@@ -99,7 +99,8 @@
 .item:focus,
 .item:focus-visible {
   outline: none;
-  border-radius: 0;
+  background: var(--color-surface-overlay);
+  color: var(--color-text-primary);
 }
 
 .item:hover,
@@ -115,10 +116,16 @@
 
 .checkmark {
   color: var(--color-accent);
-  font-size: 0.75rem;
+  font-size: var(--font-size-2xs);
   width: 14px;
 }
 
 .item:not(.itemActive) .checkmark {
   visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
 }

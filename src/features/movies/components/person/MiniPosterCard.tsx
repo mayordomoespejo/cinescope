@@ -23,7 +23,7 @@ export function MiniPosterCard({
   const [imgLoaded, setImgLoaded] = useState(false)
 
   return (
-    <article
+    <div
       className={styles.miniCard}
       onClick={() => onClick(id)}
       onKeyDown={e => {
@@ -49,6 +49,6 @@ export function MiniPosterCard({
       </div>
       <p className={styles.miniCardTitle}>{title}</p>
       {subtitle && <p className={styles.miniCardSub}>{subtitle}</p>}
-    </article>
+    </div>
   )
 }

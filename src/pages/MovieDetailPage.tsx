@@ -72,19 +72,18 @@ export default function MovieDetailPage() {
     [movie?.runtime, movie?.budget, movie?.revenue, movie?.production_companies]
   )
 
-  // Recommendations slot: rendered as individual listitem divs
+  // Recommendations slot
   const recommendationsSlot =
     recommendedMovies.length > 0 ? (
       <>
         {recommendedMovies.map(rec => (
-          <div key={rec.id} role="listitem">
-            <MovieCard
-              movie={rec}
-              onOpen={recId => navigate(`/movie/${recId}`)}
-              isFavorite={isFavorite(rec.id)}
-              onToggleFavorite={toggleFavorite}
-            />
-          </div>
+          <MovieCard
+            key={rec.id}
+            movie={rec}
+            onOpen={recId => navigate(`/movie/${recId}`)}
+            isFavorite={isFavorite(rec.id)}
+            onToggleFavorite={toggleFavorite}
+          />
         ))}
       </>
     ) : null

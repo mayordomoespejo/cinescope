@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "Bash(npm install @radix-ui/react-dropdown-menu @radix-ui/react-tooltip @radix-ui/react-visually-hidden)",
       "Bash(npm install -D prettier vitest @vitest/coverage-v8 @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom husky lint-staged)",

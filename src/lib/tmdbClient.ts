@@ -1,46 +1,42 @@
-import { edgeFunctionUrl } from './supabaseFunctions'
+import { TMDB_BASE_URL } from './config'
 
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+const TMDB_ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN as string
 
 interface FetchOptions {
   params?: Record<string, string | number | boolean | undefined>
 }
 
 /**
- * @description Authenticated TMDB API fetch wrapper. Routes all requests through the
- * Supabase Edge Function tmdb-proxy so the TMDB token is never exposed in the browser.
+ * Authenticated TMDB API fetch wrapper.
+ * Calls the TMDB v3 REST API directly using the v4 Read Access Token.
+ * @param path - TMDB API path (e.g. `/trending/movie/day`).
+ * @param options - Optional query parameters.
  * @returns Parsed JSON response typed as T.
  */
 export async function tmdbFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
   const { params } = options
 
-  // Normalise params to Record<string, string> for the proxy body
-  const normalizedParams: Record<string, string> = {}
+  const url = new URL(`${TMDB_BASE_URL}${path}`)
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== '') {
-        normalizedParams[key] = String(value)
+        url.searchParams.set(key, String(value))
       }
     })
   }
 
-  const response = await fetch(edgeFunctionUrl('tmdb-proxy'), {
-    method: 'POST',
+  const response = await fetch(url.toString(), {
     headers: {
+      Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
     },
-    body: JSON.stringify({ path, params: normalizedParams }),
   })
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}))
     const msg =
-      (data as { status_message?: string; error?: string }).status_message ??
-      (data as { error?: string }).error ??
-      'Unknown error'
-    throw new Error(`TMDB proxy [${response.status}]: ${msg}`)
+      (data as { status_message?: string }).status_message ?? `TMDB error ${response.status}`
+    throw new Error(msg)
   }
 
   return response.json() as Promise<T>

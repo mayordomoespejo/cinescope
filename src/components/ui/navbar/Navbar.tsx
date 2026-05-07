@@ -4,9 +4,7 @@ import styles from '../Navbar.module.css'
 import CinescopeLogo from '../CinescopeLogo'
 import NavSearchBar from './NavSearchBar'
 import NavThemeToggle from './NavThemeToggle'
-import NavAuthSection from './NavAuthSection'
 import NavFavoritesLink from './NavFavoritesLink'
-import { useAuth } from '@/features/auth/useAuth'
 
 /** Props for the Navbar component. */
 interface NavbarProps {
@@ -15,12 +13,12 @@ interface NavbarProps {
 }
 
 /**
- * @description Top navigation bar with logo, nav links, debounced search with history dropdown, theme toggle, and user auth menu.
+ * Top navigation bar with logo, nav links, debounced search with history dropdown,
+ * theme toggle, and favorites shortcut.
  * @param props - Component props
  */
 export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
-  const { user, loading: authLoading, signOut } = useAuth()
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -72,7 +70,6 @@ export default function Navbar({ theme, onThemeToggle }: NavbarProps) {
         <div className={styles.rightControls}>
           <NavFavoritesLink />
           <NavThemeToggle theme={theme} onToggle={onThemeToggle} />
-          <NavAuthSection user={user} loading={authLoading} onSignOut={signOut} />
         </div>
       </div>
     </header>

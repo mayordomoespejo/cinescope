@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ACTION_LABELS } from '@/lib/constants'
 import { getPosterUrl, formatRating } from '@/lib/helpers'
 import styles from './MediaCard.module.css'
 
@@ -9,11 +10,7 @@ export interface MediaCardProps {
   posterPath: string | null
   rating?: number
   isFavorite: boolean
-  /** Reserved for future watchlist UI — not yet rendered. */
-  isInWatchlist?: boolean
   onToggleFavorite?: () => void
-  /** Reserved for future watchlist toggle — not yet rendered. */
-  onToggleWatchlist?: () => void
   onClick: () => void
   onPrefetch?: () => void
   ariaLabel?: string
@@ -52,11 +49,11 @@ export default function MediaCard({
     }
   }
 
-  const label =
-    ariaLabel ?? `${title}, ${year}${rating != null ? `, rating ${formatRating(rating)}` : ''}`
+  const ratingLabel = rating != null ? `, rating ${formatRating(rating)}` : ''
+  const label = ariaLabel ?? `${title}, ${year}${ratingLabel}`
 
   return (
-    <article
+    <div
       className={styles.card}
       onClick={onClick}
       onMouseEnter={onPrefetch}
@@ -82,7 +79,9 @@ export default function MediaCard({
           type="button"
           className={`${styles.favBtn} ${isFavorite ? styles.favActive : ''}`}
           onClick={handleFavClick}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={
+            isFavorite ? ACTION_LABELS.REMOVE_FROM_FAVORITES : ACTION_LABELS.ADD_TO_FAVORITES
+          }
           aria-pressed={isFavorite}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -121,6 +120,6 @@ export default function MediaCard({
         <p className={styles.title}>{title}</p>
         <p className={styles.year}>{year}</p>
       </div>
-    </article>
+    </div>
   )
 }

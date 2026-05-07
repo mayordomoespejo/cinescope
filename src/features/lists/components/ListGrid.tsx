@@ -98,6 +98,7 @@ function ListRow({ list, itemCount, isSelected, onSelect, onRename, onDelete }: 
             className={styles.actionBtn}
             onClick={startRename}
             title="Rename list"
+            aria-label="Rename list"
             type="button"
           >
             ✏️
@@ -106,6 +107,7 @@ function ListRow({ list, itemCount, isSelected, onSelect, onRename, onDelete }: 
             className={`${styles.actionBtn} ${styles.danger}`}
             onClick={handleDeleteClick}
             title="Delete list"
+            aria-label="Delete list"
             type="button"
           >
             🗑️

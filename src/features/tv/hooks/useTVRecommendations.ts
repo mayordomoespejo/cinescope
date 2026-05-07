@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTVRecommendations } from '../api/tvApi'
 import { queryKeys } from '@/lib/queryKeys'
-import { STALE_TIME_SHORT } from '@/lib/config'
+import { STALE_TIME_SHORT, GC_TIME } from '@/lib/config'
 
 /**
  * Fetches TV show recommendations from TMDB for the given show ID.
@@ -11,9 +11,9 @@ import { STALE_TIME_SHORT } from '@/lib/config'
 export function useTVRecommendations(tvId: number | null, page: number = 1) {
   return useQuery({
     queryKey: queryKeys.tvRecommendations(tvId ?? 0, page),
-    queryFn: () => fetchTVRecommendations(tvId!, page),
+    queryFn: () => fetchTVRecommendations(tvId as number, page),
     staleTime: STALE_TIME_SHORT,
-    gcTime: 1000 * 60 * 30,
+    gcTime: GC_TIME,
     enabled: tvId !== null && tvId > 0,
   })
 }

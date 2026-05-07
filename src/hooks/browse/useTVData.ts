@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchQuery } from '@/hooks/useSearchQuery'
 import { useTrendingTV } from '@/features/tv/hooks/useTrendingTV'
 import { useTopRatedTV } from '@/features/tv/hooks/useTopRatedTV'
 import { useDiscoverTV } from '@/features/tv/hooks/useDiscoverTV'
@@ -33,8 +33,7 @@ export interface TVDataState {
  * `enabled` flags gate actual network requests to the active media type.
  */
 export function useTVData(mediaType: 'movie' | 'tv', filters: FilterState): TVDataState {
-  const [searchParams] = useSearchParams()
-  const searchQuery = searchParams.get('q') ?? ''
+  const searchQuery = useSearchQuery()
 
   const { data: tvGenres = [], isLoading: tvGenresLoading, isError: tvGenresError } = useTVGenres()
 

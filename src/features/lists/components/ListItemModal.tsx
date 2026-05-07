@@ -68,6 +68,36 @@ function ItemCard({ item, onRemove }: ItemCardProps) {
   )
 }
 
+// ── ItemsContent ─────────────────────────────────────────────────────
+
+interface ItemsContentProps {
+  selectedItems: ListItem[] | null
+  onRemoveItem: (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => Promise<void>
+}
+
+function ItemsContent({ selectedItems, onRemoveItem }: ItemsContentProps) {
+  if (selectedItems !== null && selectedItems.length === 0) {
+    return (
+      <div className={styles.rightEmpty}>
+        <span className={styles.emptyIcon}>🎬</span>
+        <span className={styles.emptyTitle}>This list is empty</span>
+        <span className={styles.emptySubtitle}>Browse movies and TV shows to add them here.</span>
+      </div>
+    )
+  }
+  return (
+    <div className={styles.itemsGrid}>
+      {(selectedItems ?? []).map(item => (
+        <ItemCard
+          key={`${item.media_type}-${item.media_id}`}
+          item={item}
+          onRemove={() => onRemoveItem(item.list_id, item.media_id, item.media_type)}
+        />
+      ))}
+    </div>
+  )
+}
+
 // ── ListItemModal ────────────────────────────────────────────────────
 
 export interface ListItemModalProps {
@@ -116,22 +146,8 @@ export default function ListItemModal({
 
       {itemsLoading ? (
         <div className={styles.spinnerWrap}>Loading items…</div>
-      ) : selectedItems !== null && selectedItems.length === 0 ? (
-        <div className={styles.rightEmpty}>
-          <span className={styles.emptyIcon}>🎬</span>
-          <span className={styles.emptyTitle}>This list is empty</span>
-          <span className={styles.emptySubtitle}>Browse movies and TV shows to add them here.</span>
-        </div>
       ) : (
-        <div className={styles.itemsGrid}>
-          {(selectedItems ?? []).map(item => (
-            <ItemCard
-              key={`${item.media_type}-${item.media_id}`}
-              item={item}
-              onRemove={() => onRemoveItem(item.list_id, item.media_id, item.media_type)}
-            />
-          ))}
-        </div>
+        <ItemsContent selectedItems={selectedItems} onRemoveItem={onRemoveItem} />
       )}
     </>
   )

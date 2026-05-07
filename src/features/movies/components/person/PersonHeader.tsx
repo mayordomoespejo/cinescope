@@ -10,8 +10,9 @@ export interface PersonHeaderProps {
 export function PersonHeader({ person }: PersonHeaderProps) {
   const profileSrc = getProfileUrl(person.profile_path, 'lg')
 
+  const birthplaceSuffix = person.place_of_birth ? ` · ${person.place_of_birth}` : ''
   const birthdayFormatted = person.birthday
-    ? `${formatDate(person.birthday)}${person.place_of_birth ? ` · ${person.place_of_birth}` : ''}`
+    ? `${formatDate(person.birthday)}${birthplaceSuffix}`
     : null
   const deathdayFormatted = person.deathday ? formatDate(person.deathday) : null
 

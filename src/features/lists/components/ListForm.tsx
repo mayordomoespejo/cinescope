@@ -35,6 +35,8 @@ export default function ListForm({ onSubmit, onCancel }: ListFormProps) {
     <form className={styles.createForm} onSubmit={handleSubmit}>
       <input
         ref={inputRef}
+        type="text"
+        autoComplete="off"
         className={styles.input}
         placeholder="List name (required)"
         value={name}
@@ -43,6 +45,8 @@ export default function ListForm({ onSubmit, onCancel }: ListFormProps) {
         disabled={submitting}
       />
       <input
+        type="text"
+        autoComplete="off"
         className={styles.input}
         placeholder="Description (optional)"
         value={description}

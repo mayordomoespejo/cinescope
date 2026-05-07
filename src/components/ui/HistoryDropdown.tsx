@@ -20,7 +20,12 @@ export default function HistoryDropdown({
   if (!visible || history.length === 0) return null
 
   return (
-    <div className={styles.historyDropdown} role="listbox" aria-label="Recent searches">
+    <div
+      id="search-history-listbox"
+      className={styles.historyDropdown}
+      role="listbox"
+      aria-label="Recent searches"
+    >
       <div className={styles.historyHeader}>
         <span>Recent</span>
         <button

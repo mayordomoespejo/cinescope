@@ -1,4 +1,4 @@
-import { getYouTubeEmbedUrl } from '@/lib/helpers'
+import { getYouTubeEmbedUrl } from '@/lib/videoUtils'
 import styles from './MediaDetailTrailer.module.css'
 
 interface MediaDetailTrailerProps {

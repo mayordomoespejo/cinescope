@@ -9,7 +9,7 @@ import PageContent from '@/components/ui/PageContent'
 import styles from './PersonPage.module.css'
 
 /** Skeleton loader for the person page */
-export function PersonPageSkeleton() {
+function PersonPageSkeleton() {
   return (
     <div className={styles.page}>
       <div className={styles.body}>

@@ -1,4 +1,5 @@
 import { formatRating, formatDate, formatRuntime, formatMoney } from '@/lib/helpers'
+import { ACTION_LABELS } from '@/lib/constants'
 import Button from '@/components/ui/Button'
 import type { MovieDetail, Video } from '../../types/movie'
 import styles from './MovieModalDetails.module.css'
@@ -103,7 +104,7 @@ export default function MovieModalDetails({
           variant={isFav ? 'danger' : 'secondary'}
           size="md"
           onClick={onToggleFavorite}
-          aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={isFav ? ACTION_LABELS.REMOVE_FROM_FAVORITES : ACTION_LABELS.ADD_TO_FAVORITES}
           aria-pressed={isFav}
         >
           <span className={styles.labelStack}>
@@ -117,7 +118,9 @@ export default function MovieModalDetails({
           variant="ghost"
           size="md"
           onClick={onToggleWatchlist}
-          aria-label={inWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+          aria-label={
+            inWatchlist ? ACTION_LABELS.REMOVE_FROM_WATCHLIST : ACTION_LABELS.ADD_TO_WATCHLIST
+          }
           aria-pressed={inWatchlist}
         >
           {inWatchlist ? '✓ Watchlist' : '+ Watchlist'}

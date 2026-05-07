@@ -1,4 +1,5 @@
 import Skeleton from '@/components/ui/Skeleton'
+import { TMDB_IMAGE_BASE, IMAGE_SIZES } from '@/lib/config'
 import styles from './MediaDetailHero.module.css'
 
 interface MediaDetailHeroProps {
@@ -12,12 +13,16 @@ export default function MediaDetailHero({
   backdropPath,
   posterPath,
 }: MediaDetailHeroProps) {
-  const heroSrc = backdropPath
-    ? `https://image.tmdb.org/t/p/original${backdropPath}`
-    : posterPath
-      ? `https://image.tmdb.org/t/p/w780${posterPath}`
-      : null
+  let heroSrc: string | null = null
+  if (backdropPath) {
+    heroSrc = `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.original}${backdropPath}`
+  } else if (posterPath) {
+    heroSrc = `${TMDB_IMAGE_BASE}/${IMAGE_SIZES.backdrop.md}${posterPath}`
+  }
   const isPosterFallback = !backdropPath && !!posterPath
+  const heroImgClass = isPosterFallback
+    ? `${styles.heroImg} ${styles.heroImgPoster}`
+    : styles.heroImg
 
   return (
     <div className={styles.hero} aria-hidden="true">
@@ -25,13 +30,7 @@ export default function MediaDetailHero({
         <Skeleton width="100%" height="100%" />
       ) : (
         heroSrc && (
-          <img
-            src={heroSrc}
-            alt=""
-            className={`${styles.heroImg}${isPosterFallback ? ` ${styles.heroImgPoster}` : ''}`}
-            loading="eager"
-            decoding="async"
-          />
+          <img src={heroSrc} alt="" className={heroImgClass} loading="eager" decoding="async" />
         )
       )}
       <div className={styles.heroGradient} />
