@@ -5,13 +5,12 @@ import PageContent from '@/components/ui/PageContent'
 
 export default function WatchedPage() {
   const navigate = useNavigate()
-  const { watchedList, loading, toggleWatched } = useWatched()
+  const { watchedList, toggleWatched } = useWatched()
 
   return (
     <PageContent>
       <WatchedSection
         items={watchedList}
-        loading={loading}
         onRemove={item => toggleWatched(item)}
         onNavigate={(mediaType, mediaId) => navigate(`/${mediaType}/${mediaId}`)}
       />

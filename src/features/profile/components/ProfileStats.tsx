@@ -1,4 +1,4 @@
-import styles from '@/pages/ProfilePage.module.css'
+import styles from './ProfileStats.module.css'
 
 function AnimatedCounter({ value }: { value: number }) {
   return (

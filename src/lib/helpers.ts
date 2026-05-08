@@ -30,7 +30,7 @@ export function getBackdropUrl(
 /** Format a release date to a readable year */
 export function getReleaseYear(date: string | null | undefined): string {
   if (!date) return 'N/A'
-  return new Date(date).getFullYear().toString()
+  return parseInt(date.slice(0, 4), 10).toString()
 }
 
 /** Format a full release date (e.g. "Jan 15, 2024") */

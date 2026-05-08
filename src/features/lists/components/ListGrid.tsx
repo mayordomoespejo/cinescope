@@ -144,12 +144,11 @@ function ListRow({ list, itemCount, isSelected, onSelect, onRename, onDelete }: 
 
 export interface ListGridProps {
   lists: CinescopeList[]
-  loading: boolean
   selectedListId: string | null
   itemCounts: Record<string, number>
   onSelect: (listId: string) => void
-  onRename: (listId: string, newName: string) => Promise<void>
-  onDelete: (listId: string) => Promise<void>
+  onRename: (listId: string, newName: string) => void
+  onDelete: (listId: string) => void
 }
 
 /**
@@ -157,17 +156,12 @@ export interface ListGridProps {
  */
 export default function ListGrid({
   lists,
-  loading,
   selectedListId,
   itemCounts,
   onSelect,
   onRename,
   onDelete,
 }: ListGridProps) {
-  if (loading) {
-    return <div className={styles.spinnerWrap}>Loading…</div>
-  }
-
   if (lists.length === 0) {
     return (
       <div className={styles.leftEmpty}>

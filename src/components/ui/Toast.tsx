@@ -12,7 +12,7 @@ import styles from './Toast.module.css'
 // ── Types ────────────────────────────────────────────────────────────
 
 interface ToastItem {
-  id: number
+  id: string
   message: string
   exiting: boolean
 }
@@ -25,16 +25,14 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
-let nextId = 0
-
 const DISPLAY_DURATION = 2000
 const EXIT_DURATION = 220
 
-function makeExitingUpdater(id: number) {
+function makeExitingUpdater(id: string) {
   return (prev: ToastItem[]) => prev.map(t => (t.id === id ? { ...t, exiting: true } : t))
 }
 
-function makeRemoveFilter(id: number) {
+function makeRemoveFilter(id: string) {
   return (prev: ToastItem[]) => prev.filter(t => t.id !== id)
 }
 
@@ -42,9 +40,9 @@ function makeRemoveFilter(id: number) {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([])
-  const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map())
+  const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
 
-  const removeToast = useCallback((id: number) => {
+  const removeToast = useCallback((id: string) => {
     // Start exit animation first
     setToasts(makeExitingUpdater(id))
     // Remove from DOM after animation
@@ -57,7 +55,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const showToast = useCallback(
     (message: string) => {
-      const id = ++nextId
+      const id = crypto.randomUUID()
       setToasts(prev => [...prev, { id, message, exiting: false }])
 
       const timer = setTimeout(() => removeToast(id), DISPLAY_DURATION)

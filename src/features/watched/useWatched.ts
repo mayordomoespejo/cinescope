@@ -17,6 +17,5 @@ export function useWatched() {
     watchedList,
     isWatched,
     toggleWatched,
-    loading: false,
   }
 }

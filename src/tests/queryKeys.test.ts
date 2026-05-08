@@ -17,11 +17,11 @@ describe('queryKeys.trending', () => {
 
 describe('queryKeys.topRated', () => {
   it('defaults to page 1', () => {
-    expect(queryKeys.topRated()).toEqual(['topRated', 1])
+    expect(queryKeys.topRated()).toEqual(['movie', 'topRated', 1])
   })
 
   it('accepts custom page', () => {
-    expect(queryKeys.topRated(3)).toEqual(['topRated', 3])
+    expect(queryKeys.topRated(3)).toEqual(['movie', 'topRated', 3])
   })
 })
 

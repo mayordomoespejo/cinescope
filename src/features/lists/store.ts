@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { Movie } from '@/features/movies/types/movie'
+import type { TVShow } from '@/features/tv/types/tv'
 import type { MediaType } from '@/lib/types'
+
+export const LISTS_PERSIST_KEY = 'cinescope-lists'
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -18,7 +22,7 @@ export interface ListItem {
   media_id: number
   media_type: MediaType
   /** Full TMDB object serialised as JSON. */
-  media_data: Record<string, unknown>
+  media_data: Movie | TVShow
   added_at: string
 }
 
@@ -32,7 +36,7 @@ interface ListsState {
   renameList: (listId: string, name: string) => CinescopeList
   addToList: (
     listId: string,
-    item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
+    item: { media_id: number; media_type: MediaType; media_data: Movie | TVShow }
   ) => void
   removeFromList: (listId: string, mediaId: number, mediaType: MediaType) => void
   isInList: (listId: string, mediaId: number, mediaType: MediaType) => boolean
@@ -84,7 +88,7 @@ export const useListsStore = create<ListsState>()(
 
       addToList: (
         listId: string,
-        item: { media_id: number; media_type: MediaType; media_data: Record<string, unknown> }
+        item: { media_id: number; media_type: MediaType; media_data: Movie | TVShow }
       ) => {
         set(state => {
           const alreadyIn = state.items.some(
@@ -126,7 +130,7 @@ export const useListsStore = create<ListsState>()(
       },
     }),
     {
-      name: 'cinescope-lists',
+      name: LISTS_PERSIST_KEY,
     }
   )
 )

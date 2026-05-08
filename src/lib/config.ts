@@ -35,7 +35,7 @@ export const FALLBACK_BACKDROP = 'https://placehold.co/1280x720/0f0f0f/333?text=
 export const DEBOUNCE_DELAY = 400
 export const STALE_TIME_SHORT = 1000 * 60 * 5 // 5 min
 export const STALE_TIME_LONG = 1000 * 60 * 60 // 1 hour
-export const GC_TIME = 1000 * 60 * 30 // 30 min
+export const GC_TIME = STALE_TIME_LONG + 1000 * 60 * 5 // STALE_TIME_LONG + 5 min
 
 export const SORT_OPTIONS = [
   { value: 'popularity.desc', label: 'Most Popular' },

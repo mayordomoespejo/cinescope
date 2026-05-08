@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTVDetail } from '@/features/tv/hooks/useTVDetail'
 import { useTVVideos } from '@/features/tv/hooks/useTVVideos'
@@ -8,25 +9,8 @@ import { useWatched } from '@/features/watched/useWatched'
 import MediaDetailLayout from '@/components/ui/MediaDetailLayout'
 import type { MediaDetailData, TVExtras } from '@/components/ui/MediaDetailLayout'
 import TVCard from '@/features/tv/components/TVCard'
-import type { Movie } from '@/features/movies/types/movie'
+import { tvShowToMovie } from '@/features/tv/adapters'
 import type { TVShowDetail } from '@/features/tv/types/tv'
-
-/** Map a TVShowDetail to the base Movie shape expected by useFavorites. */
-function tvShowAsMovie(show: TVShowDetail): Movie {
-  return {
-    id: show.id,
-    title: show.name,
-    overview: show.overview,
-    poster_path: show.poster_path,
-    backdrop_path: show.backdrop_path,
-    release_date: show.first_air_date,
-    vote_average: show.vote_average,
-    vote_count: show.vote_count,
-    genre_ids: show.genres.map(g => g.id),
-    original_language: show.original_language,
-    popularity: show.popularity,
-  } as Movie
-}
 
 /**
  * Full-page TV show detail view, accessible at /tv/:id.
@@ -55,7 +39,7 @@ export default function TVDetailPage() {
   const inWatchlist = show ? isInWatchlist(show.id) : false
   const watched = show ? isWatched(show.id, 'tv') : false
 
-  const showAsMovie = show ? tvShowAsMovie(show) : null
+  const showAsMovie = show ? tvShowToMovie(show) : null
   const episodeRuntime = show?.episode_run_time[0] ?? null
 
   // Normalise to MediaDetailData
@@ -75,14 +59,17 @@ export default function TVDetailPage() {
       }
     : null
 
-  const tvExtras: TVExtras = {
-    status: show?.status,
-    numberOfSeasons: show?.number_of_seasons,
-    numberOfEpisodes: show?.number_of_episodes,
-    episodeRuntime,
-    createdBy: show?.created_by,
-    networks: show?.networks,
-  }
+  const tvExtras: TVExtras = useMemo(
+    () => ({
+      status: show?.status,
+      numberOfSeasons: show?.number_of_seasons,
+      numberOfEpisodes: show?.number_of_episodes,
+      episodeRuntime,
+      createdBy: show?.created_by,
+      networks: show?.networks,
+    }),
+    [show?.status, show?.number_of_seasons, show?.number_of_episodes, episodeRuntime, show?.created_by, show?.networks]
+  )
 
   // Recommendations slot
   const recommendationsSlot =

@@ -4,7 +4,7 @@ import MovieGrid from '@/features/movies/components/MovieGrid'
 import TVGrid from '@/features/tv/components/TVGrid'
 import ErrorAlert from '@/components/ui/ErrorAlert'
 import PageContent from '@/components/ui/PageContent'
-import styles from '@/pages/BrowsePage.module.css'
+import styles from './SearchResults.module.css'
 
 /**
  * Renders movie or TV search results depending on `mediaType`.

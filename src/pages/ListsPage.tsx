@@ -13,7 +13,7 @@ import styles from './ListsPage.module.css'
  * Delegates rendering to ListGrid, ListForm, and ListItemModal.
  */
 export default function ListsPage() {
-  const { lists, loading, createList, deleteList, renameList, fetchListItems, removeFromList } =
+  const { lists, createList, deleteList, renameList, fetchListItems, removeFromList } =
     useLists()
 
   const [selectedListId, setSelectedListId] = useState<string | null>(null)
@@ -21,7 +21,6 @@ export default function ListsPage() {
 
   // items state keyed by listId
   const [itemsByList, setItemsByList] = useState<Record<string, ListItem[]>>({})
-  const [itemsLoading, setItemsLoading] = useState(false)
 
   // Auto-select first list when lists load
   useEffect(() => {
@@ -35,36 +34,31 @@ export default function ListsPage() {
 
   // Fetch items when selected list changes
   const loadItems = useCallback(
-    async (listId: string) => {
+    (listId: string) => {
       if (itemsByListRef.current[listId]) return // already loaded
-      setItemsLoading(true)
-      try {
-        const items = await fetchListItems(listId)
-        setItemsByList(prev => ({ ...prev, [listId]: items }))
-      } finally {
-        setItemsLoading(false)
-      }
+      const items = fetchListItems(listId)
+      setItemsByList(prev => ({ ...prev, [listId]: items }))
     },
     [fetchListItems]
   )
 
   useEffect(() => {
-    if (selectedListId) void loadItems(selectedListId)
+    if (selectedListId) loadItems(selectedListId)
   }, [selectedListId, loadItems])
 
   const handleSelectList = (listId: string) => {
     setSelectedListId(listId)
   }
 
-  const handleCreateList = async (name: string, description: string) => {
-    const newList = await createList(name, description || undefined)
+  const handleCreateList = (name: string, description: string) => {
+    const newList = createList(name, description || undefined)
     setShowCreateForm(false)
     setSelectedListId(newList.id)
     setItemsByList(prev => ({ ...prev, [newList.id]: [] }))
   }
 
-  const handleDeleteList = async (listId: string) => {
-    await deleteList(listId)
+  const handleDeleteList = (listId: string) => {
+    deleteList(listId)
     if (selectedListId === listId) {
       const remaining = lists.filter(l => l.id !== listId)
       setSelectedListId(remaining.length > 0 ? remaining[0].id : null)
@@ -76,12 +70,12 @@ export default function ListsPage() {
     })
   }
 
-  const handleRenameList = async (listId: string, newName: string) => {
-    await renameList(listId, newName)
+  const handleRenameList = (listId: string, newName: string) => {
+    renameList(listId, newName)
   }
 
-  const handleRemoveItem = async (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => {
-    await removeFromList(listId, mediaId, mediaType)
+  const handleRemoveItem = (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => {
+    removeFromList(listId, mediaId, mediaType)
     setItemsByList(prev => ({
       ...prev,
       [listId]: (prev[listId] ?? []).filter(
@@ -122,7 +116,6 @@ export default function ListsPage() {
 
           <ListGrid
             lists={lists}
-            loading={loading}
             selectedListId={selectedListId}
             itemCounts={itemCounts}
             onSelect={handleSelectList}
@@ -136,7 +129,6 @@ export default function ListsPage() {
           <ListItemModal
             selectedList={selectedList}
             selectedItems={selectedItems}
-            itemsLoading={itemsLoading}
             onRemoveItem={handleRemoveItem}
           />
         </main>

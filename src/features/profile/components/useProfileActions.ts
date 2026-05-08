@@ -1,3 +1,7 @@
+import { FAVORITES_PERSIST_KEY } from '@/features/favorites/store'
+import { WATCHED_PERSIST_KEY } from '@/features/watched/store'
+import { LISTS_PERSIST_KEY } from '@/features/lists/store'
+
 export interface UseProfileActionsReturn {
   isClearing: boolean
   handleClearData: () => void
@@ -9,9 +13,9 @@ export interface UseProfileActionsReturn {
  */
 export function useProfileActions(): UseProfileActionsReturn {
   function handleClearData() {
-    localStorage.removeItem('cinescope-favorites')
-    localStorage.removeItem('cinescope-watched')
-    localStorage.removeItem('cinescope-lists')
+    localStorage.removeItem(FAVORITES_PERSIST_KEY)
+    localStorage.removeItem(WATCHED_PERSIST_KEY)
+    localStorage.removeItem(LISTS_PERSIST_KEY)
     // Reload the page so Zustand stores reinitialise from the (now empty) localStorage
     window.location.reload()
   }

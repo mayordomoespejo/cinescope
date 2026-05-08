@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSearchQuery } from '@/hooks/useSearchQuery'
 import { useOutletContext } from '@/components/ui/LayoutContext'
@@ -58,17 +58,26 @@ export default function BrowsePage({ mediaType }: BrowsePageProps) {
   const searchShows = tvSearchData?.results ?? []
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleOpenMovie = (id: number) => {
-    onOpenMovie(id)
-  }
+  const handleOpenMovie = useCallback(
+    (id: number) => {
+      onOpenMovie(id)
+    },
+    [onOpenMovie]
+  )
 
-  const handleOpenShow = (id: number) => {
-    navigate(`/tv/${id}`)
-  }
+  const handleOpenShow = useCallback(
+    (id: number) => {
+      navigate(`/tv/${id}`)
+    },
+    [navigate]
+  )
 
-  const handleToggleFavoriteTV = (show: TVShow) => {
-    void toggleFavorite(show)
-  }
+  const handleToggleFavoriteTV = useCallback(
+    (show: TVShow) => {
+      void toggleFavorite(show)
+    },
+    [toggleFavorite]
+  )
 
   // ── Search mode ───────────────────────────────────────────────────────────
   if (searchQuery) {

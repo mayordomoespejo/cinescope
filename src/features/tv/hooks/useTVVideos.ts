@@ -2,21 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchTVVideos } from '../api/tvApi'
 import { queryKeys } from '@/lib/queryKeys'
 import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
-import type { Video } from '../types/tv'
+import { pickTrailer } from '@/lib/videoUtils'
 
-export function pickTrailer(videos: Video[]): Video | null {
-  // Priority: official YouTube trailer
-  const official = videos.find(v => v.site === 'YouTube' && v.type === 'Trailer' && v.official)
-  if (official) return official
-
-  // Fallback: any YouTube trailer
-  const anyTrailer = videos.find(v => v.site === 'YouTube' && v.type === 'Trailer')
-  if (anyTrailer) return anyTrailer
-
-  // Fallback: any YouTube teaser
-  const teaser = videos.find(v => v.site === 'YouTube' && v.type === 'Teaser')
-  return teaser ?? null
-}
+export { pickTrailer }
 
 export function useTVVideos(id: number | null) {
   return useQuery({

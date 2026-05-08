@@ -18,7 +18,7 @@ import styles from './ProfilePage.module.css'
  */
 export default function ProfilePage() {
   const navigate = useNavigate()
-  const { watchedList, toggleWatched, loading: watchedLoading } = useWatched()
+  const { watchedList, toggleWatched } = useWatched()
   const { favorites, watchlist } = useFavorites()
   const { isClearing, handleClearData } = useProfileActions()
 
@@ -49,7 +49,6 @@ export default function ProfilePage() {
 
         <WatchedSection
           items={sortedWatched}
-          loading={watchedLoading}
           onRemove={handleRemoveWatched}
           onNavigate={(mediaType, mediaId) => navigate(`/${mediaType}/${mediaId}`)}
         />

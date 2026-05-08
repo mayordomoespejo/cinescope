@@ -6,6 +6,8 @@ import type { MediaType } from '@/lib/types'
 
 export type { MediaType }
 
+export const WATCHED_PERSIST_KEY = 'cinescope-watched'
+
 /** Unified media item stored in the watched list. */
 export interface WatchedItem {
   media_id: number
@@ -52,7 +54,7 @@ export const useWatchedStore = create<WatchedState>()(
         get().watchedList.some(w => w.media_id === mediaId && w.media_type === mediaType),
     }),
     {
-      name: 'cinescope-watched',
+      name: WATCHED_PERSIST_KEY,
     }
   )
 )
