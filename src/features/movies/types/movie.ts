@@ -7,7 +7,7 @@ export type {
   GenreListResponse,
   VideoListResponse,
 } from '@/features/shared/types/tmdb'
-import type { Genre, Video, CastMember, CrewMember } from '@/features/shared/types/tmdb'
+import type { Genre, CastMember, CrewMember } from '@/features/shared/types/tmdb'
 
 export interface Movie {
   id: number

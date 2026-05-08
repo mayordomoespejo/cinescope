@@ -30,7 +30,7 @@ export default function ListsPage() {
   }, [lists, selectedListId])
 
   const itemsByListRef = useRef(itemsByList)
-  itemsByListRef.current = itemsByList
+  useEffect(() => { itemsByListRef.current = itemsByList }, [itemsByList])
 
   // Fetch items when selected list changes
   const loadItems = useCallback(

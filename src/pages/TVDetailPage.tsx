@@ -10,7 +10,6 @@ import MediaDetailLayout from '@/components/ui/MediaDetailLayout'
 import type { MediaDetailData, TVExtras } from '@/components/ui/MediaDetailLayout'
 import TVCard from '@/features/tv/components/TVCard'
 import { tvShowToMovie } from '@/features/tv/adapters'
-import type { TVShowDetail } from '@/features/tv/types/tv'
 
 /**
  * Full-page TV show detail view, accessible at /tv/:id.
