@@ -46,12 +46,11 @@ describe('MovieCard', () => {
     expect(onOpen).toHaveBeenCalledWith(1)
   })
 
-  it('calls onOpen when Enter is pressed', () => {
+  it('renders as a native button element', () => {
     const onOpen = vi.fn()
     render(<MovieCard movie={mockMovie} onOpen={onOpen} />)
     const card = screen.getByRole('button')
-    fireEvent.keyDown(card, { key: 'Enter' })
-    expect(onOpen).toHaveBeenCalledWith(1)
+    expect(card.tagName).toBe('BUTTON')
   })
 
   it('shows favorite button when onToggleFavorite is provided', () => {

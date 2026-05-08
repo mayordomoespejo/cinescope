@@ -62,10 +62,15 @@ export function useMovieModalState(movieId: number): MovieModalState {
   // Defer setState to avoid synchronous setState in effect (react-hooks/set-state-in-effect).
   useEffect(() => {
     if (playWhenReady && trailer && !trailerPlaying) {
+      let cancelled = false
       queueMicrotask(() => {
+        if (cancelled) return
         setTrailerPlaying(true)
         setPlayWhenReady(false)
       })
+      return () => {
+        cancelled = true
+      }
     }
     // Videos finished loading but no trailer found — reset play state to avoid a stuck spinner.
     if (!loadingVideos && !videos?.results?.length) {

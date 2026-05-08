@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { CinescopeList, ListItem } from '../store'
 import { getPosterUrl, getReleaseYear } from '@/lib/helpers'
 import styles from '@/pages/ListsPage.module.css'
@@ -7,23 +6,25 @@ import styles from '@/pages/ListsPage.module.css'
 
 function getMediaTitle(item: ListItem): string {
   const d = item.media_data
-  return (d.title as string) || (d.name as string) || 'Untitled'
+  if ('title' in d) return d.title || 'Untitled'
+  return d.name || 'Untitled'
 }
 
 function getMediaDate(item: ListItem): string | null {
   const d = item.media_data
-  return (d.release_date as string) || (d.first_air_date as string) || null
+  if ('release_date' in d) return d.release_date || null
+  return d.first_air_date || null
 }
 
 function getMediaPoster(item: ListItem): string | null {
-  return (item.media_data.poster_path as string) || null
+  return item.media_data.poster_path || null
 }
 
 // ── ItemCard ─────────────────────────────────────────────────────────
 
 interface ItemCardProps {
   item: ListItem
-  onRemove: () => Promise<void>
+  onRemove: () => void
 }
 
 /**
@@ -31,16 +32,9 @@ interface ItemCardProps {
  * Shows poster, title and year. Has a hover "×" remove button.
  */
 function ItemCard({ item, onRemove }: ItemCardProps) {
-  const [removing, setRemoving] = useState(false)
-
-  const handleRemove = async (e: React.MouseEvent) => {
+  const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation()
-    setRemoving(true)
-    try {
-      await onRemove()
-    } finally {
-      setRemoving(false)
-    }
+    onRemove()
   }
 
   const title = getMediaTitle(item)
@@ -54,12 +48,11 @@ function ItemCard({ item, onRemove }: ItemCardProps) {
         <button
           className={styles.removeBtn}
           onClick={handleRemove}
-          disabled={removing}
           title="Remove from list"
           type="button"
           aria-label={`Remove ${title} from list`}
         >
-          {removing ? '…' : '×'}
+          ×
         </button>
       </div>
       <span className={styles.itemTitle}>{title}</span>
@@ -72,7 +65,7 @@ function ItemCard({ item, onRemove }: ItemCardProps) {
 
 interface ItemsContentProps {
   selectedItems: ListItem[] | null
-  onRemoveItem: (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => Promise<void>
+  onRemoveItem: (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => void
 }
 
 function ItemsContent({ selectedItems, onRemoveItem }: ItemsContentProps) {
@@ -103,8 +96,7 @@ function ItemsContent({ selectedItems, onRemoveItem }: ItemsContentProps) {
 export interface ListItemModalProps {
   selectedList: CinescopeList | null
   selectedItems: ListItem[] | null
-  itemsLoading: boolean
-  onRemoveItem: (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => Promise<void>
+  onRemoveItem: (listId: string, mediaId: number, mediaType: 'movie' | 'tv') => void
 }
 
 /**
@@ -113,7 +105,6 @@ export interface ListItemModalProps {
 export default function ListItemModal({
   selectedList,
   selectedItems,
-  itemsLoading,
   onRemoveItem,
 }: ListItemModalProps) {
   if (selectedList === null) {
@@ -144,11 +135,7 @@ export default function ListItemModal({
         )}
       </header>
 
-      {itemsLoading ? (
-        <div className={styles.spinnerWrap}>Loading items…</div>
-      ) : (
-        <ItemsContent selectedItems={selectedItems} onRemoveItem={onRemoveItem} />
-      )}
+      <ItemsContent selectedItems={selectedItems} onRemoveItem={onRemoveItem} />
     </>
   )
 }

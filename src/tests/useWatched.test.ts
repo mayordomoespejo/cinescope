@@ -39,7 +39,6 @@ describe('useWatched', () => {
     it('starts with an empty watched list', () => {
       const { result } = renderHook(() => useWatched())
       expect(result.current.watchedList).toEqual([])
-      expect(result.current.loading).toBe(false)
     })
   })
 

@@ -7,6 +7,13 @@
   border-radius: var(--radius-lg);
   overflow: visible;
   outline: none;
+  /* Reset native button styles */
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
 }
 
 .card:focus-visible {

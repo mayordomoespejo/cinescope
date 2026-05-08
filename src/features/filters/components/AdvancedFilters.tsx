@@ -1,8 +1,6 @@
+import { useMemo } from 'react'
 import * as Select from '@radix-ui/react-select'
 import styles from './AdvancedFilters.module.css'
-
-const CURRENT_YEAR = new Date().getFullYear()
-const YEARS = Array.from({ length: CURRENT_YEAR - 1969 }, (_, i) => CURRENT_YEAR - i)
 
 const LANGUAGES = [
   { value: '__all__', label: 'Any language' },
@@ -56,6 +54,12 @@ export default function AdvancedFilters({
   language,
   onLanguageChange,
 }: AdvancedFiltersProps) {
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
+  const years = useMemo(
+    () => Array.from({ length: currentYear - 1969 }, (_, i) => currentYear - i),
+    [currentYear]
+  )
+
   const yearValue = year !== undefined ? String(year) : '__all__'
   const yearLabel = year !== undefined ? String(year) : 'Any year'
 
@@ -118,7 +122,7 @@ export default function AdvancedFilters({
                   </span>
                   <Select.ItemText>Any year</Select.ItemText>
                 </Select.Item>
-                {YEARS.map(y => (
+                {years.map(y => (
                   <Select.Item key={y} value={String(y)} className={styles.selectItem}>
                     <span className={styles.checkmark} aria-hidden="true">
                       ✓

@@ -6,6 +6,8 @@ import { tvShowToMovie } from '@/features/tv/adapters'
 
 // ── Favorites + Watchlist store (persisted to localStorage) ─────────
 
+export const FAVORITES_PERSIST_KEY = 'cinescope-favorites'
+
 interface FavoritesState {
   favorites: Movie[]
   watchlist: Movie[]
@@ -63,7 +65,7 @@ export const useFavoritesStore = create<FavoritesState>()(
       isInWatchlist: (id: number) => get().watchlist.some(m => m.id === id),
     }),
     {
-      name: 'cinescope-favorites',
+      name: FAVORITES_PERSIST_KEY,
     }
   )
 )

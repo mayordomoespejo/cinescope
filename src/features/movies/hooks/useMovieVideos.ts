@@ -2,25 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchMovieVideos } from '../api/tmdbApi'
 import { queryKeys } from '@/lib/queryKeys'
 import { STALE_TIME_LONG, GC_TIME } from '@/lib/config'
-import type { Video } from '../types/movie'
+import { pickTrailer } from '@/lib/videoUtils'
 
-/**
- * @description Picks the best available trailer from a list of videos. Prefers official YouTube trailers, then any YouTube trailer, then a teaser.
- * @returns The selected Video or null if none found.
- */
-export function pickTrailer(videos: Video[]): Video | null {
-  // Priority: official YouTube trailer
-  const official = videos.find(v => v.site === 'YouTube' && v.type === 'Trailer' && v.official)
-  if (official) return official
-
-  // Fallback: any YouTube trailer
-  const anyTrailer = videos.find(v => v.site === 'YouTube' && v.type === 'Trailer')
-  if (anyTrailer) return anyTrailer
-
-  // Fallback: any YouTube teaser
-  const teaser = videos.find(v => v.site === 'YouTube' && v.type === 'Teaser')
-  return teaser ?? null
-}
+export { pickTrailer }
 
 /**
  * @description Fetches videos for a movie and appends a resolved `trailer` field. Query is disabled when id is null or 0.

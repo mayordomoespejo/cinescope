@@ -42,25 +42,16 @@ export default function MediaCard({
     onToggleFavorite?.()
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      onClick()
-    }
-  }
-
   const ratingLabel = rating != null ? `, rating ${formatRating(rating)}` : ''
   const label = ariaLabel ?? `${title}, ${year}${ratingLabel}`
 
   return (
-    <div
+    <button
+      type="button"
       className={styles.card}
       onClick={onClick}
       onMouseEnter={onPrefetch}
       onFocus={onPrefetch}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
       aria-label={label}
     >
       {/* Rating badge */}
@@ -120,6 +111,6 @@ export default function MediaCard({
         <p className={styles.title}>{title}</p>
         <p className={styles.year}>{year}</p>
       </div>
-    </div>
+    </button>
   )
 }

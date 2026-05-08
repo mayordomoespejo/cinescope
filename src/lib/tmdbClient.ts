@@ -2,6 +2,10 @@ import { TMDB_BASE_URL } from './config'
 
 const TMDB_ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN as string
 
+if (!TMDB_ACCESS_TOKEN) {
+  throw new Error('VITE_TMDB_ACCESS_TOKEN is not set')
+}
+
 interface FetchOptions {
   params?: Record<string, string | number | boolean | undefined>
 }

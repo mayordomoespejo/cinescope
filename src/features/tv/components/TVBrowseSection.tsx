@@ -7,7 +7,7 @@ import TVGrid from './TVGrid'
 import SortDropdown from '@/features/filters/components/SortDropdown'
 import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import ErrorAlert from '@/components/ui/ErrorAlert'
-import styles from '@/pages/BrowsePage.module.css'
+import styles from './TVBrowseSection.module.css'
 
 /** Staggered skeleton chip width: 60 / 80 / 100 px cycling by index. */
 const skeletonChipWidth = (i: number) => 60 + (i % 3) * 20

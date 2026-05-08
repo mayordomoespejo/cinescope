@@ -2,8 +2,7 @@ import type { WatchedItem } from '@/features/watched/store'
 import type { Movie } from '@/features/movies/types/movie'
 import type { TVShow } from '@/features/tv/types/tv'
 import { getPosterUrl, formatDate } from '@/lib/helpers'
-import { SkeletonCardGrid } from '@/components/ui/SkeletonCard'
-import styles from '@/pages/ProfilePage.module.css'
+import styles from './WatchedSection.module.css'
 
 function getMediaTitle(mediaData: Movie | TVShow | undefined): string {
   if (!mediaData) return 'Unknown'
@@ -114,22 +113,17 @@ function WatchedContent({ items, onRemove, onNavigate }: WatchedContentProps) {
 
 interface WatchedSectionProps {
   items: WatchedItem[]
-  loading: boolean
   onRemove: (item: WatchedItem) => void
   onNavigate: (mediaType: string, mediaId: number) => void
 }
 
-export function WatchedSection({ items, loading, onRemove, onNavigate }: WatchedSectionProps) {
+export function WatchedSection({ items, onRemove, onNavigate }: WatchedSectionProps) {
   return (
     <section aria-labelledby="watch-history-heading">
       <h2 className={styles.sectionHeading} id="watch-history-heading">
         Watch History
       </h2>
-      {loading ? (
-        <SkeletonCardGrid count={6} />
-      ) : (
-        <WatchedContent items={items} onRemove={onRemove} onNavigate={onNavigate} />
-      )}
+      <WatchedContent items={items} onRemove={onRemove} onNavigate={onNavigate} />
     </section>
   )
 }

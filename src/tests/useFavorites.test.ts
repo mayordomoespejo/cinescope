@@ -48,7 +48,6 @@ describe('useFavorites', () => {
       const { result } = renderHook(() => useFavorites())
       expect(result.current.favorites).toEqual([])
       expect(result.current.watchlist).toEqual([])
-      expect(result.current.isLoading).toBe(false)
     })
   })
 

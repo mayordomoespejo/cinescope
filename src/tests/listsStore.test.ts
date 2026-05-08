@@ -1,5 +1,25 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useListsStore } from '@/features/lists/store'
+import type { Movie } from '@/features/movies/types/movie'
+
+function makeMovie(overrides: Partial<Movie> = {}): Movie {
+  return {
+    id: 1,
+    title: 'Test Movie',
+    overview: '',
+    poster_path: null,
+    backdrop_path: null,
+    release_date: '2024-01-01',
+    vote_average: 7,
+    vote_count: 100,
+    genre_ids: [],
+    popularity: 10,
+    adult: false,
+    original_language: 'en',
+    original_title: 'Test Movie',
+    ...overrides,
+  }
+}
 
 beforeEach(() => {
   useListsStore.setState({ lists: [], items: [] })
@@ -51,7 +71,7 @@ describe('deleteList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 1,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().deleteList(list.id)
     expect(useListsStore.getState().items).toHaveLength(0)
@@ -63,7 +83,7 @@ describe('deleteList', () => {
     useListsStore.getState().addToList(list2.id, {
       media_id: 1,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().deleteList(list1.id)
     expect(useListsStore.getState().items).toHaveLength(1)
@@ -91,7 +111,7 @@ describe('addToList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: { title: 'Batman' },
+      media_data: makeMovie({ id: 42, title: 'Batman' }),
     })
     const { items } = useListsStore.getState()
     expect(items).toHaveLength(1)
@@ -104,12 +124,12 @@ describe('addToList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     expect(useListsStore.getState().items).toHaveLength(1)
   })
@@ -119,12 +139,12 @@ describe('addToList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'tv',
-      media_data: {},
+      media_data: makeMovie(),
     })
     expect(useListsStore.getState().items).toHaveLength(2)
   })
@@ -136,7 +156,7 @@ describe('removeFromList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().removeFromList(list.id, 42, 'movie')
     expect(useListsStore.getState().items).toHaveLength(0)
@@ -148,12 +168,12 @@ describe('removeFromList', () => {
     useListsStore.getState().addToList(list1.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().addToList(list2.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().removeFromList(list1.id, 42, 'movie')
     expect(useListsStore.getState().items).toHaveLength(1)
@@ -167,7 +187,7 @@ describe('isInList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     expect(useListsStore.getState().isInList(list.id, 42, 'movie')).toBe(true)
   })
@@ -182,7 +202,7 @@ describe('isInList', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 42,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     expect(useListsStore.getState().isInList(list.id, 42, 'tv')).toBe(false)
   })
@@ -194,12 +214,12 @@ describe('fetchListItems', () => {
     useListsStore.getState().addToList(list.id, {
       media_id: 1,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     useListsStore.getState().addToList(list.id, {
       media_id: 2,
       media_type: 'movie',
-      media_data: {},
+      media_data: makeMovie(),
     })
     const items = useListsStore.getState().fetchListItems(list.id)
     expect(items).toHaveLength(2)
@@ -217,7 +237,7 @@ describe('fetchListItems', () => {
     useListsStore.getState().addToList(list2.id, {
       media_id: 99,
       media_type: 'tv',
-      media_data: {},
+      media_data: makeMovie(),
     })
     const items = useListsStore.getState().fetchListItems(list1.id)
     expect(items).toHaveLength(0)

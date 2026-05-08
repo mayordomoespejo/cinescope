@@ -8,7 +8,7 @@ import type { TVDiscoverParams } from '@/features/tv/types/tv'
 export const queryKeys = {
   trending: (timeWindow: 'day' | 'week' = 'day') => ['trending', timeWindow] as const,
 
-  topRated: (page: number = 1) => ['topRated', page] as const,
+  topRated: (page: number = 1) => ['movie', 'topRated', page] as const,
 
   discover: (params: DiscoverParams) =>
     [

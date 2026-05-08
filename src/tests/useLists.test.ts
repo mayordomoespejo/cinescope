@@ -3,6 +3,26 @@ import { renderHook, act } from '@testing-library/react'
 import { useLists } from '@/features/lists/useLists'
 import { useListsStore } from '@/features/lists/store'
 import type { CinescopeList } from '@/features/lists/store'
+import type { Movie } from '@/features/movies/types/movie'
+
+function makeMovie(overrides: Partial<Movie> = {}): Movie {
+  return {
+    id: 1,
+    title: 'Test Movie',
+    overview: '',
+    poster_path: null,
+    backdrop_path: null,
+    release_date: '2024-01-01',
+    vote_average: 7,
+    vote_count: 100,
+    genre_ids: [],
+    popularity: 10,
+    adult: false,
+    original_language: 'en',
+    original_title: 'Test Movie',
+    ...overrides,
+  }
+}
 
 function makeList(overrides: Partial<CinescopeList> = {}): CinescopeList {
   return {
@@ -24,8 +44,6 @@ describe('useLists', () => {
     it('starts with empty lists', () => {
       const { result } = renderHook(() => useLists())
       expect(result.current.lists).toEqual([])
-      expect(result.current.loading).toBe(false)
-      expect(result.current.error).toBeNull()
     })
   })
 
@@ -100,7 +118,7 @@ describe('useLists', () => {
       const item = {
         media_id: 42,
         media_type: 'movie' as const,
-        media_data: { id: 42, title: 'Inception' },
+        media_data: makeMovie({ id: 42, title: 'Inception' }),
       }
 
       await act(async () => {
@@ -120,7 +138,7 @@ describe('useLists', () => {
             list_id: list.id,
             media_id: 42,
             media_type: 'movie',
-            media_data: {},
+            media_data: makeMovie(),
             added_at: '2024-01-01T00:00:00.000Z',
           },
         ],
@@ -146,14 +164,14 @@ describe('useLists', () => {
             list_id: list.id,
             media_id: 1,
             media_type: 'movie',
-            media_data: {},
+            media_data: makeMovie(),
             added_at: '2024-01-01T00:00:00.000Z',
           },
           {
             list_id: 'other-list',
             media_id: 2,
             media_type: 'tv',
-            media_data: {},
+            media_data: makeMovie(),
             added_at: '2024-01-02T00:00:00.000Z',
           },
         ],

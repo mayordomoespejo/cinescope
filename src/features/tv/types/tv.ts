@@ -1,12 +1,8 @@
 import type {
   Genre,
-  Video,
-  PaginatedResponse,
-  GenreListResponse,
-  VideoListResponse,
   CastMember,
   CrewMember,
-} from '@/features/movies/types/movie'
+} from '@/features/shared/types/tmdb'
 
 export type {
   Genre,
@@ -16,7 +12,7 @@ export type {
   VideoListResponse,
   CastMember,
   CrewMember,
-}
+} from '@/features/shared/types/tmdb'
 
 export interface TVShow {
   id: number

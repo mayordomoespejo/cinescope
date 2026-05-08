@@ -1,0 +1,65 @@
+/* ── Stats Row ───────────────────────────────────────────────────────────── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 600px) {
+  .statsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .statTile {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .statValue {
+    font-size: var(--font-size-2xl);
+  }
+
+  .statLabel {
+    font-size: var(--font-size-xs);
+  }
+}
+
+.statTile {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  overflow: hidden;
+}
+
+.statValue {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-accent);
+  line-height: var(--line-height-tight);
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.statValueAnimate {
+  animation: countUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+
+.statLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}

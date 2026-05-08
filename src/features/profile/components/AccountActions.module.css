@@ -1,0 +1,86 @@
+/* ── Danger Zone ─────────────────────────────────────────────────────────── */
+.dangerZone {
+  margin-top: auto;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-6);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.clearDataBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.clearDataBtn:hover {
+  color: var(--color-error);
+}
+
+/* ── Confirm Dialog ──────────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+.modalCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-xl);
+}
+
+.modalTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.modalBody {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+.modalActions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  margin-top: var(--space-2);
+}
+
+.clearDangerBtn {
+  color: var(--color-error);
+  font-weight: var(--font-weight-semibold);
+  border: 1px solid var(--color-error) !important;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+}
+
+.clearDangerBtn:hover:not(:disabled) {
+  background: var(--color-error);
+  color: var(--color-text-inverse);
+  opacity: 1;
+}
+
+.clearDangerBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -5,6 +5,26 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useLists } from '@/features/lists/useLists'
 import { useListsStore } from '@/features/lists/store'
+import type { Movie } from '@/features/movies/types/movie'
+
+function makeMovie(overrides: Partial<Movie> = {}): Movie {
+  return {
+    id: 1,
+    title: 'Test Movie',
+    overview: '',
+    poster_path: null,
+    backdrop_path: null,
+    release_date: '2024-01-01',
+    vote_average: 7,
+    vote_count: 100,
+    genre_ids: [],
+    popularity: 10,
+    adult: false,
+    original_language: 'en',
+    original_title: 'Test Movie',
+    ...overrides,
+  }
+}
 
 beforeEach(() => {
   useListsStore.setState({ lists: [], items: [] })
@@ -12,11 +32,9 @@ beforeEach(() => {
 })
 
 describe('useLists', () => {
-  it('starts with empty lists and loading=false', () => {
+  it('starts with empty lists', () => {
     const { result } = renderHook(() => useLists())
     expect(result.current.lists).toEqual([])
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBeNull()
   })
 
   it('createList adds a list', async () => {
@@ -75,7 +93,7 @@ describe('useLists', () => {
       await result.current.addToList(id!, {
         media_id: 1,
         media_type: 'movie',
-        media_data: {},
+        media_data: makeMovie(),
       })
     })
     const items = useListsStore.getState().items
@@ -90,7 +108,7 @@ describe('useLists', () => {
       id = list.id
     })
     await act(async () => {
-      await result.current.addToList(id!, { media_id: 5, media_type: 'movie', media_data: {} })
+      await result.current.addToList(id!, { media_id: 5, media_type: 'movie', media_data: makeMovie() })
     })
     await act(async () => {
       await result.current.removeFromList(id!, 5, 'movie')
@@ -106,7 +124,7 @@ describe('useLists', () => {
       id = list.id
     })
     await act(async () => {
-      await result.current.addToList(id!, { media_id: 5, media_type: 'movie', media_data: {} })
+      await result.current.addToList(id!, { media_id: 5, media_type: 'movie', media_data: makeMovie() })
     })
     const inList = await result.current.isInList(id!, 5, 'movie')
     expect(inList).toBe(true)
@@ -131,14 +149,14 @@ describe('useLists', () => {
       id = list.id
     })
     await act(async () => {
-      await result.current.addToList(id!, { media_id: 1, media_type: 'movie', media_data: {} })
+      await result.current.addToList(id!, { media_id: 1, media_type: 'movie', media_data: makeMovie() })
     })
     const items = await result.current.fetchListItems(id!)
     expect(items).toHaveLength(1)
   })
 
-  it('refresh is a no-op', async () => {
+  it('refresh is a no-op', () => {
     const { result } = renderHook(() => useLists())
-    await expect(result.current.refresh()).resolves.toBeUndefined()
+    expect(result.current.refresh()).toBeUndefined()
   })
 })

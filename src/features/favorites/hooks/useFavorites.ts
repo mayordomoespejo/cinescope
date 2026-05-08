@@ -32,7 +32,6 @@ export function useFavorites() {
   return {
     favorites,
     watchlist,
-    isLoading: false,
     toggleFavorite,
     toggleWatchlist,
     isFavorite,

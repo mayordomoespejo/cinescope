@@ -8,7 +8,7 @@ import GenreFilter from '@/features/filters/components/GenreFilter'
 import SortDropdown from '@/features/filters/components/SortDropdown'
 import AdvancedFilters from '@/features/filters/components/AdvancedFilters'
 import ErrorAlert from '@/components/ui/ErrorAlert'
-import styles from '@/pages/BrowsePage.module.css'
+import styles from './MovieBrowseSection.module.css'
 
 /**
  * Movie discovery section: hero, trending + top-rated carousels, discover grid with filters.

@@ -32,10 +32,12 @@ export default function MovieCarousel({
 }: MovieCarouselProps) {
   const { trackRef, canScrollLeft, canScrollRight, scroll, updateBounds } = useCarouselScroll()
 
+  const carouselId = `carousel-${title.replace(/\s+/g, '-').toLowerCase()}`
+
   return (
-    <section className={styles.section} aria-labelledby={`carousel-${title}`}>
+    <section className={styles.section} aria-labelledby={carouselId}>
       <div className={styles.header}>
-        <h2 className={styles.title} id={`carousel-${title}`}>
+        <h2 className={styles.title} id={carouselId}>
           {title}
         </h2>
         <div className={styles.controls}>

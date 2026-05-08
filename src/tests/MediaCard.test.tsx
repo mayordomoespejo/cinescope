@@ -35,25 +35,10 @@ describe('MediaCard', () => {
     expect(onClick).toHaveBeenCalledOnce()
   })
 
-  it('calls onClick on Enter key', () => {
-    const onClick = vi.fn()
-    render(<MediaCard {...defaultProps} onClick={onClick} />)
-    fireEvent.keyDown(screen.getByRole('button'), { key: 'Enter' })
-    expect(onClick).toHaveBeenCalledOnce()
-  })
-
-  it('calls onClick on Space key', () => {
-    const onClick = vi.fn()
-    render(<MediaCard {...defaultProps} onClick={onClick} />)
-    fireEvent.keyDown(screen.getByRole('button'), { key: ' ' })
-    expect(onClick).toHaveBeenCalledOnce()
-  })
-
-  it('does not call onClick on other keys', () => {
-    const onClick = vi.fn()
-    render(<MediaCard {...defaultProps} onClick={onClick} />)
-    fireEvent.keyDown(screen.getByRole('button'), { key: 'Tab' })
-    expect(onClick).not.toHaveBeenCalled()
+  it('renders as a native button element', () => {
+    render(<MediaCard {...defaultProps} />)
+    const btn = screen.getByRole('button')
+    expect(btn.tagName).toBe('BUTTON')
   })
 
   it('renders favorite button when onToggleFavorite is provided', () => {
